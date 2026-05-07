@@ -58,13 +58,9 @@ Use **conventional commits**: `<type>(<scope>): <description>`
 ```bash
 git commit -m "$(cat <<'EOF'
 feat(blog): add series grouping to post pages
-
-Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>
 EOF
 )"
 ```
-
-**Always include the Co-Authored-By trailer** on its own line after a blank line.
 
 ## Safety invariants
 
