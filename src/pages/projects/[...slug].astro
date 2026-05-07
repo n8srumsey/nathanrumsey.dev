@@ -1,0 +1,105 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection, render } from 'astro:content';
+import { idToSlug } from '../../utils/slugs';
+
+export async function getStaticPaths() {
+  const projects = await getCollection('projects');
+  return projects.map(project => ({
+    params: { slug: idToSlug(project.id) },
+    props: { project },
+  }));
+}
+
+const { project } = Astro.props;
+const { Content } = await render(project);
+const hasBody = (project.body?.trim().length ?? 0) > 0;
+
+const allSeries = await getCollection('series');
+const seriesEntry = project.data.relatedSeries
+  ? allSeries.find(s => s.id === `${project.data.relatedSeries}.yaml`) ?? null
+  : null;
+
+const allPosts = project.data.relatedPosts.length > 0
+  ? await getCollection('blog', ({ data }) => !data.draft)
+  : [];
+const relatedPostEntries = project.data.relatedPosts
+  .map(slug => allPosts.find(p => idToSlug(p.id) === slug))
+  .filter((p): p is NonNullable<typeof p> => p !== undefined);
+---
+
+<BaseLayout title={`${project.data.name} — Nathan Rumsey`} description={project.data.description}>
+  <article>
+    <header class="mb-8">
+      <h1 class="text-2xl font-bold font-mono">{project.data.name}</h1>
+      <p class="text-gray-600 mt-1">{project.data.description}</p>
+
+      {project.data.tags.length > 0 && (
+        <div class="flex flex-wrap gap-1.5 mt-3">
+          {project.data.tags.map(tag => (
+            <span class="text-xs px-2 py-0.5 bg-gray-100 rounded-full text-gray-600">{tag}</span>
+          ))}
+        </div>
+      )}
+
+      <div class="flex gap-4 mt-4 text-sm">
+        {project.data.repoUrl && (
+          <a
+            href={project.data.repoUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="underline underline-offset-4 text-gray-700 hover:text-gray-900"
+          >
+            Source code
+          </a>
+        )}
+        {project.data.liveUrl && (
+          <a
+            href={project.data.liveUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="underline underline-offset-4 text-gray-700 hover:text-gray-900"
+          >
+            Live site
+          </a>
+        )}
+      </div>
+    </header>
+
+    {hasBody && (
+      <div class="prose prose-gray max-w-none">
+        <Content />
+      </div>
+    )}
+
+    {(seriesEntry || relatedPostEntries.length > 0) && (
+      <aside class="mt-12 pt-6 border-t border-gray-100 space-y-6">
+        {seriesEntry && (
+          <div>
+            <p class="text-sm font-medium mb-1">Related series</p>
+            <a
+              href={`/blog/series/${idToSlug(seriesEntry.id)}`}
+              class="text-sm text-gray-600 hover:underline"
+            >
+              {seriesEntry.data.name}
+            </a>
+          </div>
+        )}
+        {relatedPostEntries.length > 0 && (
+          <div>
+            <p class="text-sm font-medium mb-2">Related posts</p>
+            <ul class="space-y-1">
+              {relatedPostEntries.map(post => (
+                <li>
+                  <a href={`/blog/${idToSlug(post.id)}`} class="text-sm text-gray-600 hover:underline">
+                    {post.data.title}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </aside>
+    )}
+  </article>
+</BaseLayout>

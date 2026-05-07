@@ -1,0 +1,78 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection, render } from 'astro:content';
+import { readingTime } from '../../utils/readingTime';
+import { idToSlug } from '../../utils/slugs';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog', ({ data }) => !data.draft);
+  return posts.map(post => ({
+    params: { slug: idToSlug(post.id) },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+const mins = readingTime(post.body ?? '');
+
+const allSeries = await getCollection('series');
+const seriesEntry = post.data.series
+  ? allSeries.find(s => s.id === `${post.data.series}.yaml`) ?? null
+  : null;
+
+const postSlug = idToSlug(post.id);
+const seriesIndex = seriesEntry ? seriesEntry.data.posts.indexOf(postSlug) : -1;
+const prevSlug = seriesEntry && seriesIndex > 0
+  ? seriesEntry.data.posts[seriesIndex - 1]
+  : null;
+const nextSlug = seriesEntry && seriesIndex < (seriesEntry.data.posts.length - 1)
+  ? seriesEntry.data.posts[seriesIndex + 1]
+  : null;
+const seriesSlug = seriesEntry ? idToSlug(seriesEntry.id) : null;
+---
+
+<BaseLayout title={`${post.data.title} — Nathan Rumsey`} description={post.data.description}>
+  <article>
+    <header class="mb-8">
+      {seriesEntry && seriesSlug && (
+        <a
+          href={`/blog/series/${seriesSlug}`}
+          class="text-sm text-gray-500 hover:underline mb-2 block"
+        >
+          {seriesEntry.data.name}
+        </a>
+      )}
+      <h1 class="text-2xl font-bold leading-snug">{post.data.title}</h1>
+      <div class="flex gap-3 text-sm text-gray-500 mt-2">
+        <time datetime={post.data.date.toISOString()}>
+          {post.data.date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+        </time>
+        <span>·</span>
+        <span>{mins} min read</span>
+      </div>
+      {post.data.tags.length > 0 && (
+        <div class="flex flex-wrap gap-1.5 mt-3">
+          {post.data.tags.map(tag => (
+            <span class="text-xs px-2 py-0.5 bg-gray-100 rounded-full text-gray-600">{tag}</span>
+          ))}
+        </div>
+      )}
+    </header>
+
+    <div class="prose prose-gray max-w-none">
+      <Content />
+    </div>
+
+    {seriesEntry && (
+      <nav class="mt-12 pt-6 border-t border-gray-100 flex justify-between text-sm">
+        {prevSlug
+          ? <a href={`/blog/${prevSlug}`} class="text-gray-500 hover:underline">← Previous</a>
+          : <span />}
+        {nextSlug
+          ? <a href={`/blog/${nextSlug}`} class="text-gray-500 hover:underline">Next →</a>
+          : <span />}
+      </nav>
+    )}
+  </article>
+</BaseLayout>
