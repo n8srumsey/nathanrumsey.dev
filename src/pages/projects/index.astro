@@ -1,64 +1,30 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { getCollection, type CollectionEntry } from 'astro:content';
+import ProjectIndexFilter from '../../components/ProjectIndexFilter';
+import type { ProjectData } from '../../components/ProjectIndexFilter';
+import { getCollection } from 'astro:content';
 import { idToSlug } from '../../utils/slugs';
 
-const projects = (await getCollection('projects')).sort((a, b) => {
-  if (a.data.featured && !b.data.featured) return -1;
-  if (!a.data.featured && b.data.featured) return 1;
-  return a.data.name.localeCompare(b.data.name);
-});
+const projects = await getCollection('projects');
 
-function hasDetailPage(project: CollectionEntry<'projects'>): boolean {
-  return (
+const projectData: ProjectData[] = projects.map(project => {
+  const hasDetailPage =
     (project.body?.trim().length ?? 0) > 0 ||
     !!project.data.relatedSeries ||
-    project.data.relatedPosts.length > 0
-  );
-}
-
-function projectHref(project: CollectionEntry<'projects'>): string {
-  if (hasDetailPage(project)) return `/projects/${idToSlug(project.id)}`;
-  return project.data.liveUrl ?? project.data.repoUrl ?? '#';
-}
+    project.data.relatedPosts.length > 0;
+  return {
+    slug: idToSlug(project.id),
+    name: project.data.name,
+    description: project.data.description,
+    tags: project.data.tags,
+    featured: project.data.featured,
+    repoUrl: project.data.repoUrl,
+    liveUrl: project.data.liveUrl,
+    hasDetailPage,
+  };
+});
 ---
 
 <BaseLayout title="Projects — Nathan Rumsey" description="A catalog of projects I've built.">
-  <h1 class="text-2xl font-bold mb-8">Projects</h1>
-  <div class="space-y-4">
-    {projects.map(project => {
-      const detail = hasDetailPage(project);
-      const href = projectHref(project);
-      return (
-        <article class="border border-border rounded-lg p-5 hover:border-primary/40 bg-surface-raised shadow-md transition-colors">
-          <a
-            href={href}
-            class="block"
-            target={detail ? undefined : '_blank'}
-            rel={detail ? undefined : 'noopener noreferrer'}
-          >
-            <div class="flex items-start justify-between gap-4">
-              <h2 class="font-semibold font-mono text-sm">{project.data.name}</h2>
-              {project.data.featured && (
-                <span class="font-mono text-xs text-primary shrink-0">featured</span>
-              )}
-            </div>
-            <p class="text-sm text-muted-foreground mt-1 leading-relaxed">{project.data.description}</p>
-            {project.data.tags.length > 0 && (
-              <div class="flex flex-wrap gap-1.5 mt-3">
-                {project.data.tags.map(tag => (
-                  <span class="font-mono text-xs px-2 py-0.5 bg-surface rounded-full text-muted-foreground shadow-sm">{tag}</span>
-                ))}
-              </div>
-            )}
-            <div class="flex gap-3 mt-3 font-mono text-xs text-muted-foreground">
-              {project.data.repoUrl && <span>Source</span>}
-              {project.data.liveUrl && <span>Live</span>}
-              {detail && <span>Detail →</span>}
-            </div>
-          </a>
-        </article>
-      );
-    })}
-  </div>
+  <ProjectIndexFilter projects={projectData} client:load />
 </BaseLayout>
