@@ -18,6 +18,16 @@ Stage and commit all uncommitted changes, grouped by logical concern, using conv
 
 2b. **Lint** — run `npm run lint`. If it fails, fix all violations before proceeding. Do not commit code that fails lint.
 
+2c. **Sync package.json to VERSION** — run the following to ensure `package.json` major.minor matches the `VERSION` file:
+```bash
+BASE=$(cat VERSION)
+PKG_BASE=$(node -p "require('./package.json').version" | awk -F. '{print $1"."$2}')
+if [ "$PKG_BASE" != "$BASE" ]; then
+  npm version "${BASE}.0" --no-git-tag-version
+fi
+```
+If `package.json` was updated, include it in the relevant commit group (or as its own `chore` commit if nothing else touches it).
+
 3. **Group** — identify logical groupings from the diff. Each group should be one independent concern. Guidance:
    - One new feature or page = one commit
    - A bug fix and its regression test = one commit
