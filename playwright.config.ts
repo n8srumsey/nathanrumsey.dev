@@ -16,7 +16,6 @@ export default defineConfig({
       use: { ...devices['Desktop Chrome'] },
     },
   ],
-  // Requires the site to be built before running: npm run test:e2e handles this.
   webServer: {
     command: 'npm run preview',
     url: 'http://localhost:4321',
