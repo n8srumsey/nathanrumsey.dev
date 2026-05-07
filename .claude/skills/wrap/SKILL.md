@@ -1,5 +1,6 @@
 ---
 description: Generate a session continuation prompt and save it to .claude/continuations/. Run at end of session or when user says they're wrapping up, closing, or done.
+effort: medium
 ---
 
 # /wrap
