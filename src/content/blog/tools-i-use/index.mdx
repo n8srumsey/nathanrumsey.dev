@@ -1,0 +1,41 @@
+---
+title: "Tools I Use"
+date: 2026-04-01
+description: "A running list of the software and hardware that makes up my daily development environment."
+tags: [tools, productivity, terminal, editor, linux]
+---
+
+A living document. Last updated May 2026.
+
+## Editor
+
+**Neovim** with a minimal config. LSP via `nvim-lspconfig`, completions via `nvim-cmp`, treesitter for syntax and text objects. I've tried every major editor at some point; I keep coming back to Neovim because the modal editing model matches how I think about text manipulation, and because the startup time and resource usage are irrelevant concerns.
+
+For larger refactors or when pairing, I use **JetBrains IDEs** — the static analysis is genuinely better than anything else for Java and Go.
+
+## Terminal
+
+**Ghostty** on Linux. It's fast, the config format is readable, and it renders Nerd Fonts correctly without fighting with it. Previously used Alacritty for years; the main thing Ghostty adds is native ligature support without a compositor.
+
+**Fish** as my shell. The autosuggestions from history are the feature that made me switch from zsh and never look back. The syntax is slightly non-POSIX in ways that occasionally bite you when writing scripts, but for interactive use it's significantly more pleasant.
+
+## Terminal Utilities
+
+- `ripgrep` — faster grep, respects `.gitignore` by default
+- `fd` — faster find with a sane interface
+- `bat` — `cat` with syntax highlighting and line numbers
+- `zoxide` — `cd` replacement that learns from your history
+- `delta` — better git diffs with syntax highlighting
+- `lazygit` — TUI git client; handles interactive rebase without memorizing flags
+
+## Hardware
+
+**Framework 13** running Fedora. The repairability matters to me more than the benchmarks. The display is excellent. Battery life is acceptable for Linux. The modularity means I'm not throwing away a whole machine when one component ages out.
+
+**Keychron Q3 Max** with Gateron Jupiter Browns. Tactile enough to feel without being loud enough to be obnoxious. The metal construction makes it feel more solid than anything at twice the price.
+
+## Miscellaneous
+
+**Obsidian** for notes. I've used it long enough that my vault is large enough that switching would cost more than any alternative would gain.
+
+**1Password** for credentials. The SSH agent integration is the feature that made me pay for it.
