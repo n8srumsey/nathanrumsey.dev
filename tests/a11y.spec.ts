@@ -11,6 +11,7 @@ const routes = [
   { path: '/projects/nathanrumsey-dev', label: 'project detail: nathanrumsey.dev' },
   { path: '/projects/open-response', label: 'project detail: OpenResponse' },
   { path: '/projects/ai-hybrid-search', label: 'project detail: AI Hybrid Search' },
+  { path: '/under-construction', label: 'under construction' },
 ];
 
 const axeOptions = {
