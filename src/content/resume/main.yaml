@@ -3,37 +3,60 @@ basics:
   title: Software Engineer
   email: nathan@nathanrumsey.dev
   website: https://nathanrumsey.dev
-  location: Portland, OR
+  location: West Linn, Oregon
   summary: >
-    Software engineer with a focus on systems design and developer tooling.
+    Software Engineer specializing in backend and full-stack development, delivering
+    high-impact solutions for mission-critical financial systems with a focus on
+    rapid delivery, product reliability, and customer trust.
 
 experience:
-  - company: Example Corp
-    role: Software Engineer
-    start: "2024-01"
-    location: Remote
+  - company: SAIF Corporation
+    role: Software Development Engineer I
+    start: "2025-06"
+    end: "2025-12"
+    location: Salem, OR
     description: >
-      Led development of the data ingestion pipeline serving thousands of daily users.
+      Delivered backend improvements and tooling for mission-critical financial and
+      insurance systems at Oregon's largest workers' compensation insurer.
     highlights:
-      - Reduced pipeline latency by 40% through distributed caching
-      - Mentored two junior engineers on distributed systems concepts
-    annotations:
-      - term: data ingestion pipeline
-        detail: "Built with Go + Kafka, processing 50M events/day"
-        style: tech
+      - Engineered corrections to the short-rate cancellations in billing engine, implementing transactional logic using Gosu to prevent erroneous refunds and safeguard $100k+ in annual revenue.
+      - Refactored a legacy VB.NET actuarial regulatory reporting tool into C#, introducing parallel bulk processing and unit test coverage to reduce turnaround time from days to hours.
+      - Unblocked new customer acquisition by resolving an address validation issue in the issuance workflow that prevented foreign customers from purchasing policies, enabling seamless onboarding and avoiding manual workarounds.
+      - Developed BDD scenarios with Cucumber/Gherkin to validate core business workflows, eliminating one week of manual validation and ensuring on-time regulatory compliance for high-stakes releases.
+
+  - company: MKS Instruments, Inc.
+    role: Reliability Engineer Intern
+    start: "2024-04"
+    end: "2024-09"
+    location: Beaverton, OR
+    description: >
+      Built test infrastructure, data pipelines, and tooling to improve reliability
+      and quality visibility across precision motion control and laser systems.
+    highlights:
+      - Extended C# .NET test infrastructure for a precision motion control system, leveraging dependency injection to validate against both simulated and physical hardware and improving test result reporting.
+      - Designed a field failure tracking system and data consolidation pipeline for laser components, processing 10k+ records spanning decades to deliver reliability insights and RCA to leadership, informing warranty projections.
+      - Engineered Python CLI tool to compress and archive AI computer vision defect detection data from the manufacturing floor, reducing storage needs by 90% and saving $3000+ annually in hardware costs.
+      - Automated quality metrics reporting across cross-functional teams using Azure dataflows and Power BI backed by Azure Data Lake, eliminating manual entry errors and saving leadership 10+ hours monthly.
 
 education:
-  - institution: Example University
+  - institution: Oregon State University
     degree: B.S.
-    field: Computer Science
-    start: "2019-09"
-    end: "2023-05"
+    field: Computer Science, AI Focus; Minor in Mathematics
+    start: "2021-09"
+    end: "2025-06"
+    description: >
+      GPA: 3.94; Graduated Summa Cum Laude.
+      Activities: AI Club President, Triathlon Club Vice President, Treasurer, and Race Director.
 
 skills:
   categories:
     - name: Languages
-      items: [TypeScript, Go, Python]
-    - name: Frontend
-      items: [React, Astro, Tailwind CSS]
-    - name: Infrastructure
-      items: [PostgreSQL, Docker, Kubernetes]
+      items: [Python, C#, JavaScript/TypeScript, Gosu, SQL, HTML/CSS, Bash]
+    - name: Web & Backend
+      items: [React, Express.js, Django, Node.js, .NET, REST APIs, Docker, Git]
+    - name: Data & Cloud
+      items: [MySQL, PostgreSQL, MongoDB, LMDB, Redis, AWS (EC2, S3, IAM)]
+    - name: Practices
+      items: [Agile/Scrum, CI/CD, TDD/BDD, AI-Augmented Development]
+    - name: Generative AI
+      items: [Claude Code, Agentic Workflows, AI Code Review]
