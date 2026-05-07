@@ -1,0 +1,27 @@
+---
+name: nathanrumsey.dev
+description: "Personal portfolio, resume, and dev diary. The site you're reading now."
+tags: [Astro, TypeScript, Tailwind, MDX]
+repoUrl: https://github.com/n8srumsey/nathanrumsey.dev
+liveUrl: https://nathanrumsey.dev
+featured: true
+relatedSeries: building-nathanrumsey-dev
+---
+
+## Overview
+
+This site is my portfolio, resume, and writing outlet. It's built to be a static artifact — no server, served from a CDN — while allowing content updates through plaintext files rather than UI changes.
+
+## Stack
+
+- **Astro 5** — content-first static site generator with built-in content collections
+- **React 19** — interactive islands via `@astrojs/react`, only where needed
+- **Tailwind CSS v4** — utility-first styling via the Vite plugin (no `tailwind.config.ts`)
+- **MDX** — markdown with embedded React components for blog posts and project pages
+
+## Design Goals
+
+- Resume, blog, and project catalog are all data-driven: edit a file, rebuild, done
+- Blog supports series grouping, tags, reading time, and syntax highlighting out of the box
+- Minimal dependencies — simple utilities are rolled rather than imported
+- Full static output: no server required after deploy

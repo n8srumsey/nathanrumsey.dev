@@ -1,0 +1,39 @@
+basics:
+  name: Nathan Rumsey
+  title: Software Engineer
+  email: nathan@nathanrumsey.dev
+  website: https://nathanrumsey.dev
+  location: Portland, OR
+  summary: >
+    Software engineer with a focus on systems design and developer tooling.
+
+experience:
+  - company: Example Corp
+    role: Software Engineer
+    start: "2024-01"
+    location: Remote
+    description: >
+      Led development of the data ingestion pipeline serving thousands of daily users.
+    highlights:
+      - Reduced pipeline latency by 40% through distributed caching
+      - Mentored two junior engineers on distributed systems concepts
+    annotations:
+      - term: data ingestion pipeline
+        detail: "Built with Go + Kafka, processing 50M events/day"
+        style: tech
+
+education:
+  - institution: Example University
+    degree: B.S.
+    field: Computer Science
+    start: "2019-09"
+    end: "2023-05"
+
+skills:
+  categories:
+    - name: Languages
+      items: [TypeScript, Go, Python]
+    - name: Frontend
+      items: [React, Astro, Tailwind CSS]
+    - name: Infrastructure
+      items: [PostgreSQL, Docker, Kubernetes]
