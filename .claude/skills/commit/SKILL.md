@@ -16,6 +16,8 @@ Stage and commit all uncommitted changes, grouped by logical concern, using conv
 
 2. **Check for secrets** — scan the diff for files that look like they contain secrets (`.env`, credential files, private keys). Warn the user and skip those files; do not commit them.
 
+2b. **Lint** — run `npm run lint`. If it fails, fix all violations before proceeding. Do not commit code that fails lint.
+
 3. **Group** — identify logical groupings from the diff. Each group should be one independent concern. Guidance:
    - One new feature or page = one commit
    - A bug fix and its regression test = one commit
