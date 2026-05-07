@@ -20,24 +20,36 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     <link rel="sitemap" href="/sitemap-index.xml" />
     <link rel="alternate" type="application/rss+xml" title="Nathan Rumsey" href="/rss.xml" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,400;0,14..32,500;0,14..32,600;0,14..32,700;1,14..32,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
     <title>{title}</title>
   </head>
-  <body class="bg-white text-gray-900 min-h-screen">
-    <header class="border-b border-gray-100">
-      <nav class="max-w-3xl mx-auto px-6 py-4 flex items-center gap-6 text-sm">
-        <a href="/" class="font-semibold mr-auto">Nathan Rumsey</a>
-        <a href="/resume" class="text-gray-600 hover:text-gray-900 transition-colors">Resume</a>
-        <a href="/blog" class="text-gray-600 hover:text-gray-900 transition-colors">Blog</a>
-        <a href="/projects" class="text-gray-600 hover:text-gray-900 transition-colors">Projects</a>
+  <body class="bg-background text-foreground font-sans min-h-screen flex flex-col">
+
+    <!-- Full-width nav sits on the background layer -->
+    <header class="bg-nav border-b border-border shrink-0">
+      <nav class="max-w-6xl mx-auto px-8 py-4 flex items-center gap-1 text-sm">
+        <a href="/" class="font-semibold text-foreground mr-auto">Nathan Rumsey</a>
+        <a href="/resume" class="text-muted-foreground hover:text-foreground hover:bg-primary-subtle px-3 py-1.5 rounded-full transition-colors duration-150">Resume</a>
+        <a href="/blog" class="text-muted-foreground hover:text-foreground hover:bg-primary-subtle px-3 py-1.5 rounded-full transition-colors duration-150">Blog</a>
+        <a href="/projects" class="text-muted-foreground hover:text-foreground hover:bg-primary-subtle px-3 py-1.5 rounded-full transition-colors duration-150">Projects</a>
       </nav>
     </header>
-    <main class="max-w-3xl mx-auto px-6 py-12">
-      <slot />
-    </main>
-    <footer class="border-t border-gray-100 mt-16">
-      <div class="max-w-3xl mx-auto px-6 py-6 text-sm text-gray-500">
-        <a href="/rss.xml" class="hover:text-gray-900 transition-colors">RSS</a>
+
+    <!-- Floating content column -->
+    <div class="grow flex flex-col max-w-3xl w-full mx-auto my-8 px-4">
+      <div class="bg-surface rounded-xl shadow-lg flex flex-col grow">
+        <main class="px-8 py-10 grow">
+          <slot />
+        </main>
+        <footer class="border-t border-border px-8 py-5 text-sm text-muted-foreground mt-auto flex gap-4">
+          <a href="/rss.xml" class="hover:text-foreground transition-colors">RSS</a>
+          <span aria-hidden="true">·</span>
+          <a href="mailto:nathan@nathanrumsey.dev" class="hover:text-foreground transition-colors">nathan@nathanrumsey.dev</a>
+        </footer>
       </div>
-    </footer>
+    </div>
+
   </body>
 </html>

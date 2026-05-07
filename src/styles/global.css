@@ -1,2 +1,42 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
+
+@theme {
+  /* Fonts */
+  --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+  /* Surfaces — two-layer depth system */
+  --color-background: hsl(207 35% 8%);        /* outer bg, visible in margins — dark teal */
+  --color-surface: hsl(220 13% 18%);           /* floating content column */
+  --color-surface-raised: hsl(220 13% 23%);    /* cards, elevated areas */
+  --color-nav: hsl(207 30% 11%);               /* nav bar — subtle step above background */
+
+  /* Text */
+  --color-foreground: hsl(210 20% 91%);
+  --color-muted-foreground: hsl(215 15% 68%);  /* readable on dark surfaces */
+
+  /* Border */
+  --color-border: hsl(215 15% 26%);
+
+  /* Primary accent — green-teal */
+  --color-primary: hsl(162 68% 44%);
+  --color-primary-subtle: hsl(162 45% 13%);
+  --color-primary-foreground: hsl(220 14% 10%);
+
+  /* Semantic */
+  --color-success: hsl(142 58% 42%);
+  --color-warning: hsl(38 85% 50%);
+  --color-error: hsl(355 65% 54%);
+
+  /* Elevation shadows */
+  --shadow-sm: 0 1px 2px hsl(207 35% 4% / 0.6);
+  --shadow-md: 0 4px 12px hsl(207 35% 4% / 0.5), 0 1px 3px hsl(207 35% 4% / 0.4);
+  --shadow-lg: 0 0 0 1px hsl(215 15% 14% / 0.9), 0 8px 48px hsl(207 35% 4% / 0.6);
+}
+
+/* Subtle dot-grid pattern on the outer background */
+body {
+  background-image: radial-gradient(circle, hsl(162 68% 70% / 0.05) 1px, transparent 1px);
+  background-size: 28px 28px;
+}

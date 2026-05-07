@@ -1,18 +1,43 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const resumeEntries = await getCollection('resume');
+const basics = resumeEntries[0]?.data.basics;
 ---
 
 <BaseLayout title="Nathan Rumsey">
   <section class="py-8">
-    <h1 class="text-3xl font-bold tracking-tight">Nathan Rumsey</h1>
-    <p class="text-lg text-gray-600 mt-2">Software Engineer</p>
-    <p class="mt-6 text-gray-700 max-w-prose leading-relaxed">
+    <h1 class="text-3xl font-bold tracking-tight">{basics?.name ?? 'Nathan Rumsey'}</h1>
+    <p class="text-lg text-muted-foreground mt-2">{basics?.title ?? 'Software Engineer'}</p>
+
+    <p class="mt-6 text-muted-foreground max-w-prose leading-relaxed">
       I build software. This is my portfolio, resume, and a place for writing about things I find worth writing about.
     </p>
+
+    <div class="mt-6 flex flex-wrap gap-4 text-sm font-mono">
+      {basics?.email && (
+        <a
+          href={`mailto:${basics.email}`}
+          class="text-muted-foreground hover:text-primary transition-colors"
+        >
+          {basics.email}
+        </a>
+      )}
+      <a
+        href="https://linkedin.com/in/nathan-s-rumsey"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="text-muted-foreground hover:text-primary transition-colors"
+      >
+        LinkedIn
+      </a>
+    </div>
+
     <div class="mt-8 flex gap-6 text-sm">
-      <a href="/resume" class="font-medium underline underline-offset-4">Resume</a>
-      <a href="/blog" class="font-medium underline underline-offset-4">Blog</a>
-      <a href="/projects" class="font-medium underline underline-offset-4">Projects</a>
+      <a href="/resume" class="font-medium text-primary hover:text-primary/80 transition-colors underline underline-offset-4">Resume</a>
+      <a href="/blog" class="font-medium text-primary hover:text-primary/80 transition-colors underline underline-offset-4">Blog</a>
+      <a href="/projects" class="font-medium text-primary hover:text-primary/80 transition-colors underline underline-offset-4">Projects</a>
     </div>
   </section>
 </BaseLayout>

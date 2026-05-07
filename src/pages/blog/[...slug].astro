@@ -34,17 +34,17 @@ const seriesSlug = seriesEntry ? idToSlug(seriesEntry.id) : null;
 
 <BaseLayout title={`${post.data.title} — Nathan Rumsey`} description={post.data.description}>
   <article>
-    <header class="mb-8">
+    <header class="pb-8 mb-8 border-b border-border">
       {seriesEntry && seriesSlug && (
         <a
           href={`/blog/series/${seriesSlug}`}
-          class="text-sm text-gray-500 hover:underline mb-2 block"
+          class="font-mono text-sm text-muted-foreground hover:text-primary transition-colors mb-2 block"
         >
           {seriesEntry.data.name}
         </a>
       )}
       <h1 class="text-2xl font-bold leading-snug">{post.data.title}</h1>
-      <div class="flex gap-3 text-sm text-gray-500 mt-2">
+      <div class="flex gap-3 font-mono text-sm text-muted-foreground mt-2">
         <time datetime={post.data.date.toISOString()}>
           {post.data.date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
         </time>
@@ -54,23 +54,23 @@ const seriesSlug = seriesEntry ? idToSlug(seriesEntry.id) : null;
       {post.data.tags.length > 0 && (
         <div class="flex flex-wrap gap-1.5 mt-3">
           {post.data.tags.map(tag => (
-            <span class="text-xs px-2 py-0.5 bg-gray-100 rounded-full text-gray-600">{tag}</span>
+            <span class="font-mono text-xs px-2 py-0.5 bg-surface-raised rounded-full text-muted-foreground shadow-sm">{tag}</span>
           ))}
         </div>
       )}
     </header>
 
-    <div class="prose prose-gray max-w-none">
+    <div class="prose prose-invert max-w-none">
       <Content />
     </div>
 
     {seriesEntry && (
-      <nav class="mt-12 pt-6 border-t border-gray-100 flex justify-between text-sm">
+      <nav class="mt-12 pt-6 border-t border-border flex justify-between text-sm font-mono">
         {prevSlug
-          ? <a href={`/blog/${prevSlug}`} class="text-gray-500 hover:underline">← Previous</a>
+          ? <a href={`/blog/${prevSlug}`} class="text-muted-foreground hover:text-primary transition-colors">← Previous</a>
           : <span />}
         {nextSlug
-          ? <a href={`/blog/${nextSlug}`} class="text-gray-500 hover:underline">Next →</a>
+          ? <a href={`/blog/${nextSlug}`} class="text-muted-foreground hover:text-primary transition-colors">Next →</a>
           : <span />}
       </nav>
     )}
