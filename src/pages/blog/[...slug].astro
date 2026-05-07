@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumb from '../../components/Breadcrumb.astro';
 import { getCollection, render } from 'astro:content';
 import { readingTime } from '../../utils/readingTime';
 import { idToSlug } from '../../utils/slugs';
@@ -17,9 +18,12 @@ const { Content } = await render(post);
 const mins = readingTime(post.body ?? '');
 
 const allSeries = await getCollection('series');
-const seriesEntry = post.data.series
-  ? allSeries.find(s => s.id === `${post.data.series}.yaml`) ?? null
-  : null;
+let seriesEntry = null;
+if (post.data.series) {
+  const found = allSeries.find(s => idToSlug(s.id) === post.data.series);
+  if (!found) throw new Error(`Post "${post.id}" references series "${post.data.series}" which does not exist.`);
+  seriesEntry = found;
+}
 
 const postSlug = idToSlug(post.id);
 const seriesIndex = seriesEntry ? seriesEntry.data.posts.indexOf(postSlug) : -1;
@@ -30,19 +34,27 @@ const nextSlug = seriesEntry && seriesIndex < (seriesEntry.data.posts.length - 1
   ? seriesEntry.data.posts[seriesIndex + 1]
   : null;
 const seriesSlug = seriesEntry ? idToSlug(seriesEntry.id) : null;
+
+const showCounter = seriesEntry !== null && seriesEntry.data.posts.length > 1;
+const seriesLabel = seriesEntry
+  ? showCounter
+    ? `${seriesEntry.data.name} (${seriesIndex + 1}/${seriesEntry.data.posts.length})`
+    : seriesEntry.data.name
+  : null;
+
+const crumbs = [
+  { label: 'Blog', href: '/blog' },
+  ...(seriesEntry && seriesSlug && seriesLabel
+    ? [{ label: seriesLabel, href: `/blog/series/${seriesSlug}` }]
+    : []),
+  { label: post.data.title },
+];
 ---
 
 <BaseLayout title={`${post.data.title} — Nathan Rumsey`} description={post.data.description}>
   <article>
+    <Breadcrumb crumbs={crumbs} />
     <header class="pb-8 mb-8 border-b border-border">
-      {seriesEntry && seriesSlug && (
-        <a
-          href={`/blog/series/${seriesSlug}`}
-          class="font-mono text-sm text-muted-foreground hover:text-primary transition-colors mb-2 block"
-        >
-          {seriesEntry.data.name}
-        </a>
-      )}
       <h1 class="text-2xl font-bold leading-snug">{post.data.title}</h1>
       <div class="flex gap-3 font-mono text-sm text-muted-foreground mt-2">
         <time datetime={post.data.date.toISOString()}>

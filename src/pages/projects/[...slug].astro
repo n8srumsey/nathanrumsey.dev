@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumb from '../../components/Breadcrumb.astro';
 import { getCollection, render } from 'astro:content';
 import { idToSlug } from '../../utils/slugs';
 
@@ -30,6 +31,10 @@ const relatedPostEntries = project.data.relatedPosts
 
 <BaseLayout title={`${project.data.name} — Nathan Rumsey`} description={project.data.description}>
   <article>
+    <Breadcrumb crumbs={[
+      { label: 'Projects', href: '/projects' },
+      { label: project.data.name },
+    ]} />
     <header class="mb-8">
       <h1 class="text-2xl font-bold font-mono">{project.data.name}</h1>
       <p class="text-muted-foreground mt-1">{project.data.description}</p>
