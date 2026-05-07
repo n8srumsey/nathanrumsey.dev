@@ -69,3 +69,4 @@ EOF
 - Never amend a prior commit — if a hook fails, fix and create a new commit
 - Never commit `.env`, secrets, credentials, or private keys — warn and skip
 - Do not push — committing only, unless the user explicitly asks to push
+- Do not add `Co-Authored-By` trailers — omit them from all commit messages

@@ -1,4 +1,4 @@
-name: CI
+name: Continuous Integration
 
 on:
   push:
@@ -10,7 +10,7 @@ env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
-  typecheck:
+  type-check:
     name: Type Check
     runs-on: ubuntu-latest
     steps:
@@ -34,7 +34,7 @@ jobs:
       - run: npm ci
       - run: npm run lint
 
-  unit:
+  unit-tests:
     name: Unit Tests
     runs-on: ubuntu-latest
     steps:
@@ -46,7 +46,7 @@ jobs:
       - run: npm ci
       - run: npm test
 
-  e2e:
+  e2e-tests:
     name: E2E & A11y Tests
     runs-on: ubuntu-latest
     steps:
@@ -59,3 +59,27 @@ jobs:
       - run: npx playwright install --with-deps chromium
       - run: npm run build
       - run: npx playwright test
+
+  semver-check:
+    name: Semver Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Validate VERSION does not regress
+        run: |
+          LATEST=$(git tag -l "v*.*.*" | sort -V | tail -1)
+          if [ -z "$LATEST" ]; then
+            echo "No existing tags — first release, skipping check."
+            exit 0
+          fi
+          TAG_BASE=$(echo "$LATEST" | sed 's/^v//' | awk -F. '{print $1"."$2}')
+          PR_BASE=$(cat VERSION)
+          LOWER=$(printf "%s\n%s" "$PR_BASE" "$TAG_BASE" | sort -V | head -1)
+          if [ "$PR_BASE" != "$TAG_BASE" ] && [ "$LOWER" = "$PR_BASE" ]; then
+            echo "Error: VERSION ($PR_BASE) is lower than latest release ($TAG_BASE)"
+            exit 1
+          fi
+          echo "OK: VERSION=$PR_BASE, latest tag base=$TAG_BASE"
