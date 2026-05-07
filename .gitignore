@@ -27,3 +27,6 @@ pnpm-debug.log*
 /test-results/
 /playwright-report/
 /playwright/.cache/
+
+# Session continuations (ephemeral, local only)
+.claude/continuations/
