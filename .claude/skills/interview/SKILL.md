@@ -1,3 +1,7 @@
+---
+description: Conduct a structured interview to produce a user story spec (UI feature) or a change spec (program change). Run before implementing any non-trivial feature.
+---
+
 # /interview
 
 Conduct a structured interview to produce a user story spec (UI feature) or a change spec (program change).

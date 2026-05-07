@@ -1,3 +1,7 @@
+---
+description: Stage and commit all uncommitted changes, grouped by logical concern, using conventional commits format. Never git add -A or add .; always stage by explicit path.
+---
+
 # /commit
 
 Stage and commit all uncommitted changes, grouped by logical concern, using conventional commits format.
