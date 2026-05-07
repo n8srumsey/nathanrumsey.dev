@@ -46,6 +46,12 @@ test('project detail page loads', async ({ page }) => {
   await expect(page).toHaveTitle(/nathanrumsey\.dev/);
 });
 
+test('under-construction page loads', async ({ page }) => {
+  await page.goto('/under-construction');
+  await expect(page).toHaveTitle(/Under Construction/);
+  await expect(page.getByRole('heading', { name: 'Under Construction' })).toBeVisible();
+});
+
 test('RSS feed is accessible', async ({ page }) => {
   const response = await page.goto('/rss.xml');
   expect(response?.status()).toBe(200);
