@@ -56,8 +56,9 @@ if re.search(r"\b(ssh|scp)\s+\S*@\S+", cmd):
     deny("remote SSH/SCP is blocked")
 
 # GitHub CLI mutations that change remote repository state
+# gh pr create is allowed (used by the /pr skill)
 if re.search(
-    r"\bgh\s+(pr\s+(create|merge|close)|issue\s+(create|close)|release\s+create|repo\s+delete)\b",
+    r"\bgh\s+(pr\s+(merge|close)|issue\s+(create|close)|release\s+create|repo\s+delete)\b",
     cmd,
 ):
     deny("gh remote-state mutations are blocked — perform GitHub actions manually")
