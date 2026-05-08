@@ -39,9 +39,12 @@ if not cmd:
 # ── EXTERNAL IMPACT ───────────────────────────────────────────────────────────
 # Commands that write to or modify systems outside this local repository.
 
-# git push (any remote write — including --force, --tags, etc.)
-if re.search(r"\bgit\s+push\b", cmd):
-    deny("git push affects remote state — push manually from your terminal")
+# git push --force / -f / --force-with-lease / --force-if-includes
+if re.search(r"\bgit\s+push\b", cmd) and re.search(
+    r"(--force\b|--force-with-lease\b|--force-if-includes\b|\s-[a-zA-Z]*f)",
+    cmd,
+):
+    deny("force push is blocked — never force-push; rebase or reset locally instead")
 
 # Package registry publish
 if re.search(r"\b(npm|yarn|pnpm)\s+publish\b", cmd):

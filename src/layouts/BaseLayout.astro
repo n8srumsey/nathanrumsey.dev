@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css';
+import NavBar from '../components/nav/NavBar.astro';
 
 interface Props {
   title: string;
@@ -27,15 +28,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
   </head>
   <body class="bg-background text-foreground font-sans min-h-screen flex flex-col">
 
-    <!-- Full-width nav sits on the background layer -->
-    <header class="bg-nav border-b border-border shrink-0">
-      <nav aria-label="Main navigation" class="max-w-6xl mx-auto px-8 py-4 flex items-center gap-1 text-sm">
-        <a href="/" class="font-semibold text-foreground mr-auto">Nathan Rumsey</a>
-        <a href="/resume" class="text-muted-foreground hover:text-foreground hover:bg-primary-subtle px-3 py-1.5 rounded-full transition-colors duration-150">Resume</a>
-        <a href="/blog" class="text-muted-foreground hover:text-foreground hover:bg-primary-subtle px-3 py-1.5 rounded-full transition-colors duration-150">Blog</a>
-        <a href="/projects" class="text-muted-foreground hover:text-foreground hover:bg-primary-subtle px-3 py-1.5 rounded-full transition-colors duration-150">Projects</a>
-      </nav>
-    </header>
+    <NavBar currentPath={Astro.url.pathname} />
 
     <!-- Floating content column -->
     <div class="grow flex flex-col max-w-3xl w-full mx-auto my-8 px-4">

@@ -1,0 +1,21 @@
+---
+import NavItem from './NavItem.astro';
+
+interface Props {
+  currentPath: string;
+}
+
+const { currentPath } = Astro.props;
+
+const isActive = (href: string) =>
+  currentPath === href || currentPath.startsWith(href + '/');
+---
+
+<header class="bg-nav border-b border-border shrink-0">
+  <nav aria-label="Main navigation" class="max-w-6xl mx-auto px-8 py-4 flex items-center gap-1 text-sm">
+    <a href="/" aria-label="Home" class="font-semibold text-foreground mr-auto transition-opacity duration-150 hover:opacity-70">Nathan Rumsey</a>
+    <NavItem href="/resume" active={isActive('/resume')}>Resume</NavItem>
+    <NavItem href="/blog" active={isActive('/blog')}>Blog</NavItem>
+    <NavItem href="/projects" active={isActive('/projects')}>Projects</NavItem>
+  </nav>
+</header>

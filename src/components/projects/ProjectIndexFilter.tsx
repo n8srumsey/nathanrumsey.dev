@@ -1,22 +1,8 @@
 import { useState, useEffect, useMemo } from 'react';
-import { navigate } from '../utils/filterSort';
-import GitHubIcon from './GitHubIcon';
-import GlobeIcon from './GlobeIcon';
-import ChevronRightIcon from './ChevronRightIcon';
-import LayersIcon from './LayersIcon';
+import { navigate } from '../../utils/filterSort';
+import ProjectCard, { type ProjectData } from './ProjectCard';
 
-export type ProjectData = {
-  slug: string;
-  name: string;
-  description: string;
-  tags: string[];
-  featured: boolean;
-  repoUrl?: string;
-  liveUrl?: string;
-  hasDetailPage: boolean;
-  relatedSeries?: { slug: string; name: string };
-  relatedPosts: { slug: string; title: string }[];
-};
+export type { ProjectData };
 
 type ProjectSort = 'featured' | 'az' | 'za';
 type TagMatch = 'and' | 'or';
@@ -259,99 +245,4 @@ export default function ProjectIndexFilter({ projects }: { projects: ProjectData
   );
 }
 
-function ProjectCard({ project, onTagClick, activeTags }: { project: ProjectData; onTagClick: (tag: string) => void; activeTags: string[] }) {
-  const href = project.hasDetailPage
-    ? `/projects/${project.slug}`
-    : (project.liveUrl ?? project.repoUrl ?? '#');
-  const isExternal = !project.hasDetailPage && href !== '#';
 
-  return (
-    <article className="border border-border rounded-lg p-5 hover:border-primary/40 bg-surface-raised shadow-md transition-colors relative group">
-      {project.hasDetailPage && (
-        <a
-          href={`/projects/${project.slug}`}
-          className="absolute inset-0 rounded-lg"
-          aria-hidden="true"
-          tabIndex={-1}
-        />
-      )}
-      <div className="relative flex items-start justify-between gap-4 pointer-events-none">
-        <div className="flex-1 min-w-0">
-          <h2 className="font-semibold font-mono text-sm">
-            {href !== '#' ? (
-              <a
-                href={href}
-                target={isExternal ? '_blank' : undefined}
-                rel={isExternal ? 'noopener noreferrer' : undefined}
-                className="hover:underline pointer-events-auto"
-              >
-                {project.name}
-              </a>
-            ) : project.name}
-          </h2>
-          <p className="text-sm text-muted-foreground mt-1 leading-relaxed">{project.description}</p>
-          {project.tags.length > 0 && (
-            <div className="flex flex-wrap gap-1.5 mt-3">
-              {project.tags.map(tag => (
-                <button
-                  key={tag}
-                  onClick={() => onTagClick(tag)}
-                  className={`font-mono text-xs px-2 py-0.5 rounded-full border transition-colors cursor-pointer shadow-sm pointer-events-auto ${
-                      activeTags.includes(tag)
-                        ? 'bg-primary-subtle border-primary text-primary'
-                        : 'border-transparent text-muted-foreground hover:bg-primary-subtle hover:border-primary hover:text-primary'
-                    }`}
-                >
-                  {tag}
-                </button>
-              ))}
-            </div>
-          )}
-          <div className="flex gap-3 mt-3 font-mono text-xs text-muted-foreground">
-            {project.repoUrl && (
-              <a href={project.repoUrl} target="_blank" rel="noopener noreferrer" className="underline underline-offset-4 hover:text-primary transition-colors pointer-events-auto flex items-center gap-1">
-                <GitHubIcon />
-                Source
-              </a>
-            )}
-            {project.liveUrl && (
-              <a href={project.liveUrl} target="_blank" rel="noopener noreferrer" className="underline underline-offset-4 hover:text-primary transition-colors pointer-events-auto flex items-center gap-1">
-                <GlobeIcon />
-                Live
-              </a>
-            )}
-          </div>
-          {(project.relatedSeries || project.relatedPosts.length > 0) && (
-            <div className="flex flex-wrap gap-x-3 gap-y-1 mt-2 font-mono text-xs text-muted-foreground">
-              {project.relatedSeries && (
-                <a href={`/blog/series/${project.relatedSeries.slug}`} className="flex items-center gap-1 hover:text-primary transition-colors pointer-events-auto">
-                  <LayersIcon />
-                  {project.relatedSeries.name}
-                </a>
-              )}
-              {project.relatedPosts.map(post => (
-                <a key={post.slug} href={`/blog/${post.slug}`} className="hover:text-primary transition-colors pointer-events-auto underline underline-offset-2">
-                  {post.title}
-                </a>
-              ))}
-            </div>
-          )}
-        </div>
-        {project.featured && (
-          <span className="font-mono text-xs text-primary shrink-0">featured</span>
-        )}
-      </div>
-      {project.hasDetailPage && (
-        <a
-          href={`/projects/${project.slug}`}
-          className="absolute bottom-3.5 right-4 flex items-center gap-0.5 font-mono text-xs text-muted-foreground group-hover:text-primary group-hover:font-medium transition-colors"
-          aria-hidden="true"
-          tabIndex={-1}
-        >
-          Read more
-          <ChevronRightIcon />
-        </a>
-      )}
-    </article>
-  );
-}

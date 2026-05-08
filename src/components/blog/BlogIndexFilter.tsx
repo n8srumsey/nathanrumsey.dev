@@ -1,19 +1,8 @@
 import { useState, useEffect, useMemo } from 'react';
-import { navigate } from '../utils/filterSort';
-import LayersIcon from './LayersIcon';
+import { navigate } from '../../utils/filterSort';
+import BlogPostCard, { type BlogPostData } from './BlogPostCard';
 
-export type BlogPostData = {
-  slug: string;
-  title: string;
-  date: string;
-  description: string;
-  tags: string[];
-  series?: string;
-  seriesLabel?: string;
-  seriesSlug?: string;
-  seriesPosition?: number;
-  readingMinutes: number;
-};
+export type { BlogPostData };
 
 type BlogSort = 'newest' | 'oldest' | 'az' | 'za';
 type TagMatch = 'and' | 'or';
@@ -230,59 +219,5 @@ export default function BlogIndexFilter({ posts }: { posts: BlogPostData[] }) {
         </div>
       )}
     </div>
-  );
-}
-
-function BlogPostCard({ post, onTagClick, activeTags }: { post: BlogPostData; onTagClick: (tag: string) => void; activeTags: string[] }) {
-  const dateStr = new Date(post.date).toLocaleDateString('en-US', {
-    year: 'numeric', month: 'long', day: 'numeric',
-  });
-
-  return (
-    <article className="border border-border rounded-lg p-5 hover:border-primary/40 bg-surface-raised shadow-md transition-colors">
-      <div className="flex items-start gap-4">
-        <div className="flex-1 min-w-0">
-          <h2 className="font-semibold">
-            <a href={`/blog/${post.slug}`} className="hover:underline">{post.title}</a>
-          </h2>
-          <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 font-mono text-sm text-muted-foreground mt-1">
-            <time dateTime={post.date}>{dateStr}</time>
-            <span aria-hidden="true">·</span>
-            <span>{post.readingMinutes} min read</span>
-            {post.tags.length > 0 && <span aria-hidden="true">·</span>}
-            {post.tags.map(tag => (
-              <button
-                key={tag}
-                onClick={() => onTagClick(tag)}
-                className={`font-mono text-xs px-2 py-0.5 rounded-full border transition-colors cursor-pointer shadow-sm ${
-                    activeTags.includes(tag)
-                      ? 'bg-primary-subtle border-primary text-primary'
-                      : 'border-transparent text-muted-foreground hover:bg-primary-subtle hover:border-primary hover:text-primary'
-                  }`}
-              >
-                {tag}
-              </button>
-            ))}
-          </div>
-          <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{post.description}</p>
-        </div>
-        {post.seriesLabel && post.seriesSlug && (
-          <div className="font-mono text-xs text-muted-foreground shrink-0 flex items-center gap-1">
-            {post.seriesPosition != null && (
-              <>
-                <a href={`/blog/${post.slug}`} className="hover:text-primary transition-colors whitespace-nowrap">
-                  Part {post.seriesPosition}
-                </a>
-                <span aria-hidden="true">·</span>
-              </>
-            )}
-            <a href={`/blog/series/${post.seriesSlug}`} className="hover:text-primary transition-colors flex items-center gap-1">
-              <LayersIcon />
-              {post.seriesLabel}
-            </a>
-          </div>
-        )}
-      </div>
-    </article>
   );
 }

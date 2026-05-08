@@ -46,7 +46,7 @@ function formatDate(ym: string): string {
   </div>
 
   {resume.basics.summary && (
-    <p class="mt-4 leading-relaxed">{resume.basics.summary}</p>
+    <p class="mt-4 leading-relaxed text-muted-foreground">{resume.basics.summary}</p>
   )}
 
   <section class="mt-10">
@@ -66,7 +66,7 @@ function formatDate(ym: string): string {
             {exp.company}{exp.location ? ` · ${exp.location}` : ''}
           </p>
           {/* annotations not rendered in MVP — see docs/ARCHITECTURE.md */}
-          <p class="mt-2 text-sm leading-relaxed">{exp.description}</p>
+          <p class="mt-2 text-sm leading-relaxed text-muted-foreground">{exp.description}</p>
           {exp.highlights.length > 0 && (
             <ul class="mt-2 space-y-1.5">
               {exp.highlights.map(h => (

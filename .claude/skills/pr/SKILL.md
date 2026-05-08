@@ -16,8 +16,8 @@ Only when explicitly invoked via `/pr` or explicitly asked to create a pull requ
 This repo follows trunk-based development with a fixed branching hierarchy:
 
 ```
-feature/* → develop
-develop   → main
+feature/*   → development
+development → main
 ```
 
 Any other base branch is a hard error — explain and stop. Do not ask the user to override this.
@@ -35,15 +35,15 @@ git branch --show-current               # get current branch name
 **Hard stops (explain clearly, then stop — do not proceed):**
 - `gh auth status` fails → "GH CLI is not authenticated. Run `gh auth login` and try again."
 - No `origin` remote → "No GitHub remote is configured for this repo."
-- Current branch is `main` or `develop` → "PRs are not created from `main` or `develop` directly. Switch to a feature branch."
-- Current branch is not `feature/*`, `develop`, or another valid feature branch → explain the expected branching model and stop.
+- Current branch is `main` or `development` → "PRs are not created from `main` or `development` directly. Switch to a feature branch."
+- Current branch is not `feature/*`, `development`, or another valid feature branch → explain the expected branching model and stop.
 
 ## Step 2 — Determine base branch
 
 | Current branch | Base branch |
 |---|---|
-| `develop` | `main` |
-| anything else (feature branch) | `develop` |
+| `development` | `main` |
+| anything else (feature branch) | `development` |
 
 ## Step 3 — Check for commits to merge
 
@@ -167,7 +167,37 @@ EOF
   [--draft]   # include only if draft
 ```
 
-After creation, output the PR URL.
+After creation, output the PR URL, then proceed to Step 10.
+
+## Step 10 — Post-merge sync prompt
+
+Immediately after outputting the PR URL, display this reminder:
+
+```
+---
+After this PR is merged on GitHub, pull the merge commit down to keep
+your working branch in sync:
+
+  git checkout <current-branch>
+  git fetch origin
+  git merge origin/<base-branch>
+  git push
+
+Want me to watch for the merge and run these steps automatically when it lands? (yes / no)
+```
+
+If the user says **yes**:
+- Poll every 30 seconds: `gh pr view <PR-number> --json state,mergedAt --jq '.state'`
+- When the state becomes `MERGED`, run:
+  ```bash
+  git checkout <current-branch>
+  git fetch origin
+  git merge origin/<base-branch>
+  git push
+  ```
+- Confirm to the user: "Merged. `<current-branch>` is now in sync with `<base-branch>`."
+
+If the user says **no** — stop. The reminder was shown; the user will handle it manually.
 
 ## Safety invariants
 

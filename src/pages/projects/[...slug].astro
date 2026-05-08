@@ -1,7 +1,12 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import Breadcrumb from '../../components/Breadcrumb.astro';
-import SeriesIcon from '../../components/SeriesIcon.astro';
+import Breadcrumb from '../../components/ui/Breadcrumb.astro';
+import GitHubIcon from '../../components/icons/GitHubIcon';
+import GlobeIcon from '../../components/icons/GlobeIcon';
+import LayersIcon from '../../components/icons/LayersIcon';
+import ArticleIcon from '../../components/icons/ArticleIcon';
+import IconLink from '../../components/ui/IconLink';
+import TagLink from '../../components/ui/TagLink.astro';
 import { getCollection, render } from 'astro:content';
 import { idToSlug } from '../../utils/slugs';
 
@@ -43,52 +48,24 @@ const relatedPostEntries = project.data.relatedPosts
       {project.data.tags.length > 0 && (
         <div class="flex flex-wrap gap-1.5 mt-3">
           {project.data.tags.map(tag => (
-            <span class="font-mono text-xs px-2 py-0.5 bg-surface-raised rounded-full text-muted-foreground shadow-sm">{tag}</span>
+            <TagLink tag={tag} href={`/projects?tag=${encodeURIComponent(tag)}`} />
           ))}
         </div>
       )}
 
-      <div class="flex gap-4 mt-4 text-sm font-mono">
-        {project.data.repoUrl && (
-          <a
-            href={project.data.repoUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            class="text-primary hover:text-primary/80 transition-colors underline underline-offset-4"
-          >
-            Source code
-          </a>
-        )}
-        {project.data.liveUrl && (
-          <a
-            href={project.data.liveUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            class="text-primary hover:text-primary/80 transition-colors underline underline-offset-4"
-          >
-            Live site
-          </a>
-        )}
-      </div>
-
-      {(seriesEntry || relatedPostEntries.length > 0) && (
+      {(project.data.repoUrl || project.data.liveUrl || seriesEntry || relatedPostEntries.length > 0) && (
         <div class="flex flex-wrap gap-x-4 gap-y-1.5 mt-4 font-mono text-sm text-muted-foreground">
+          {project.data.repoUrl && (
+            <IconLink href={project.data.repoUrl} Icon={GitHubIcon} iconSize={14} label="Source" external />
+          )}
+          {project.data.liveUrl && (
+            <IconLink href={project.data.liveUrl} Icon={GlobeIcon} iconSize={14} label="Live" external />
+          )}
           {seriesEntry && (
-            <a
-              href={`/blog/series/${idToSlug(seriesEntry.id)}`}
-              class="flex items-center gap-1 hover:text-primary transition-colors"
-            >
-              <SeriesIcon />
-              {seriesEntry.data.name}
-            </a>
+            <IconLink href={`/blog/series/${idToSlug(seriesEntry.id)}`} Icon={LayersIcon} iconSize={14} label={seriesEntry.data.name} />
           )}
           {relatedPostEntries.map(post => (
-            <a
-              href={`/blog/${idToSlug(post.id)}`}
-              class="hover:text-primary transition-colors underline underline-offset-2"
-            >
-              {post.data.title}
-            </a>
+            <IconLink href={`/blog/${idToSlug(post.id)}`} Icon={ArticleIcon} iconSize={14} label={post.data.title} />
           ))}
         </div>
       )}
