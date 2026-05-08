@@ -26,8 +26,9 @@ function getSeriesProps(post: (typeof posts)[number]) {
   const pos = info.posts.indexOf(idToSlug(post.id));
   return {
     series: post.data.series,
-    seriesLabel: pos >= 0 ? `${info.name} (${pos + 1}/${info.posts.length})` : info.name,
+    seriesLabel: info.name,
     seriesSlug: info.slug,
+    seriesPosition: pos >= 0 ? pos + 1 : undefined,
   };
 }
 

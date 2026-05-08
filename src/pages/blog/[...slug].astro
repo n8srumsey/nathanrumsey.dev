@@ -1,6 +1,9 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Breadcrumb from '../../components/Breadcrumb.astro';
+import SeriesIcon from '../../components/SeriesIcon.astro';
+import ChevronLeftIcon from '../../components/ChevronLeftIcon.astro';
+import ChevronRightIcon from '../../components/ChevronRightIcon.astro';
 import { getCollection, render } from 'astro:content';
 import { readingTime } from '../../utils/readingTime';
 import { idToSlug } from '../../utils/slugs';
@@ -35,19 +38,27 @@ const nextSlug = seriesEntry && seriesIndex < (seriesEntry.data.posts.length - 1
   : null;
 const seriesSlug = seriesEntry ? idToSlug(seriesEntry.id) : null;
 
-const showCounter = seriesEntry !== null && seriesEntry.data.posts.length > 1;
-const seriesLabel = seriesEntry
-  ? showCounter
-    ? `${seriesEntry.data.name} (${seriesIndex + 1}/${seriesEntry.data.posts.length})`
-    : seriesEntry.data.name
-  : null;
+const seriesLabel = seriesEntry?.data.name ?? null;
+const seriesPosition = seriesEntry ? seriesIndex + 1 : null;
+
+// Adjacent post data for prev/next nav
+const allPosts = seriesEntry ? await getCollection('blog', ({ data }) => !data.draft) : [];
+const prevPost = prevSlug ? (allPosts.find(p => idToSlug(p.id) === prevSlug) ?? null) : null;
+const nextPost = nextSlug ? (allPosts.find(p => idToSlug(p.id) === nextSlug) ?? null) : null;
+const prevSeriesPosition = prevSlug ? seriesIndex : null;      // prev is at (seriesIndex-1)+1 = seriesIndex
+const nextSeriesPosition = nextSlug ? seriesIndex + 2 : null;  // next is at (seriesIndex+1)+1 = seriesIndex+2
 
 const crumbs = [
   { label: 'Blog', href: '/blog' },
   ...(seriesEntry && seriesSlug && seriesLabel
-    ? [{ label: seriesLabel, href: `/blog/series/${seriesSlug}` }]
+    ? [{ label: seriesLabel, href: `/blog/series/${seriesSlug}`, icon: 'series' as const, truncate: true }]
     : []),
-  { label: post.data.title },
+  {
+    label: seriesEntry && seriesPosition
+      ? `Part ${seriesPosition} · ${post.data.title}`
+      : post.data.title,
+    truncate: !!seriesEntry,
+  },
 ];
 ---
 
@@ -66,8 +77,22 @@ const crumbs = [
       {post.data.tags.length > 0 && (
         <div class="flex flex-wrap gap-1.5 mt-3">
           {post.data.tags.map(tag => (
-            <span class="font-mono text-xs px-2 py-0.5 bg-surface-raised rounded-full text-muted-foreground shadow-sm">{tag}</span>
+            <a
+              href={`/blog?tag=${encodeURIComponent(tag)}`}
+              class="font-mono text-xs px-2 py-0.5 rounded-full border border-transparent text-muted-foreground shadow-sm hover:bg-primary-subtle hover:border-primary hover:text-primary transition-colors"
+            >
+              {tag}
+            </a>
           ))}
+        </div>
+      )}
+      {seriesEntry && seriesSlug && seriesPosition && (
+        <div class="flex items-center gap-1.5 font-mono text-sm text-muted-foreground mt-3">
+          <span>Part {seriesPosition} of</span>
+          <a href={`/blog/series/${seriesSlug}`} class="hover:text-primary transition-colors flex items-center gap-1">
+            <SeriesIcon />
+            {seriesEntry.data.name}
+          </a>
         </div>
       )}
     </header>
@@ -77,13 +102,35 @@ const crumbs = [
     </div>
 
     {seriesEntry && (
-      <nav class="mt-12 pt-6 border-t border-border flex justify-between text-sm font-mono">
-        {prevSlug
-          ? <a href={`/blog/${prevSlug}`} class="text-muted-foreground hover:text-primary transition-colors">← Previous</a>
-          : <span />}
-        {nextSlug
-          ? <a href={`/blog/${nextSlug}`} class="text-muted-foreground hover:text-primary transition-colors">Next →</a>
-          : <span />}
+      <nav class="mt-12 pt-6 border-t border-border" aria-label="Series navigation">
+        <div class="flex justify-between gap-4 font-mono text-sm">
+          <div class="flex-1">
+            {prevPost && (
+              <a href={`/blog/${prevSlug}`} class="group flex flex-col gap-1 text-muted-foreground hover:text-primary transition-colors max-w-[14rem]">
+                <span class="flex items-center gap-1.5">
+                  <ChevronLeftIcon />
+                  Previous
+                </span>
+                <span class="text-xs pl-[22px] leading-snug">
+                  {prevSeriesPosition != null ? `Part ${prevSeriesPosition} · ` : ''}{prevPost.data.title}
+                </span>
+              </a>
+            )}
+          </div>
+          <div class="flex-1 flex justify-end">
+            {nextPost && (
+              <a href={`/blog/${nextSlug}`} class="group flex flex-col gap-1 text-muted-foreground hover:text-primary transition-colors items-end max-w-[14rem]">
+                <span class="flex items-center gap-1.5">
+                  Next
+                  <ChevronRightIcon />
+                </span>
+                <span class="text-xs pr-[22px] leading-snug text-right">
+                  {nextSeriesPosition != null ? `Part ${nextSeriesPosition} · ` : ''}{nextPost.data.title}
+                </span>
+              </a>
+            )}
+          </div>
+        </div>
       </nav>
     )}
   </article>

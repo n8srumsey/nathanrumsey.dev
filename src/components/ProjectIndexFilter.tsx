@@ -1,5 +1,9 @@
 import { useState, useEffect, useMemo } from 'react';
 import { navigate } from '../utils/filterSort';
+import GitHubIcon from './GitHubIcon';
+import GlobeIcon from './GlobeIcon';
+import ChevronRightIcon from './ChevronRightIcon';
+import LayersIcon from './LayersIcon';
 
 export type ProjectData = {
   slug: string;
@@ -10,6 +14,8 @@ export type ProjectData = {
   repoUrl?: string;
   liveUrl?: string;
   hasDetailPage: boolean;
+  relatedSeries?: { slug: string; name: string };
+  relatedPosts: { slug: string; title: string }[];
 };
 
 type ProjectSort = 'featured' | 'az' | 'za';
@@ -22,11 +28,12 @@ interface ProjectFilters {
   live: boolean;
   detail: boolean;
   featured: boolean;
+  blog: boolean;
   sort: ProjectSort;
 }
 
 const DEFAULTS: ProjectFilters = {
-  tags: [], match: 'or', source: false, live: false, detail: false, featured: false, sort: 'featured',
+  tags: [], match: 'or', source: false, live: false, detail: false, featured: false, blog: false, sort: 'featured',
 };
 
 function readFromURL(): ProjectFilters {
@@ -38,6 +45,7 @@ function readFromURL(): ProjectFilters {
     live: p.get('live') === 'true',
     detail: p.get('detail') === 'true',
     featured: p.get('featured') === 'true',
+    blog: p.get('blog') === 'true',
     sort: (p.get('sort') as ProjectSort) ?? 'featured',
   };
 }
@@ -50,6 +58,7 @@ function toSearch(f: ProjectFilters): string {
   if (f.live) p.set('live', 'true');
   if (f.detail) p.set('detail', 'true');
   if (f.featured) p.set('featured', 'true');
+  if (f.blog) p.set('blog', 'true');
   if (f.sort !== 'featured') p.set('sort', f.sort);
   return p.toString();
 }
@@ -67,6 +76,7 @@ function applyFilters(projects: ProjectData[], f: ProjectFilters): ProjectData[]
       if (f.live && !project.liveUrl) return false;
       if (f.detail && !project.hasDetailPage) return false;
       if (f.featured && !project.featured) return false;
+      if (f.blog && !project.relatedSeries && project.relatedPosts.length === 0) return false;
       return true;
     })
     .sort((a, b) => {
@@ -84,7 +94,7 @@ function applyFilters(projects: ProjectData[], f: ProjectFilters): ProjectData[]
 const selectClass = 'font-mono text-xs border border-border rounded px-2 py-1 bg-surface text-foreground';
 
 const toggleBtnClass = (active: boolean) =>
-  `font-mono text-xs px-2 py-0.5 rounded-full border transition-colors ${
+  `font-mono text-xs px-2 py-0.5 rounded-full border transition-colors cursor-pointer ${
     active
       ? 'bg-primary-subtle border-primary text-primary'
       : 'bg-surface border-border text-muted-foreground hover:border-primary/40'
@@ -107,16 +117,18 @@ export default function ProjectIndexFilter({ projects }: { projects: ProjectData
   };
 
   const clearFilters = () =>
-    set({ tags: [], match: 'or', source: false, live: false, detail: false, featured: false });
+    set({ tags: [], match: 'or', source: false, live: false, detail: false, featured: false, blog: false });
 
   const allTags = useMemo(() => [...new Set(projects.flatMap(p => p.tags))].sort(), [projects]);
   const results = useMemo(() => applyFilters(projects, filters), [projects, filters]);
 
   const hasFilters =
-    filters.tags.length > 0 || filters.source || filters.live || filters.detail || filters.featured;
+    filters.tags.length > 0 || filters.source || filters.live || filters.detail || filters.featured || filters.blog;
 
   const filterByTag = (tag: string) => {
-    set({ tags: [tag], match: 'or', source: false, live: false, detail: false, featured: false });
+    if (!filters.tags.includes(tag)) {
+      set({ tags: [...filters.tags, tag] });
+    }
   };
 
   const toggleTag = (tag: string) => {
@@ -178,6 +190,9 @@ export default function ProjectIndexFilter({ projects }: { projects: ProjectData
           <button onClick={() => set({ featured: !filters.featured })} className={toggleBtnClass(filters.featured)}>
             Featured
           </button>
+          <button onClick={() => set({ blog: !filters.blog })} className={toggleBtnClass(filters.blog)}>
+            Has blog content
+          </button>
         </div>
       </div>
 
@@ -187,31 +202,37 @@ export default function ProjectIndexFilter({ projects }: { projects: ProjectData
           {filters.tags.map(tag => (
             <span key={tag} className="flex items-center gap-1 px-2 py-0.5 bg-primary-subtle border border-primary text-primary rounded-full">
               {tag}
-              <button onClick={() => set({ tags: filters.tags.filter(t => t !== tag) })} aria-label={`Remove tag: ${tag}`} className="hover:opacity-70">×</button>
+              <button onClick={() => set({ tags: filters.tags.filter(t => t !== tag) })} aria-label={`Remove tag: ${tag}`} className="hover:opacity-70 cursor-pointer">×</button>
             </span>
           ))}
           {filters.source && (
             <span className="flex items-center gap-1 px-2 py-0.5 bg-surface border border-border rounded-full">
               source available
-              <button onClick={() => set({ source: false })} aria-label="Remove source filter" className="hover:text-primary">×</button>
+              <button onClick={() => set({ source: false })} aria-label="Remove source filter" className="hover:text-primary cursor-pointer">×</button>
             </span>
           )}
           {filters.live && (
             <span className="flex items-center gap-1 px-2 py-0.5 bg-surface border border-border rounded-full">
               live site
-              <button onClick={() => set({ live: false })} aria-label="Remove live filter" className="hover:text-primary">×</button>
+              <button onClick={() => set({ live: false })} aria-label="Remove live filter" className="hover:text-primary cursor-pointer">×</button>
             </span>
           )}
           {filters.detail && (
             <span className="flex items-center gap-1 px-2 py-0.5 bg-surface border border-border rounded-full">
               has detail page
-              <button onClick={() => set({ detail: false })} aria-label="Remove detail filter" className="hover:text-primary">×</button>
+              <button onClick={() => set({ detail: false })} aria-label="Remove detail filter" className="hover:text-primary cursor-pointer">×</button>
             </span>
           )}
           {filters.featured && (
             <span className="flex items-center gap-1 px-2 py-0.5 bg-surface border border-border rounded-full">
               featured
-              <button onClick={() => set({ featured: false })} aria-label="Remove featured filter" className="hover:text-primary">×</button>
+              <button onClick={() => set({ featured: false })} aria-label="Remove featured filter" className="hover:text-primary cursor-pointer">×</button>
+            </span>
+          )}
+          {filters.blog && (
+            <span className="flex items-center gap-1 px-2 py-0.5 bg-surface border border-border rounded-full">
+              has blog content
+              <button onClick={() => set({ blog: false })} aria-label="Remove blog filter" className="hover:text-primary cursor-pointer">×</button>
             </span>
           )}
           <button onClick={clearFilters} className="underline hover:text-primary transition-colors ml-1">
@@ -230,7 +251,7 @@ export default function ProjectIndexFilter({ projects }: { projects: ProjectData
       ) : (
         <div className="space-y-4">
           {results.map(project => (
-            <ProjectCard key={project.slug} project={project} onTagClick={filterByTag} />
+            <ProjectCard key={project.slug} project={project} onTagClick={filterByTag} activeTags={filters.tags} />
           ))}
         </div>
       )}
@@ -238,25 +259,35 @@ export default function ProjectIndexFilter({ projects }: { projects: ProjectData
   );
 }
 
-function ProjectCard({ project, onTagClick }: { project: ProjectData; onTagClick: (tag: string) => void }) {
+function ProjectCard({ project, onTagClick, activeTags }: { project: ProjectData; onTagClick: (tag: string) => void; activeTags: string[] }) {
   const href = project.hasDetailPage
     ? `/projects/${project.slug}`
     : (project.liveUrl ?? project.repoUrl ?? '#');
   const isExternal = !project.hasDetailPage && href !== '#';
 
   return (
-    <article className="border border-border rounded-lg p-5 hover:border-primary/40 bg-surface-raised shadow-md transition-colors">
-      <div className="flex items-start justify-between gap-4">
+    <article className="border border-border rounded-lg p-5 hover:border-primary/40 bg-surface-raised shadow-md transition-colors relative group">
+      {project.hasDetailPage && (
+        <a
+          href={`/projects/${project.slug}`}
+          className="absolute inset-0 rounded-lg"
+          aria-hidden="true"
+          tabIndex={-1}
+        />
+      )}
+      <div className="relative flex items-start justify-between gap-4 pointer-events-none">
         <div className="flex-1 min-w-0">
           <h2 className="font-semibold font-mono text-sm">
-            <a
-              href={href}
-              target={isExternal ? '_blank' : undefined}
-              rel={isExternal ? 'noopener noreferrer' : undefined}
-              className="hover:underline"
-            >
-              {project.name}
-            </a>
+            {href !== '#' ? (
+              <a
+                href={href}
+                target={isExternal ? '_blank' : undefined}
+                rel={isExternal ? 'noopener noreferrer' : undefined}
+                className="hover:underline pointer-events-auto"
+              >
+                {project.name}
+              </a>
+            ) : project.name}
           </h2>
           <p className="text-sm text-muted-foreground mt-1 leading-relaxed">{project.description}</p>
           {project.tags.length > 0 && (
@@ -265,7 +296,11 @@ function ProjectCard({ project, onTagClick }: { project: ProjectData; onTagClick
                 <button
                   key={tag}
                   onClick={() => onTagClick(tag)}
-                  className="font-mono text-xs px-2 py-0.5 bg-surface rounded-full text-muted-foreground shadow-sm hover:border hover:border-primary/40 transition-colors"
+                  className={`font-mono text-xs px-2 py-0.5 rounded-full border transition-colors cursor-pointer shadow-sm pointer-events-auto ${
+                      activeTags.includes(tag)
+                        ? 'bg-primary-subtle border-primary text-primary'
+                        : 'border-transparent text-muted-foreground hover:bg-primary-subtle hover:border-primary hover:text-primary'
+                    }`}
                 >
                   {tag}
                 </button>
@@ -274,22 +309,49 @@ function ProjectCard({ project, onTagClick }: { project: ProjectData; onTagClick
           )}
           <div className="flex gap-3 mt-3 font-mono text-xs text-muted-foreground">
             {project.repoUrl && (
-              <a href={project.repoUrl} target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">
+              <a href={project.repoUrl} target="_blank" rel="noopener noreferrer" className="underline underline-offset-4 hover:text-primary transition-colors pointer-events-auto flex items-center gap-1">
+                <GitHubIcon />
                 Source
               </a>
             )}
             {project.liveUrl && (
-              <a href={project.liveUrl} target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">
+              <a href={project.liveUrl} target="_blank" rel="noopener noreferrer" className="underline underline-offset-4 hover:text-primary transition-colors pointer-events-auto flex items-center gap-1">
+                <GlobeIcon />
                 Live
               </a>
             )}
-            {project.hasDetailPage && <span>Detail →</span>}
           </div>
+          {(project.relatedSeries || project.relatedPosts.length > 0) && (
+            <div className="flex flex-wrap gap-x-3 gap-y-1 mt-2 font-mono text-xs text-muted-foreground">
+              {project.relatedSeries && (
+                <a href={`/blog/series/${project.relatedSeries.slug}`} className="flex items-center gap-1 hover:text-primary transition-colors pointer-events-auto">
+                  <LayersIcon />
+                  {project.relatedSeries.name}
+                </a>
+              )}
+              {project.relatedPosts.map(post => (
+                <a key={post.slug} href={`/blog/${post.slug}`} className="hover:text-primary transition-colors pointer-events-auto underline underline-offset-2">
+                  {post.title}
+                </a>
+              ))}
+            </div>
+          )}
         </div>
         {project.featured && (
           <span className="font-mono text-xs text-primary shrink-0">featured</span>
         )}
       </div>
+      {project.hasDetailPage && (
+        <a
+          href={`/projects/${project.slug}`}
+          className="absolute bottom-3.5 right-4 flex items-center gap-0.5 font-mono text-xs text-muted-foreground group-hover:text-primary group-hover:font-medium transition-colors"
+          aria-hidden="true"
+          tabIndex={-1}
+        >
+          Read more
+          <ChevronRightIcon />
+        </a>
+      )}
     </article>
   );
 }

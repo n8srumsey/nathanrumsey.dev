@@ -68,18 +68,35 @@ jobs:
         with:
           fetch-depth: 0
 
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: 'npm'
+      - run: npm ci
+
       - name: Validate VERSION does not regress
         run: |
           LATEST=$(git tag -l "v*.*.*" | sort -V | tail -1)
           if [ -z "$LATEST" ]; then
             echo "No existing tags — first release, skipping check."
-            exit 0
+          else
+            TAG_BASE=$(echo "$LATEST" | sed 's/^v//' | awk -F. '{print $1"."$2}')
+            PR_BASE=$(cat VERSION)
+            LOWER=$(printf "%s\n%s" "$PR_BASE" "$TAG_BASE" | sort -V | head -1)
+            if [ "$PR_BASE" != "$TAG_BASE" ] && [ "$LOWER" = "$PR_BASE" ]; then
+              echo "Error: VERSION ($PR_BASE) is lower than latest release ($TAG_BASE)"
+              exit 1
+            fi
+            echo "OK: VERSION=$PR_BASE does not regress latest tag base=$TAG_BASE"
           fi
-          TAG_BASE=$(echo "$LATEST" | sed 's/^v//' | awk -F. '{print $1"."$2}')
+
+      - name: Validate package.json major.minor matches VERSION
+        run: |
           PR_BASE=$(cat VERSION)
-          LOWER=$(printf "%s\n%s" "$PR_BASE" "$TAG_BASE" | sort -V | head -1)
-          if [ "$PR_BASE" != "$TAG_BASE" ] && [ "$LOWER" = "$PR_BASE" ]; then
-            echo "Error: VERSION ($PR_BASE) is lower than latest release ($TAG_BASE)"
+          PKG_VERSION=$(node -p "require('./package.json').version")
+          PKG_BASE=$(echo "$PKG_VERSION" | awk -F. '{print $1"."$2}')
+          if [ "$PKG_BASE" != "$PR_BASE" ]; then
+            echo "Error: package.json version ($PKG_VERSION) major.minor ($PKG_BASE) does not match VERSION ($PR_BASE)"
             exit 1
           fi
-          echo "OK: VERSION=$PR_BASE, latest tag base=$TAG_BASE"
+          echo "OK: package.json major.minor=$PKG_BASE matches VERSION=$PR_BASE"

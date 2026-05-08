@@ -1,4 +1,4 @@
-name: "Engineering Notes"
+name: "Engineering Notes and System Design"
 posts:
   - on-sql-indexes
   - async-patterns-in-typescript

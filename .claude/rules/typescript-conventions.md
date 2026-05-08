@@ -26,6 +26,13 @@ Minimal starting point — expand as patterns solidify.
 - Add `client:*` directives only when interactivity requires it — prefer server rendering.
 - Use `Astro.props` type via `interface Props` declared inside the component frontmatter.
 
+## Icons
+
+- Never hard-code SVG markup inline in a page or component. Always wrap it in a named icon component.
+- For Astro files: create a `PascalCaseIcon.astro` component in `src/components/` with a `size` prop (default matches typical use). See `SeriesIcon.astro`, `ChevronLeftIcon.astro`, `ChevronRightIcon.astro` as examples.
+- For React files: create a `PascalCaseIcon.tsx` component in `src/components/` with a `size` prop. Do not define icon functions inline inside other components. Do not import `.astro` components into `.tsx` files. See `LayersIcon.tsx`, `GitHubIcon.tsx`, `GlobeIcon.tsx`, `ChevronRightIcon.tsx` as examples.
+- Both forms must set `aria-hidden="true"` — icons are decorative; labels belong on the surrounding element.
+
 ## Content Layer
 
 - Never read content files directly. Always use `getCollection` / `getEntry` from `astro:content`.

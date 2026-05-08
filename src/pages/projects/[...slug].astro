@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Breadcrumb from '../../components/Breadcrumb.astro';
+import SeriesIcon from '../../components/SeriesIcon.astro';
 import { getCollection, render } from 'astro:content';
 import { idToSlug } from '../../utils/slugs';
 
@@ -18,7 +19,7 @@ const hasBody = (project.body?.trim().length ?? 0) > 0;
 
 const allSeries = await getCollection('series');
 const seriesEntry = project.data.relatedSeries
-  ? allSeries.find(s => s.id === `${project.data.relatedSeries}.yaml`) ?? null
+  ? allSeries.find(s => idToSlug(s.id) === project.data.relatedSeries) ?? null
   : null;
 
 const allPosts = project.data.relatedPosts.length > 0
@@ -69,42 +70,34 @@ const relatedPostEntries = project.data.relatedPosts
           </a>
         )}
       </div>
+
+      {(seriesEntry || relatedPostEntries.length > 0) && (
+        <div class="flex flex-wrap gap-x-4 gap-y-1.5 mt-4 font-mono text-sm text-muted-foreground">
+          {seriesEntry && (
+            <a
+              href={`/blog/series/${idToSlug(seriesEntry.id)}`}
+              class="flex items-center gap-1 hover:text-primary transition-colors"
+            >
+              <SeriesIcon />
+              {seriesEntry.data.name}
+            </a>
+          )}
+          {relatedPostEntries.map(post => (
+            <a
+              href={`/blog/${idToSlug(post.id)}`}
+              class="hover:text-primary transition-colors underline underline-offset-2"
+            >
+              {post.data.title}
+            </a>
+          ))}
+        </div>
+      )}
     </header>
 
     {hasBody && (
       <div class="prose prose-invert max-w-none">
         <Content />
       </div>
-    )}
-
-    {(seriesEntry || relatedPostEntries.length > 0) && (
-      <aside class="mt-12 pt-6 border-t border-border space-y-6">
-        {seriesEntry && (
-          <div>
-            <p class="font-mono text-sm text-muted-foreground mb-1">Related series</p>
-            <a
-              href={`/blog/series/${idToSlug(seriesEntry.id)}`}
-              class="text-sm text-primary hover:text-primary/80 transition-colors"
-            >
-              {seriesEntry.data.name}
-            </a>
-          </div>
-        )}
-        {relatedPostEntries.length > 0 && (
-          <div>
-            <p class="font-mono text-sm text-muted-foreground mb-2">Related posts</p>
-            <ul class="space-y-1">
-              {relatedPostEntries.map(post => (
-                <li>
-                  <a href={`/blog/${idToSlug(post.id)}`} class="text-sm text-primary hover:text-primary/80 transition-colors">
-                    {post.data.title}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
-      </aside>
     )}
   </article>
 </BaseLayout>
