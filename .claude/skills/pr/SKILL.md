@@ -167,7 +167,36 @@ EOF
   [--draft]   # include only if draft
 ```
 
-After creation, output the PR URL.
+After creation, output the PR URL, then proceed to Step 10.
+
+## Step 10 — Post-merge sync prompt
+
+Immediately after outputting the PR URL, display this reminder:
+
+```
+---
+After this PR is merged on GitHub, sync the base branch back into your
+working branch to prevent divergence (squash merges create a new commit
+that git treats as unrelated history):
+
+  git checkout <current-branch>
+  git merge <base-branch>
+  git push
+
+Want me to watch for the merge and run these steps automatically when it lands? (yes / no)
+```
+
+If the user says **yes**:
+- Poll every 30 seconds: `gh pr view <PR-number> --json state,mergedAt --jq '.state'`
+- When the state becomes `MERGED`, run:
+  ```bash
+  git checkout <current-branch>
+  git merge <base-branch>
+  git push
+  ```
+- Confirm to the user: "Merged. `<current-branch>` is now in sync with `<base-branch>`."
+
+If the user says **no** — stop. The reminder was shown; the user will handle it manually.
 
 ## Safety invariants
 
