@@ -1,7 +1,7 @@
 import { useState, useEffect, useLayoutEffect, useMemo, useRef } from 'react';
-import LayersIcon from './LayersIcon';
-import { TagButton } from './TagButton';
-import TagList from './TagList';
+import LayersIcon from '../icons/LayersIcon';
+import { TagButton } from '../ui/TagButton';
+import TagList from '../ui/TagList';
 
 export type BlogPostData = {
   slug: string;

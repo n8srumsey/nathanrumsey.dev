@@ -1,10 +1,10 @@
-import GitHubIcon from './GitHubIcon';
-import GlobeIcon from './GlobeIcon';
-import ChevronRightIcon from './ChevronRightIcon';
-import LayersIcon from './LayersIcon';
-import ArticleIcon from './ArticleIcon';
-import IconLink from './IconLink';
-import TagList from './TagList';
+import GitHubIcon from '../icons/GitHubIcon';
+import GlobeIcon from '../icons/GlobeIcon';
+import ChevronRightIcon from '../icons/ChevronRightIcon';
+import LayersIcon from '../icons/LayersIcon';
+import ArticleIcon from '../icons/ArticleIcon';
+import IconLink from '../ui/IconLink';
+import TagList from '../ui/TagList';
 
 export type ProjectData = {
   slug: string;

@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import { navigate } from '../utils/filterSort';
+import { navigate } from '../../utils/filterSort';
 import BlogPostCard, { type BlogPostData } from './BlogPostCard';
 
 export type { BlogPostData };

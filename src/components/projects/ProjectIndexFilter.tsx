@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import { navigate } from '../utils/filterSort';
+import { navigate } from '../../utils/filterSort';
 import ProjectCard, { type ProjectData } from './ProjectCard';
 
 export type { ProjectData };
