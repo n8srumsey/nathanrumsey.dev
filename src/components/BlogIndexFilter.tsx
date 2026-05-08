@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { navigate } from '../utils/filterSort';
 import LayersIcon from './LayersIcon';
+import { TagButton } from './TagButton';
 
 export type BlogPostData = {
   slug: string;
@@ -251,17 +252,7 @@ function BlogPostCard({ post, onTagClick, activeTags }: { post: BlogPostData; on
             <span>{post.readingMinutes} min read</span>
             {post.tags.length > 0 && <span aria-hidden="true">·</span>}
             {post.tags.map(tag => (
-              <button
-                key={tag}
-                onClick={() => onTagClick(tag)}
-                className={`font-mono text-xs px-2 py-0.5 rounded-full border transition-colors cursor-pointer shadow-sm ${
-                    activeTags.includes(tag)
-                      ? 'bg-primary-subtle border-primary text-primary'
-                      : 'border-transparent text-muted-foreground hover:bg-primary-subtle hover:border-primary hover:text-primary'
-                  }`}
-              >
-                {tag}
-              </button>
+              <TagButton key={tag} tag={tag} onClick={() => onTagClick(tag)} isActive={activeTags.includes(tag)} />
             ))}
           </div>
           <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{post.description}</p>

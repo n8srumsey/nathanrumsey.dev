@@ -4,6 +4,7 @@ import GitHubIcon from './GitHubIcon';
 import GlobeIcon from './GlobeIcon';
 import ChevronRightIcon from './ChevronRightIcon';
 import LayersIcon from './LayersIcon';
+import { TagButton } from './TagButton';
 
 export type ProjectData = {
   slug: string;
@@ -293,17 +294,7 @@ function ProjectCard({ project, onTagClick, activeTags }: { project: ProjectData
           {project.tags.length > 0 && (
             <div className="flex flex-wrap gap-1.5 mt-3">
               {project.tags.map(tag => (
-                <button
-                  key={tag}
-                  onClick={() => onTagClick(tag)}
-                  className={`font-mono text-xs px-2 py-0.5 rounded-full border transition-colors cursor-pointer shadow-sm pointer-events-auto ${
-                      activeTags.includes(tag)
-                        ? 'bg-primary-subtle border-primary text-primary'
-                        : 'border-transparent text-muted-foreground hover:bg-primary-subtle hover:border-primary hover:text-primary'
-                    }`}
-                >
-                  {tag}
-                </button>
+                <TagButton key={tag} tag={tag} onClick={() => onTagClick(tag)} isActive={activeTags.includes(tag)} />
               ))}
             </div>
           )}
