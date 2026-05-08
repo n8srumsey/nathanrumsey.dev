@@ -6,12 +6,23 @@ import { getCollection } from 'astro:content';
 import { idToSlug } from '../../utils/slugs';
 
 const projects = await getCollection('projects');
+const allSeries = await getCollection('series');
+const allPosts = await getCollection('blog', ({ data }) => !data.draft);
 
 const projectData: ProjectData[] = projects.map(project => {
   const hasDetailPage =
     (project.body?.trim().length ?? 0) > 0 ||
     !!project.data.relatedSeries ||
     project.data.relatedPosts.length > 0;
+
+  const seriesEntry = project.data.relatedSeries
+    ? allSeries.find(s => idToSlug(s.id) === project.data.relatedSeries) ?? null
+    : null;
+
+  const relatedPostEntries = project.data.relatedPosts
+    .map(slug => allPosts.find(p => idToSlug(p.id) === slug))
+    .filter((p): p is NonNullable<typeof p> => p !== undefined);
+
   return {
     slug: idToSlug(project.id),
     name: project.data.name,
@@ -21,6 +32,10 @@ const projectData: ProjectData[] = projects.map(project => {
     repoUrl: project.data.repoUrl,
     liveUrl: project.data.liveUrl,
     hasDetailPage,
+    relatedSeries: seriesEntry
+      ? { slug: idToSlug(seriesEntry.id), name: seriesEntry.data.name }
+      : undefined,
+    relatedPosts: relatedPostEntries.map(p => ({ slug: idToSlug(p.id), title: p.data.title })),
   };
 });
 ---

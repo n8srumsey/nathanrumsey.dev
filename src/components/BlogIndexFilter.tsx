@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { navigate } from '../utils/filterSort';
+import LayersIcon from './LayersIcon';
 
 export type BlogPostData = {
   slug: string;
@@ -10,6 +11,7 @@ export type BlogPostData = {
   series?: string;
   seriesLabel?: string;
   seriesSlug?: string;
+  seriesPosition?: number;
   readingMinutes: number;
 };
 
@@ -107,7 +109,9 @@ export default function BlogIndexFilter({ posts }: { posts: BlogPostData[] }) {
   const hasFilters = filters.tags.length > 0 || !!filters.year || !!filters.length || !!filters.series;
 
   const filterByTag = (tag: string) => {
-    set({ tags: [tag], match: 'or', year: '', length: '', series: '' });
+    if (!filters.tags.includes(tag)) {
+      set({ tags: [...filters.tags, tag] });
+    }
   };
 
   const toggleTag = (tag: string) => {
@@ -143,7 +147,7 @@ export default function BlogIndexFilter({ posts }: { posts: BlogPostData[] }) {
             <button
               key={tag}
               onClick={() => toggleTag(tag)}
-              className={`font-mono text-xs px-2 py-0.5 rounded-full border transition-colors ${
+              className={`font-mono text-xs px-2 py-0.5 rounded-full border transition-colors cursor-pointer ${
                 filters.tags.includes(tag)
                   ? 'bg-primary-subtle border-primary text-primary'
                   : 'bg-surface border-border text-muted-foreground hover:border-primary/40'
@@ -184,25 +188,25 @@ export default function BlogIndexFilter({ posts }: { posts: BlogPostData[] }) {
           {filters.tags.map(tag => (
             <span key={tag} className="flex items-center gap-1 px-2 py-0.5 bg-primary-subtle border border-primary text-primary rounded-full">
               {tag}
-              <button onClick={() => set({ tags: filters.tags.filter(t => t !== tag) })} aria-label={`Remove tag: ${tag}`} className="hover:opacity-70">×</button>
+              <button onClick={() => set({ tags: filters.tags.filter(t => t !== tag) })} aria-label={`Remove tag: ${tag}`} className="hover:opacity-70 cursor-pointer">×</button>
             </span>
           ))}
           {filters.year && (
             <span className="flex items-center gap-1 px-2 py-0.5 bg-surface border border-border rounded-full">
               {filters.year}
-              <button onClick={() => set({ year: '' })} aria-label="Remove year filter" className="hover:text-primary">×</button>
+              <button onClick={() => set({ year: '' })} aria-label="Remove year filter" className="hover:text-primary cursor-pointer">×</button>
             </span>
           )}
           {filters.length && (
             <span className="flex items-center gap-1 px-2 py-0.5 bg-surface border border-border rounded-full">
               {filters.length === 'short' ? '≤2 min' : filters.length === 'medium' ? '3–8 min' : '>8 min'}
-              <button onClick={() => set({ length: '' })} aria-label="Remove length filter" className="hover:text-primary">×</button>
+              <button onClick={() => set({ length: '' })} aria-label="Remove length filter" className="hover:text-primary cursor-pointer">×</button>
             </span>
           )}
           {filters.series && (
             <span className="flex items-center gap-1 px-2 py-0.5 bg-surface border border-border rounded-full">
               {filters.series === 'yes' ? 'in series' : 'standalone'}
-              <button onClick={() => set({ series: '' })} aria-label="Remove series filter" className="hover:text-primary">×</button>
+              <button onClick={() => set({ series: '' })} aria-label="Remove series filter" className="hover:text-primary cursor-pointer">×</button>
             </span>
           )}
           <button onClick={clearFilters} className="underline hover:text-primary transition-colors ml-1">
@@ -221,7 +225,7 @@ export default function BlogIndexFilter({ posts }: { posts: BlogPostData[] }) {
       ) : (
         <div className="space-y-4">
           {results.map(post => (
-            <BlogPostCard key={post.slug} post={post} onTagClick={filterByTag} />
+            <BlogPostCard key={post.slug} post={post} onTagClick={filterByTag} activeTags={filters.tags} />
           ))}
         </div>
       )}
@@ -229,7 +233,7 @@ export default function BlogIndexFilter({ posts }: { posts: BlogPostData[] }) {
   );
 }
 
-function BlogPostCard({ post, onTagClick }: { post: BlogPostData; onTagClick: (tag: string) => void }) {
+function BlogPostCard({ post, onTagClick, activeTags }: { post: BlogPostData; onTagClick: (tag: string) => void; activeTags: string[] }) {
   const dateStr = new Date(post.date).toLocaleDateString('en-US', {
     year: 'numeric', month: 'long', day: 'numeric',
   });
@@ -250,7 +254,11 @@ function BlogPostCard({ post, onTagClick }: { post: BlogPostData; onTagClick: (t
               <button
                 key={tag}
                 onClick={() => onTagClick(tag)}
-                className="text-xs px-2 py-0.5 bg-surface rounded-full shadow-sm hover:border hover:border-primary/40 transition-colors"
+                className={`font-mono text-xs px-2 py-0.5 rounded-full border transition-colors cursor-pointer shadow-sm ${
+                    activeTags.includes(tag)
+                      ? 'bg-primary-subtle border-primary text-primary'
+                      : 'border-transparent text-muted-foreground hover:bg-primary-subtle hover:border-primary hover:text-primary'
+                  }`}
               >
                 {tag}
               </button>
@@ -259,12 +267,20 @@ function BlogPostCard({ post, onTagClick }: { post: BlogPostData; onTagClick: (t
           <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{post.description}</p>
         </div>
         {post.seriesLabel && post.seriesSlug && (
-          <a
-            href={`/blog/series/${post.seriesSlug}`}
-            className="font-mono text-xs text-muted-foreground hover:text-primary transition-colors shrink-0 text-right"
-          >
-            {post.seriesLabel}
-          </a>
+          <div className="font-mono text-xs text-muted-foreground shrink-0 flex items-center gap-1">
+            {post.seriesPosition != null && (
+              <>
+                <a href={`/blog/${post.slug}`} className="hover:text-primary transition-colors whitespace-nowrap">
+                  Part {post.seriesPosition}
+                </a>
+                <span aria-hidden="true">·</span>
+              </>
+            )}
+            <a href={`/blog/series/${post.seriesSlug}`} className="hover:text-primary transition-colors flex items-center gap-1">
+              <LayersIcon />
+              {post.seriesLabel}
+            </a>
+          </div>
         )}
       </div>
     </article>
