@@ -4,6 +4,8 @@ import GitHubIcon from './GitHubIcon';
 import GlobeIcon from './GlobeIcon';
 import ChevronRightIcon from './ChevronRightIcon';
 import LayersIcon from './LayersIcon';
+import ArticleIcon from './ArticleIcon';
+import IconLink from './IconLink';
 import { TagButton } from './TagButton';
 
 export type ProjectData = {
@@ -298,32 +300,19 @@ function ProjectCard({ project, onTagClick, activeTags }: { project: ProjectData
               ))}
             </div>
           )}
-          <div className="flex gap-3 mt-3 font-mono text-xs text-muted-foreground">
-            {project.repoUrl && (
-              <a href={project.repoUrl} target="_blank" rel="noopener noreferrer" className="underline underline-offset-4 hover:text-primary transition-colors pointer-events-auto flex items-center gap-1">
-                <GitHubIcon />
-                Source
-              </a>
-            )}
-            {project.liveUrl && (
-              <a href={project.liveUrl} target="_blank" rel="noopener noreferrer" className="underline underline-offset-4 hover:text-primary transition-colors pointer-events-auto flex items-center gap-1">
-                <GlobeIcon />
-                Live
-              </a>
-            )}
-          </div>
-          {(project.relatedSeries || project.relatedPosts.length > 0) && (
-            <div className="flex flex-wrap gap-x-3 gap-y-1 mt-2 font-mono text-xs text-muted-foreground">
+          {(project.repoUrl || project.liveUrl || project.relatedSeries || project.relatedPosts.length > 0) && (
+            <div className="flex flex-wrap gap-x-3 gap-y-1 mt-3 font-mono text-xs text-muted-foreground">
+              {project.repoUrl && (
+                <IconLink href={project.repoUrl} Icon={GitHubIcon} label="Source" external />
+              )}
+              {project.liveUrl && (
+                <IconLink href={project.liveUrl} Icon={GlobeIcon} label="Live" external />
+              )}
               {project.relatedSeries && (
-                <a href={`/blog/series/${project.relatedSeries.slug}`} className="flex items-center gap-1 hover:text-primary transition-colors pointer-events-auto">
-                  <LayersIcon />
-                  {project.relatedSeries.name}
-                </a>
+                <IconLink href={`/blog/series/${project.relatedSeries.slug}`} Icon={LayersIcon} label="Blog Series" />
               )}
               {project.relatedPosts.map(post => (
-                <a key={post.slug} href={`/blog/${post.slug}`} className="hover:text-primary transition-colors pointer-events-auto underline underline-offset-2">
-                  {post.title}
-                </a>
+                <IconLink key={post.slug} href={`/blog/${post.slug}`} Icon={ArticleIcon} label="Blog Post" />
               ))}
             </div>
           )}
