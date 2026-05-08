@@ -107,6 +107,8 @@ Content Layer entries use `entry.id` (file path with extension, e.g., `hello-wor
 
 **Project state is tracked in `.claude/NOTES.md`** — a living document that records current status, scope, next steps, blockers, and open considerations. Consult it at the start of a session for context on where things stand and what comes next.
 
+**When the user asks about project status, priorities, or next steps**, read NOTES.md first before doing file exploration. It is the authoritative source for where the project stands; don't re-derive from git history or the codebase what's already recorded there.
+
 **At the end of each working session**, run `/notes` to update the document with any meaningful changes to project state. If the user says they're done, wrapping up, closing, or signing off — run `/notes` automatically before ending the turn.
 
 **`NOTES.md` is gitignored** — it is a personal scratchpad, not committed to the repo. It is not documentation and does not replace CLAUDE.md or the `docs/` files.
