@@ -28,5 +28,5 @@ pnpm-debug.log*
 /playwright-report/
 /playwright/.cache/
 
-# Session continuations (ephemeral, local only)
-.claude/continuations/
+# Project notes (personal scratchpad, local only)
+.claude/NOTES.md

@@ -105,11 +105,11 @@ Content Layer entries use `entry.id` (file path with extension, e.g., `hello-wor
 
 ## Session Management
 
-**Prefer fresh sessions over resuming stale ones.** At the end of each working session, run `/wrap` to generate a continuation prompt. Paste the content of `.claude/continuations/latest.md` into the next session's opening message.
+**Project state is tracked in `.claude/NOTES.md`** — a living document that records current status, scope, next steps, blockers, and open considerations. Consult it at the start of a session for context on where things stand and what comes next.
 
-**When to auto-generate without being asked**: if the user says they're done, wrapping up, closing, or signing off — run `/wrap` automatically before ending the turn. Do not wait to be asked explicitly.
+**At the end of each working session**, run `/notes` to update the document with any meaningful changes to project state. If the user says they're done, wrapping up, closing, or signing off — run `/notes` automatically before ending the turn.
 
-**Continuation prompts are stored in** `.claude/continuations/`. Each session gets a timestamped file; `latest.md` always holds the most recent one. These files are ephemeral context — they are not documentation and do not replace CLAUDE.md or the `docs/` files.
+**`NOTES.md` is gitignored** — it is a personal scratchpad, not committed to the repo. It is not documentation and does not replace CLAUDE.md or the `docs/` files.
 
 ## Deployment
 
