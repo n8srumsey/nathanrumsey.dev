@@ -20,9 +20,10 @@ npm run check      # Astro + TypeScript type checking
 npm run lint       # ESLint
 npm test           # Vitest unit tests (single pass)
 npm run test:watch # Vitest interactive
-npm run test:e2e   # Build + Playwright (all tests)
-npm run test:a11y  # Build + Playwright (a11y tests only)
-npm run test:all   # Build + unit + Playwright
+npm run test:e2e          # Build + Playwright (all tests)
+npm run test:a11y         # Build + Playwright (a11y tests only)
+npm run test:a11y:verbose # Playwright a11y only, list reporter with detailed violation output (no build)
+npm run test:all          # Build + unit + Playwright
 ```
 
 Always use these `npm run` scripts rather than invoking the underlying tools directly (e.g. `npm run test:e2e`, not `npx playwright test`; `npm run preview`, not `npx serve dist/`). When `package.json` scripts change, update this list in the same commit.

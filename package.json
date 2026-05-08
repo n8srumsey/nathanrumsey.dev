@@ -14,6 +14,7 @@
     "test:watch": "vitest",
     "test:e2e": "npm run build && playwright test",
     "test:a11y": "npm run build && playwright test tests/a11y.spec.ts",
+    "test:a11y:verbose": "playwright test tests/a11y.spec.ts --reporter=list",
     "check": "astro check",
     "lint": "eslint .",
     "test:all": "npm run build && npm run test && playwright test"
@@ -30,6 +31,7 @@
     "astro": "^6.2.2",
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
+    "simple-icons": "^16.18.1",
     "tailwindcss": "^4.2.4"
   },
   "devDependencies": {
