@@ -1,5 +1,6 @@
 import { useState, useEffect, useLayoutEffect, useMemo, useRef } from 'react';
 import LayersIcon from '../icons/LayersIcon';
+import ChevronRightIcon from '../icons/ChevronRightIcon';
 import { TagButton } from '../ui/TagButton';
 import TagList from '../ui/TagList';
 
@@ -61,7 +62,7 @@ export default function BlogPostCard({ post, onTagClick, activeTags }: Props) {
   }, [hasSeries, hasTags]);
 
   return (
-    <article ref={articleRef} className="border border-border rounded-lg p-5 hover:border-primary/40 bg-surface-raised shadow-md transition-colors relative">
+    <article ref={articleRef} className="border border-border rounded-lg p-5 hover:border-primary/40 bg-surface-raised shadow-md transition-colors relative group">
       {hasSeries && hasTags && (
         <div
           ref={measureRef}
@@ -78,47 +79,66 @@ export default function BlogPostCard({ post, onTagClick, activeTags }: Props) {
         </div>
       )}
 
-      <div className="flex flex-wrap items-baseline gap-x-3 gap-y-0.5">
-        <h2 className="font-semibold">
-          <a href={`/blog/${post.slug}`} className="hover:underline">{post.title}</a>
-        </h2>
-        <div className="flex items-center gap-x-2 font-mono text-sm text-muted-foreground">
-          <time dateTime={post.date}>{dateStr}</time>
-          <span aria-hidden="true">·</span>
-          <span>{post.readingMinutes} min read</span>
-        </div>
-      </div>
+      <a
+        href={`/blog/${post.slug}`}
+        className="absolute inset-0 rounded-lg"
+        aria-hidden="true"
+        tabIndex={-1}
+      />
 
-      {hasSeries && hasTags && inlineLayout ? (
-        <div className="flex flex-wrap items-center gap-1.5 font-mono text-sm text-muted-foreground mt-1">
-          <span className="shrink-0 flex items-center gap-1">
-            {post.seriesPosition != null && <span>Part {post.seriesPosition} of</span>}
-            <a href={`/blog/series/${post.seriesSlug!}`} className="hover:text-primary transition-colors flex items-center gap-1">
-              <LayersIcon />
-              {post.seriesLabel}
-            </a>
-          </span>
-          <span aria-hidden="true" className="shrink-0">·</span>
-          {sortedTags.map(tag => (
-            <TagButton key={tag} tag={tag} onClick={() => onTagClick(tag)} isActive={activeTags.includes(tag)} />
-          ))}
+      <div className="relative pointer-events-none pb-5">
+        <div className="flex flex-wrap items-baseline gap-x-3 gap-y-0.5">
+          <h2 className="font-semibold font-mono">
+            <a href={`/blog/${post.slug}`} className="hover:underline pointer-events-auto">{post.title}</a>
+          </h2>
+          <div className="flex items-center gap-x-2 font-mono text-sm text-muted-foreground">
+            <time dateTime={post.date}>{dateStr}</time>
+            <span aria-hidden="true">·</span>
+            <span>{post.readingMinutes} min read</span>
+          </div>
         </div>
-      ) : (
-        <>
-          {hasSeries && (
-            <div className="flex items-center gap-1 font-mono text-sm text-muted-foreground mt-1">
+
+        {hasSeries && hasTags && inlineLayout ? (
+          <div className="flex flex-wrap items-center gap-1.5 font-mono text-sm text-muted-foreground mt-1">
+            <span className="shrink-0 flex items-center gap-1">
               {post.seriesPosition != null && <span>Part {post.seriesPosition} of</span>}
-              <a href={`/blog/series/${post.seriesSlug!}`} className="hover:text-primary transition-colors flex items-center gap-1">
+              <a href={`/blog/series/${post.seriesSlug!}`} className="hover:text-primary transition-colors flex items-center gap-1 pointer-events-auto">
                 <LayersIcon />
                 {post.seriesLabel}
               </a>
-            </div>
-          )}
-          {hasTags && <TagList tags={post.tags} activeTags={activeTags} onTagClick={onTagClick} />}
-        </>
-      )}
+            </span>
+            <span aria-hidden="true" className="shrink-0">·</span>
+            {sortedTags.map(tag => (
+              <TagButton key={tag} tag={tag} onClick={() => onTagClick(tag)} isActive={activeTags.includes(tag)} />
+            ))}
+          </div>
+        ) : (
+          <>
+            {hasSeries && (
+              <div className="flex items-center gap-1 font-mono text-sm text-muted-foreground mt-1">
+                {post.seriesPosition != null && <span>Part {post.seriesPosition} of</span>}
+                <a href={`/blog/series/${post.seriesSlug!}`} className="hover:text-primary transition-colors flex items-center gap-1 pointer-events-auto">
+                  <LayersIcon />
+                  {post.seriesLabel}
+                </a>
+              </div>
+            )}
+            {hasTags && <TagList tags={post.tags} activeTags={activeTags} onTagClick={onTagClick} />}
+          </>
+        )}
 
-      <p className="mt-3 text-sm text-muted-foreground leading-relaxed">{post.description}</p>
+        <p className="mt-3 text-sm text-muted-foreground leading-relaxed">{post.description}</p>
+      </div>
+
+      <a
+        href={`/blog/${post.slug}`}
+        className="absolute bottom-3.5 right-4 flex items-center gap-0.5 font-mono text-xs text-muted-foreground group-hover:text-primary group-hover:font-medium transition-colors"
+        aria-hidden="true"
+        tabIndex={-1}
+      >
+        Read more
+        <ChevronRightIcon />
+      </a>
     </article>
   );
 }

@@ -43,7 +43,7 @@ export default function ProjectCard({ project, onTagClick, activeTags }: Props) 
       )}
       <div className="relative flex items-start justify-between gap-4 pointer-events-none">
         <div className="flex-1 min-w-0">
-          <h2 className="font-semibold font-mono text-sm">
+          <h2 className="font-semibold font-mono">
             {href !== '#' ? (
               <a
                 href={href}
