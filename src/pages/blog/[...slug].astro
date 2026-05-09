@@ -5,6 +5,7 @@ import SeriesIcon from '../../components/icons/SeriesIcon.astro';
 import ChevronLeftIcon from '../../components/icons/ChevronLeftIcon.astro';
 import ChevronRightIcon from '../../components/icons/ChevronRightIcon.astro';
 import TagLink from '../../components/ui/TagLink.astro';
+import MdxImage from '../../components/ui/MdxImage.astro';
 import { getCollection, render } from 'astro:content';
 import { readingTime } from '../../utils/readingTime';
 import { idToSlug } from '../../utils/slugs';
@@ -93,8 +94,23 @@ const crumbs = [
       )}
     </header>
 
+    {post.data.heroImage && (
+      <figure class="my-8">
+        <img
+          src={post.data.heroImage}
+          alt={post.data.imageCaption ?? ''}
+          class="w-full rounded-lg aspect-video object-cover"
+        />
+        {post.data.imageCaption && (
+          <figcaption class="mt-2 text-sm text-muted-foreground font-mono text-center">
+            {post.data.imageCaption}
+          </figcaption>
+        )}
+      </figure>
+    )}
+
     <div class="prose prose-invert max-w-none">
-      <Content />
+      <Content components={{ img: MdxImage }} />
     </div>
 
     {seriesEntry && (

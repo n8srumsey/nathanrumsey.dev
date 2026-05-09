@@ -15,6 +15,7 @@ const blog = defineCollection({
     description: z.string(),
     tags: z.array(z.string()).default([]),
     heroImage: z.string().optional(),
+    imageCaption: z.string().optional(),
     series: z.string().optional(),
     draft: z.boolean().default(false),
   }),
@@ -41,6 +42,7 @@ const projects = defineCollection({
     relatedSeries: z.string().optional(),
     relatedPosts: z.array(z.string()).default([]),
     image: z.string().optional(),
+    imageCaption: z.string().optional(),
     annotations: z.array(AnnotationSchema).optional(),
   }),
 });

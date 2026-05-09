@@ -7,6 +7,7 @@ import LayersIcon from '../../components/icons/LayersIcon';
 import ArticleIcon from '../../components/icons/ArticleIcon';
 import IconLink from '../../components/ui/IconLink';
 import TagLink from '../../components/ui/TagLink.astro';
+import MdxImage from '../../components/ui/MdxImage.astro';
 import { getCollection, render } from 'astro:content';
 import { idToSlug } from '../../utils/slugs';
 
@@ -71,9 +72,24 @@ const relatedPostEntries = project.data.relatedPosts
       )}
     </header>
 
+    {project.data.image && (
+      <figure class="my-8">
+        <img
+          src={project.data.image}
+          alt={project.data.imageCaption ?? ''}
+          class="w-full rounded-lg aspect-video object-cover"
+        />
+        {project.data.imageCaption && (
+          <figcaption class="mt-2 text-sm text-muted-foreground font-mono text-center">
+            {project.data.imageCaption}
+          </figcaption>
+        )}
+      </figure>
+    )}
+
     {hasBody && (
       <div class="prose prose-invert max-w-none">
-        <Content />
+        <Content components={{ img: MdxImage }} />
       </div>
     )}
   </article>
