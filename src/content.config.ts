@@ -62,6 +62,10 @@ const resume = defineCollection({
       website: z.string().url().optional(),
       location: z.string().optional(),
       summary: z.string().optional(),
+      social: z.object({
+        github: z.string().url(),
+        linkedin: z.string().url(),
+      }).optional(),
     }),
     experience: z.array(z.object({
       company: z.string(),
