@@ -7,6 +7,7 @@ import LayersIcon from '../../components/icons/LayersIcon';
 import ArticleIcon from '../../components/icons/ArticleIcon';
 import IconLink from '../../components/ui/IconLink';
 import TagLink from '../../components/ui/TagLink.astro';
+import MdxImage from '../../components/ui/MdxImage.astro';
 import { getCollection, render } from 'astro:content';
 import { idToSlug } from '../../utils/slugs';
 
@@ -35,7 +36,7 @@ const relatedPostEntries = project.data.relatedPosts
   .filter((p): p is NonNullable<typeof p> => p !== undefined);
 ---
 
-<BaseLayout title={`${project.data.name} — Nathan Rumsey`} description={project.data.description}>
+<BaseLayout title={`${project.data.name} — Nathan Rumsey`} description={project.data.description} image={project.data.image}>
   <article>
     <Breadcrumb crumbs={[
       { label: 'Projects', href: '/projects' },
@@ -56,10 +57,10 @@ const relatedPostEntries = project.data.relatedPosts
       {(project.data.repoUrl || project.data.liveUrl || seriesEntry || relatedPostEntries.length > 0) && (
         <div class="flex flex-wrap gap-x-4 gap-y-1.5 mt-4 font-mono text-sm text-muted-foreground">
           {project.data.repoUrl && (
-            <IconLink href={project.data.repoUrl} Icon={GitHubIcon} iconSize={14} label="Source" external />
+            <IconLink href={project.data.repoUrl} Icon={GitHubIcon} iconSize={14} label="Source Code" external />
           )}
           {project.data.liveUrl && (
-            <IconLink href={project.data.liveUrl} Icon={GlobeIcon} iconSize={14} label="Live" external />
+            <IconLink href={project.data.liveUrl} Icon={GlobeIcon} iconSize={14} label="Live Website" external />
           )}
           {seriesEntry && (
             <IconLink href={`/blog/series/${idToSlug(seriesEntry.id)}`} Icon={LayersIcon} iconSize={14} label={seriesEntry.data.name} />
@@ -71,9 +72,24 @@ const relatedPostEntries = project.data.relatedPosts
       )}
     </header>
 
+    {project.data.image && (
+      <figure class="my-8">
+        <img
+          src={project.data.image}
+          alt={project.data.imageCaption ?? ''}
+          class="w-full rounded-lg aspect-video object-cover"
+        />
+        {project.data.imageCaption && (
+          <figcaption class="mt-2 text-sm text-muted-foreground font-mono text-center">
+            {project.data.imageCaption}
+          </figcaption>
+        )}
+      </figure>
+    )}
+
     {hasBody && (
       <div class="prose prose-invert max-w-none">
-        <Content />
+        <Content components={{ img: MdxImage }} />
       </div>
     )}
   </article>

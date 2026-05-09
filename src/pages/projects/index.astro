@@ -36,10 +36,14 @@ const projectData: ProjectData[] = projects.map(project => {
       ? { slug: idToSlug(seriesEntry.id), name: seriesEntry.data.name }
       : undefined,
     relatedPosts: relatedPostEntries.map(p => ({ slug: idToSlug(p.id), title: p.data.title })),
+    image: project.data.image,
+    start: project.data.start,
+    end: project.data.end,
   };
 });
 ---
 
 <BaseLayout title="Projects — Nathan Rumsey" description="A catalog of projects I've built.">
+  <h1 class="text-2xl font-bold mb-4">Projects</h1>
   <ProjectIndexFilter projects={projectData} client:load />
 </BaseLayout>

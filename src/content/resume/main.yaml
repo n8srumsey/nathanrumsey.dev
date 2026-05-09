@@ -4,6 +4,9 @@ basics:
   email: nathan@nathanrumsey.dev
   website: https://nathanrumsey.dev
   location: West Linn, Oregon
+  social:
+    github: https://github.com/n8srumsey
+    linkedin: https://linkedin.com/in/nathan-s-rumsey
   summary: >
     Software Engineer specializing in backend and full-stack development, delivering
     high-impact solutions for mission-critical financial systems with a focus on

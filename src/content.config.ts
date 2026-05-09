@@ -1,4 +1,5 @@
-import { defineCollection, z } from 'astro:content';
+import { defineCollection } from 'astro:content';
+import { z } from 'astro/zod';
 import { glob } from 'astro/loaders';
 
 const AnnotationSchema = z.object({
@@ -15,6 +16,7 @@ const blog = defineCollection({
     description: z.string(),
     tags: z.array(z.string()).default([]),
     heroImage: z.string().optional(),
+    imageCaption: z.string().optional(),
     series: z.string().optional(),
     draft: z.boolean().default(false),
   }),
@@ -25,6 +27,7 @@ const series = defineCollection({
   schema: z.object({
     name: z.string(),
     description: z.string().optional(),
+    heroImage: z.string().optional(),
     posts: z.array(z.string()),
   }),
 });
@@ -38,8 +41,15 @@ const projects = defineCollection({
     repoUrl: z.string().url().optional(),
     liveUrl: z.string().url().optional(),
     featured: z.boolean().default(false),
+    start: z.string().optional(),
+    end: z.string().optional(),
+    resumeSummary: z.string().optional(),
+    resumeHighlights: z.array(z.string()).optional(),
     relatedSeries: z.string().optional(),
     relatedPosts: z.array(z.string()).default([]),
+    image: z.string().optional(),
+    imageCaption: z.string().optional(),
+    homepagePin: z.boolean().optional(),
     annotations: z.array(AnnotationSchema).optional(),
   }),
 });
@@ -54,6 +64,10 @@ const resume = defineCollection({
       website: z.string().url().optional(),
       location: z.string().optional(),
       summary: z.string().optional(),
+      social: z.object({
+        github: z.string().url(),
+        linkedin: z.string().url(),
+      }).optional(),
     }),
     experience: z.array(z.object({
       company: z.string(),

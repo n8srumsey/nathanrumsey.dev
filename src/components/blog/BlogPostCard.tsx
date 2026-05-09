@@ -1,5 +1,6 @@
 import { useState, useEffect, useLayoutEffect, useMemo, useRef } from 'react';
 import LayersIcon from '../icons/LayersIcon';
+import ChevronRightIcon from '../icons/ChevronRightIcon';
 import { TagButton } from '../ui/TagButton';
 import TagList from '../ui/TagList';
 
@@ -14,6 +15,7 @@ export type BlogPostData = {
   seriesSlug?: string;
   seriesPosition?: number;
   readingMinutes: number;
+  image?: string;
 };
 
 interface Props {
@@ -60,27 +62,27 @@ export default function BlogPostCard({ post, onTagClick, activeTags }: Props) {
     return () => ro.disconnect();
   }, [hasSeries, hasTags]);
 
-  return (
-    <article ref={articleRef} className="border border-border rounded-lg p-5 hover:border-primary/40 bg-surface-raised shadow-md transition-colors relative">
-      {hasSeries && hasTags && (
-        <div
-          ref={measureRef}
-          className="absolute inset-x-5 top-0 flex flex-wrap gap-1.5 invisible pointer-events-none font-mono text-sm"
-          aria-hidden="true"
-        >
-          <span className="shrink-0">
-            {post.seriesPosition != null ? `Part ${post.seriesPosition} of ` : ''}{post.seriesLabel}
-          </span>
-          <span className="shrink-0">·</span>
-          {sortedTags.map(tag => (
-            <span key={tag} className="px-2 py-0.5 rounded-full border border-transparent shrink-0">{tag}</span>
-          ))}
-        </div>
-      )}
+  const ghostMeasure = hasSeries && hasTags ? (
+    <div
+      ref={measureRef}
+      className="absolute inset-x-5 top-0 flex flex-wrap gap-1.5 invisible pointer-events-none font-mono text-sm"
+      aria-hidden="true"
+    >
+      <span className="shrink-0">
+        {post.seriesPosition != null ? `Part ${post.seriesPosition} of ` : ''}{post.seriesLabel}
+      </span>
+      <span className="shrink-0">·</span>
+      {sortedTags.map(tag => (
+        <span key={tag} className="px-2 py-0.5 rounded-full border border-transparent shrink-0">{tag}</span>
+      ))}
+    </div>
+  ) : null;
 
+  const mainContent = (
+    <div className="relative pointer-events-none pb-5">
       <div className="flex flex-wrap items-baseline gap-x-3 gap-y-0.5">
-        <h2 className="font-semibold">
-          <a href={`/blog/${post.slug}`} className="hover:underline">{post.title}</a>
+        <h2 className="font-semibold font-mono">
+          <a href={`/blog/${post.slug}`} className="hover:underline pointer-events-auto">{post.title}</a>
         </h2>
         <div className="flex items-center gap-x-2 font-mono text-sm text-muted-foreground">
           <time dateTime={post.date}>{dateStr}</time>
@@ -93,7 +95,7 @@ export default function BlogPostCard({ post, onTagClick, activeTags }: Props) {
         <div className="flex flex-wrap items-center gap-1.5 font-mono text-sm text-muted-foreground mt-1">
           <span className="shrink-0 flex items-center gap-1">
             {post.seriesPosition != null && <span>Part {post.seriesPosition} of</span>}
-            <a href={`/blog/series/${post.seriesSlug!}`} className="hover:text-primary transition-colors flex items-center gap-1">
+            <a href={`/blog/series/${post.seriesSlug!}`} className="hover:text-primary transition-colors flex items-center gap-1 pointer-events-auto">
               <LayersIcon />
               {post.seriesLabel}
             </a>
@@ -108,7 +110,7 @@ export default function BlogPostCard({ post, onTagClick, activeTags }: Props) {
           {hasSeries && (
             <div className="flex items-center gap-1 font-mono text-sm text-muted-foreground mt-1">
               {post.seriesPosition != null && <span>Part {post.seriesPosition} of</span>}
-              <a href={`/blog/series/${post.seriesSlug!}`} className="hover:text-primary transition-colors flex items-center gap-1">
+              <a href={`/blog/series/${post.seriesSlug!}`} className="hover:text-primary transition-colors flex items-center gap-1 pointer-events-auto">
                 <LayersIcon />
                 {post.seriesLabel}
               </a>
@@ -119,6 +121,53 @@ export default function BlogPostCard({ post, onTagClick, activeTags }: Props) {
       )}
 
       <p className="mt-3 text-sm text-muted-foreground leading-relaxed">{post.description}</p>
+    </div>
+  );
+
+  const readMoreLink = (
+    <a
+      href={`/blog/${post.slug}`}
+      className="absolute bottom-3.5 right-4 flex items-center gap-0.5 font-mono text-xs text-muted-foreground group-hover:text-primary group-hover:font-medium transition-colors"
+      aria-hidden="true"
+      tabIndex={-1}
+    >
+      Read more
+      <ChevronRightIcon />
+    </a>
+  );
+
+  if (post.image) {
+    return (
+      <article ref={articleRef} className="border border-border rounded-lg hover:border-primary/40 bg-surface-raised shadow-md transition-colors relative group flex overflow-hidden">
+        <a
+          href={`/blog/${post.slug}`}
+          className="absolute inset-0 rounded-lg"
+          aria-hidden="true"
+          tabIndex={-1}
+        />
+        <div className="flex-1 min-w-0 p-5 relative">
+          {ghostMeasure}
+          {mainContent}
+          {readMoreLink}
+        </div>
+        <div className="w-44 shrink-0 self-stretch">
+          <img src={post.image} alt="" className="w-full h-full object-cover" aria-hidden="true" />
+        </div>
+      </article>
+    );
+  }
+
+  return (
+    <article ref={articleRef} className="border border-border rounded-lg p-5 hover:border-primary/40 bg-surface-raised shadow-md transition-colors relative group">
+      {ghostMeasure}
+      <a
+        href={`/blog/${post.slug}`}
+        className="absolute inset-0 rounded-lg"
+        aria-hidden="true"
+        tabIndex={-1}
+      />
+      {mainContent}
+      {readMoreLink}
     </article>
   );
 }

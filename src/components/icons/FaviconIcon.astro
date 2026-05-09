@@ -1,0 +1,25 @@
+---
+import { FAVICON_VIEWBOX, faviconShapes } from '../../utils/favicon.ts';
+
+interface Props {
+  size?: number;
+}
+const { size = 20 } = Astro.props;
+const shapes = faviconShapes();
+---
+
+<svg
+  width={size}
+  height={size}
+  viewBox={FAVICON_VIEWBOX}
+  aria-hidden="true"
+  class="inline-block align-middle shrink-0"
+>
+  <style>
+    .fav-frame { fill: var(--color-surface); }
+    .fav-screen { fill: var(--color-background); }
+    .fav-monogram { fill: var(--color-primary); }
+    .fav-keyline { fill: var(--color-background); }
+  </style>
+  <Fragment set:html={shapes} />
+</svg>

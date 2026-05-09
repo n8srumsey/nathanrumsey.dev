@@ -1,0 +1,19 @@
+---
+interface Props {
+  src: string;
+  alt?: string;
+  width?: number | string;
+  height?: number | string;
+}
+const { src, alt = '', width, height } = Astro.props;
+const hasCaption = alt.trim().length > 0;
+---
+
+{hasCaption ? (
+  <figure>
+    <img src={src} alt="" width={width} height={height} class="rounded-lg" />
+    <figcaption>{alt}</figcaption>
+  </figure>
+) : (
+  <img src={src} alt="" width={width} height={height} />
+)}

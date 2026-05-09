@@ -13,8 +13,9 @@ Deployment setup: `docs/DEPLOYMENT.md`
 ## Commands
 
 ```bash
-npm run dev        # Dev server at localhost:4321 (hot reload)
-npm run build      # Build static output to dist/
+npm run generate:favicon  # Regenerate public/favicon.svg and public/favicon.ico
+npm run dev        # Dev server at localhost:4321 (hot reload); runs generate:favicon first
+npm run build      # Build static output to dist/; runs generate:favicon first
 npm run preview    # Serve the built dist/ locally
 npm run check      # Astro + TypeScript type checking
 npm run lint       # ESLint

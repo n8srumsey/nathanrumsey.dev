@@ -2,6 +2,9 @@
 dist/
 # generated types
 .astro/
+# generated favicons (produced by scripts/generate-favicon.ts at prebuild/predev)
+public/favicon.svg
+public/favicon.ico
 
 # dependencies
 node_modules/
@@ -30,3 +33,5 @@ pnpm-debug.log*
 
 # Project notes (personal scratchpad, local only)
 .claude/NOTES.md
+
+.vscode/

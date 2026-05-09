@@ -1,35 +1,33 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { navigate } from '../../utils/filterSort';
 import ProjectCard, { type ProjectData } from './ProjectCard';
+import { TagAutocomplete } from '../ui/TagAutocomplete';
+import { DropdownSelect } from '../ui/DropdownSelect';
+import ChevronDownIcon from '../icons/ChevronDownIcon';
 
 export type { ProjectData };
 
-type ProjectSort = 'featured' | 'az' | 'za';
-type TagMatch = 'and' | 'or';
+type ProjectSort = 'featured' | 'az' | 'za' | 'newest' | 'oldest';
 
 interface ProjectFilters {
   tags: string[];
-  match: TagMatch;
   source: boolean;
   live: boolean;
-  detail: boolean;
   featured: boolean;
   blog: boolean;
   sort: ProjectSort;
 }
 
 const DEFAULTS: ProjectFilters = {
-  tags: [], match: 'or', source: false, live: false, detail: false, featured: false, blog: false, sort: 'featured',
+  tags: [], source: false, live: false, featured: false, blog: false, sort: 'featured',
 };
 
 function readFromURL(): ProjectFilters {
   const p = new URLSearchParams(window.location.search);
   return {
     tags: p.getAll('tag'),
-    match: (p.get('match') as TagMatch) ?? 'or',
     source: p.get('source') === 'true',
     live: p.get('live') === 'true',
-    detail: p.get('detail') === 'true',
     featured: p.get('featured') === 'true',
     blog: p.get('blog') === 'true',
     sort: (p.get('sort') as ProjectSort) ?? 'featured',
@@ -39,61 +37,93 @@ function readFromURL(): ProjectFilters {
 function toSearch(f: ProjectFilters): string {
   const p = new URLSearchParams();
   f.tags.forEach(t => p.append('tag', t));
-  if (f.match !== 'or') p.set('match', f.match);
   if (f.source) p.set('source', 'true');
   if (f.live) p.set('live', 'true');
-  if (f.detail) p.set('detail', 'true');
   if (f.featured) p.set('featured', 'true');
   if (f.blog) p.set('blog', 'true');
   if (f.sort !== 'featured') p.set('sort', f.sort);
   return p.toString();
 }
 
+function effectiveEndDate(p: ProjectData): Date | null {
+  if (p.end) {
+    const d = new Date(p.end);
+    return isNaN(d.getTime()) ? null : d;
+  }
+  if (p.start) {
+    const d = new Date(p.start);
+    return isNaN(d.getTime()) ? null : new Date();
+  }
+  return null;
+}
+
+function nullDateTieBreak(a: ProjectData, b: ProjectData): number {
+  if (a.featured && !b.featured) return -1;
+  if (!a.featured && b.featured) return 1;
+  return a.name.localeCompare(b.name);
+}
+
+function byDate(a: ProjectData, b: ProjectData, dir: 1 | -1): number {
+  const da = effectiveEndDate(a);
+  const db = effectiveEndDate(b);
+  if (!da && !db) return nullDateTieBreak(a, b);
+  if (!da) return 1;
+  if (!db) return -1;
+  const diff = dir * (db.getTime() - da.getTime());
+  return diff !== 0 ? diff : nullDateTieBreak(a, b);
+}
+
 function applyFilters(projects: ProjectData[], f: ProjectFilters): ProjectData[] {
   return projects
     .filter(project => {
-      if (f.tags.length > 0) {
-        const matches = f.match === 'and'
-          ? f.tags.every(t => project.tags.includes(t))
-          : f.tags.some(t => project.tags.includes(t));
-        if (!matches) return false;
-      }
+      if (f.tags.length > 0 && !f.tags.some(t => project.tags.includes(t))) return false;
       if (f.source && !project.repoUrl) return false;
       if (f.live && !project.liveUrl) return false;
-      if (f.detail && !project.hasDetailPage) return false;
       if (f.featured && !project.featured) return false;
       if (f.blog && !project.relatedSeries && project.relatedPosts.length === 0) return false;
       return true;
     })
     .sort((a, b) => {
       switch (f.sort) {
-        case 'featured':
-          if (a.featured && !b.featured) return -1;
-          if (!a.featured && b.featured) return 1;
-          return a.name.localeCompare(b.name);
+        case 'featured': {
+          if (a.featured !== b.featured) return a.featured ? -1 : 1;
+          return byDate(a, b, 1);
+        }
         case 'az': return a.name.localeCompare(b.name);
         case 'za': return b.name.localeCompare(a.name);
+        case 'newest': return byDate(a, b, 1);
+        case 'oldest': return byDate(a, b, -1);
       }
     });
 }
-
-const selectClass = 'font-mono text-xs border border-border rounded px-2 py-1 bg-surface text-foreground';
 
 const toggleBtnClass = (active: boolean) =>
   `font-mono text-xs px-2 py-0.5 rounded-full border transition-colors cursor-pointer ${
     active
       ? 'bg-primary-subtle border-primary text-primary'
-      : 'bg-surface border-border text-muted-foreground hover:border-primary/40'
+      : 'bg-surface border-border text-foreground hover:border-primary/40'
   }`;
+
+const tagChip = 'flex items-center gap-1 font-mono text-xs px-2 py-0.5 rounded-full border bg-primary-subtle border-primary text-primary';
 
 export default function ProjectIndexFilter({ projects }: { projects: ProjectData[] }) {
   const [filters, setFilters] = useState<ProjectFilters>(DEFAULTS);
+  const [tagsOpen, setTagsOpen] = useState(false);
+  const tagsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const sync = () => setFilters(readFromURL());
     sync();
     window.addEventListener('popstate', sync);
     return () => window.removeEventListener('popstate', sync);
+  }, []);
+
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (!tagsRef.current?.contains(e.target as Node)) setTagsOpen(false);
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
   }, []);
 
   const set = (patch: Partial<ProjectFilters>) => {
@@ -103,146 +133,98 @@ export default function ProjectIndexFilter({ projects }: { projects: ProjectData
   };
 
   const clearFilters = () =>
-    set({ tags: [], match: 'or', source: false, live: false, detail: false, featured: false, blog: false });
+    set({ tags: [], source: false, live: false, featured: false, blog: false });
 
   const allTags = useMemo(() => [...new Set(projects.flatMap(p => p.tags))].sort(), [projects]);
   const results = useMemo(() => applyFilters(projects, filters), [projects, filters]);
 
-  const hasFilters =
-    filters.tags.length > 0 || filters.source || filters.live || filters.detail || filters.featured || filters.blog;
-
-  const filterByTag = (tag: string) => {
-    if (!filters.tags.includes(tag)) {
-      set({ tags: [...filters.tags, tag] });
-    }
+  const addTag = (tag: string) => {
+    if (!filters.tags.includes(tag)) set({ tags: [...filters.tags, tag] });
   };
-
-  const toggleTag = (tag: string) => {
-    const next = filters.tags.includes(tag)
-      ? filters.tags.filter(t => t !== tag)
-      : [...filters.tags, tag];
-    set({ tags: next });
-  };
+  const removeTag = (tag: string) => set({ tags: filters.tags.filter(t => t !== tag) });
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-4">
-        <h1 className="text-2xl font-bold">Projects</h1>
-        <div className="flex items-center gap-2">
-          <label className="font-mono text-xs text-muted-foreground" htmlFor="projects-sort">Sort</label>
-          <select
-            id="projects-sort"
-            value={filters.sort}
-            onChange={e => set({ sort: e.target.value as ProjectSort })}
-            className={selectClass}
+      {/* Line 1: controls */}
+      <div className="flex items-center gap-2 mb-2">
+        <span className="font-mono text-xs text-muted-foreground">Sort</span>
+        <DropdownSelect
+          options={[
+            { value: 'featured', label: 'Featured first' },
+            { value: 'newest', label: 'Newest' },
+            { value: 'oldest', label: 'Oldest' },
+            { value: 'az', label: 'A → Z' },
+            { value: 'za', label: 'Z → A' },
+          ]}
+          value={filters.sort}
+          onChange={val => set({ sort: val as ProjectSort })}
+          ariaLabel="Sort order"
+        />
+
+        <div ref={tagsRef} className="relative">
+          <button
+            onClick={() => setTagsOpen(o => !o)}
+            aria-expanded={tagsOpen}
+            className="font-mono text-xs px-2 py-1 rounded border border-border bg-surface text-foreground flex items-center gap-1 hover:border-primary/40 transition-colors cursor-pointer"
           >
-            <option value="featured">Featured first</option>
-            <option value="az">A → Z</option>
-            <option value="za">Z → A</option>
-          </select>
-        </div>
-      </div>
-
-      <div className="flex flex-col gap-2 mb-4 p-3 border border-border rounded-lg bg-surface">
-        {allTags.length > 0 && (
-          <div className="flex flex-wrap gap-1.5">
-            {allTags.map(tag => (
-              <button
-                key={tag}
-                onClick={() => toggleTag(tag)}
-                className={toggleBtnClass(filters.tags.includes(tag))}
-              >
-                {tag}
-              </button>
-            ))}
-          </div>
-        )}
-        <div className="flex flex-wrap items-center gap-2">
-          {filters.tags.length > 1 && (
-            <select aria-label="Tag matching mode" value={filters.match} onChange={e => set({ match: e.target.value as TagMatch })} className={selectClass}>
-              <option value="or">Match any tag</option>
-              <option value="and">Match all tags</option>
-            </select>
+            {filters.tags.length > 0 ? `Tags (${filters.tags.length})` : 'Tags'}
+            <ChevronDownIcon className={tagsOpen ? 'rotate-180' : ''} />
+          </button>
+          {tagsOpen && (
+            <div className="absolute left-0 top-full mt-1 w-56 p-2 bg-surface border border-border rounded-lg shadow-md z-10">
+              <TagAutocomplete allTags={allTags} activeTags={filters.tags} onSelect={addTag} />
+            </div>
           )}
-          <button onClick={() => set({ source: !filters.source })} className={toggleBtnClass(filters.source)}>
-            Source available
-          </button>
-          <button onClick={() => set({ live: !filters.live })} className={toggleBtnClass(filters.live)}>
-            Live site
-          </button>
-          <button onClick={() => set({ detail: !filters.detail })} className={toggleBtnClass(filters.detail)}>
-            Has detail page
-          </button>
-          <button onClick={() => set({ featured: !filters.featured })} className={toggleBtnClass(filters.featured)}>
-            Featured
-          </button>
-          <button onClick={() => set({ blog: !filters.blog })} className={toggleBtnClass(filters.blog)}>
-            Has blog content
-          </button>
         </div>
+
+        <button onClick={() => set({ source: !filters.source })} className={toggleBtnClass(filters.source)}>Source</button>
+        <button onClick={() => set({ live: !filters.live })} className={toggleBtnClass(filters.live)}>Live</button>
+        <button onClick={() => set({ featured: !filters.featured })} className={toggleBtnClass(filters.featured)}>Featured</button>
+        <button onClick={() => set({ blog: !filters.blog })} className={toggleBtnClass(filters.blog)}>Blog</button>
+
+        <div className="flex-1" />
+
+        <button
+          onClick={clearFilters}
+          className="font-mono text-xs text-muted-foreground underline hover:text-primary transition-colors cursor-pointer"
+        >
+          Clear Filters
+        </button>
       </div>
 
-      {hasFilters && (
-        <div className="flex flex-wrap items-center gap-2 mb-4 font-mono text-xs text-muted-foreground">
-          <span>Filters:</span>
+      {/* Line 2: active tag chips */}
+      {filters.tags.length > 0 && (
+        <div className="flex flex-wrap items-center gap-1.5 mb-4">
           {filters.tags.map(tag => (
-            <span key={tag} className="flex items-center gap-1 px-2 py-0.5 bg-primary-subtle border border-primary text-primary rounded-full">
+            <span key={tag} className={tagChip}>
               {tag}
-              <button onClick={() => set({ tags: filters.tags.filter(t => t !== tag) })} aria-label={`Remove tag: ${tag}`} className="hover:opacity-70 cursor-pointer">×</button>
+              <button
+                onClick={() => removeTag(tag)}
+                aria-label={`Remove tag: ${tag}`}
+                className="hover:opacity-70 cursor-pointer leading-none"
+              >×</button>
             </span>
           ))}
-          {filters.source && (
-            <span className="flex items-center gap-1 px-2 py-0.5 bg-surface border border-border rounded-full">
-              source available
-              <button onClick={() => set({ source: false })} aria-label="Remove source filter" className="hover:text-primary cursor-pointer">×</button>
-            </span>
-          )}
-          {filters.live && (
-            <span className="flex items-center gap-1 px-2 py-0.5 bg-surface border border-border rounded-full">
-              live site
-              <button onClick={() => set({ live: false })} aria-label="Remove live filter" className="hover:text-primary cursor-pointer">×</button>
-            </span>
-          )}
-          {filters.detail && (
-            <span className="flex items-center gap-1 px-2 py-0.5 bg-surface border border-border rounded-full">
-              has detail page
-              <button onClick={() => set({ detail: false })} aria-label="Remove detail filter" className="hover:text-primary cursor-pointer">×</button>
-            </span>
-          )}
-          {filters.featured && (
-            <span className="flex items-center gap-1 px-2 py-0.5 bg-surface border border-border rounded-full">
-              featured
-              <button onClick={() => set({ featured: false })} aria-label="Remove featured filter" className="hover:text-primary cursor-pointer">×</button>
-            </span>
-          )}
-          {filters.blog && (
-            <span className="flex items-center gap-1 px-2 py-0.5 bg-surface border border-border rounded-full">
-              has blog content
-              <button onClick={() => set({ blog: false })} aria-label="Remove blog filter" className="hover:text-primary cursor-pointer">×</button>
-            </span>
-          )}
-          <button onClick={clearFilters} className="underline hover:text-primary transition-colors ml-1">
-            Clear all
-          </button>
         </div>
       )}
 
       {results.length === 0 ? (
         <div className="py-16 text-center text-muted-foreground space-y-3">
           <p>No projects match the current filters.</p>
-          <button onClick={clearFilters} className="font-mono text-xs underline hover:text-primary transition-colors">
+          <button
+            onClick={clearFilters}
+            className="font-mono text-xs underline hover:text-primary transition-colors cursor-pointer"
+          >
             Clear all filters
           </button>
         </div>
       ) : (
         <div className="space-y-4">
           {results.map(project => (
-            <ProjectCard key={project.slug} project={project} onTagClick={filterByTag} activeTags={filters.tags} />
+            <ProjectCard key={project.slug} project={project} onTagClick={addTag} activeTags={filters.tags} />
           ))}
         </div>
       )}
     </div>
   );
 }
-
-

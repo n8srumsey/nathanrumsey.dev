@@ -1,8 +1,12 @@
 ---
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import Breadcrumb from '../../../components/ui/Breadcrumb.astro';
+import TagLink from '../../../components/ui/TagLink.astro';
 import { getCollection } from 'astro:content';
 import { idToSlug } from '../../../utils/slugs';
+import { readingTime } from '../../../utils/readingTime';
+import IconLink from '../../../components/ui/IconLink';
+import ProjectIcon from '../../../components/icons/ProjectIcon';
 
 export async function getStaticPaths() {
   const allSeries = await getCollection('series');
@@ -14,10 +18,17 @@ export async function getStaticPaths() {
 
 const { seriesEntry } = Astro.props;
 const allPosts = await getCollection('blog', ({ data }) => !data.draft);
+const seriesSlug = idToSlug(seriesEntry.id);
+
+const allProjects = await getCollection('projects');
+const relatedProjects = allProjects.filter(p => p.data.relatedSeries === seriesSlug);
 
 const posts = seriesEntry.data.posts
   .map(slug => allPosts.find(p => idToSlug(p.id) === slug))
   .filter((p): p is NonNullable<typeof p> => p !== undefined);
+
+const postMins = posts.map(p => readingTime(p.body ?? ''));
+const totalMins = postMins.reduce((sum, m) => sum + m, 0);
 ---
 
 <BaseLayout
@@ -28,23 +39,57 @@ const posts = seriesEntry.data.posts
     { label: 'Blog', href: '/blog' },
     { label: seriesEntry.data.name, icon: 'series' },
   ]} />
+
+  {seriesEntry.data.heroImage && (
+    <img
+      src={seriesEntry.data.heroImage}
+      alt=""
+      class="w-full rounded-lg aspect-video object-cover mb-8"
+    />
+  )}
+
   <header class="mb-8">
     <h1 class="text-2xl font-bold">{seriesEntry.data.name}</h1>
     {seriesEntry.data.description && (
       <p class="mt-2 text-muted-foreground max-w-prose leading-relaxed">{seriesEntry.data.description}</p>
     )}
+    <p class="font-mono text-sm text-muted-foreground mt-2">
+      {posts.length} {posts.length === 1 ? 'post' : 'posts'} · {totalMins} min read
+    </p>
+    {relatedProjects.length > 0 && (
+      <div class="flex flex-wrap gap-x-3 gap-y-1 mt-3 font-mono text-sm text-muted-foreground">
+        {relatedProjects.map(project => (
+          <IconLink
+            href={`/projects/${idToSlug(project.id)}`}
+            Icon={ProjectIcon}
+            label={project.data.name}
+          />
+        ))}
+      </div>
+    )}
   </header>
 
-  <ol class="space-y-5">
+  <ol class="divide-y divide-border">
     {posts.map((post, i) => (
-      <li class="flex gap-4">
-        <span class="font-mono text-sm text-muted-foreground pt-0.5 w-5 shrink-0 select-none">{i + 1}</span>
-        <a href={`/blog/${idToSlug(post.id)}`} class="group block flex-1">
-          <h2 class="font-semibold group-hover:underline">{post.data.title}</h2>
+      <li class="flex gap-4 py-5 first:pt-0 last:pb-0">
+        <span class="font-mono text-sm text-primary pt-0.5 w-5 shrink-0 select-none">{i + 1}</span>
+        <div class="flex-1">
+          <a href={`/blog/${idToSlug(post.id)}`} class="group block">
+            <h2 class="font-semibold group-hover:underline">{post.data.title}</h2>
+          </a>
           <p class="font-mono text-sm text-muted-foreground mt-0.5">
             {post.data.date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+            {' · '}
+            {postMins[i]} min read
           </p>
-        </a>
+          {post.data.tags.length > 0 && (
+            <div class="flex flex-wrap gap-1.5 mt-2">
+              {post.data.tags.map(tag => (
+                <TagLink tag={tag} href={`/blog?tag=${encodeURIComponent(tag)}`} />
+              ))}
+            </div>
+          )}
+        </div>
       </li>
     ))}
   </ol>

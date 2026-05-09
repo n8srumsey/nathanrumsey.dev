@@ -4,83 +4,117 @@ description: Conduct a structured interview to produce a user story spec (UI fea
 
 # /interview
 
-Conduct a structured interview to produce a user story spec (UI feature) or a change spec (program change).
+Conduct a focused interview to produce a spec before implementing any non-trivial change. The interview is adaptive — the depth, structure, and questions are determined by what the change actually requires, not a fixed checklist.
 
-## Step 1 — Classify
+## Step 1 — Read the Signal
 
-Ask: "Is this a **UI feature** (user-visible screens, flows, or navigation) or a **program change** (logic, data, config, tooling — no new UI)?"
+Before asking anything, assess the initial request.
 
-If it's both, run the UI interview first (UI requirements drive implementation) then cover the program-change phases for the non-UI components.
+**Identify the change type(s).** A change can span multiple types — cover all relevant concern areas. If the type is genuinely unclear from the request, that is the first and only thing to ask.
 
-Wait for the answer before proceeding.
+**Note what is already specified.** Anything the user stated explicitly or clearly implied is already answered. Do not re-ask.
 
----
+**Calibrate depth** from signals in the request:
+- Explicit signals: "quick", "small", "minor", "just" → lean light; "thorough", "detailed", "complex" → lean thorough
+- Implicit signals: a short vague request → more to ask; a detailed description → less to ask; cross-cutting or high-risk change → lean thorough regardless of phrasing
+- Default to standard depth when no signal is present
 
-## UI Feature Interview
-
-Run phases in order. Present each phase's questions together, wait for answers, then state a one-sentence synthesis of what you heard before moving on. Ask one follow-up if an answer leaves an obvious gap — but only one.
-
-### Phase 1 — Context
-- What is this feature in one sentence?
-- Who uses it? (user type or persona)
-
-### Phase 2 — Entry Points
-- How does a user reach this feature? List every path (nav link, direct URL, button, trigger event, notification, etc.).
-- Is this a new route/page or embedded in an existing screen?
-
-### Phase 3 — Happy Path
-- Walk through the primary success flow step by step, from entry to completion.
-- What does the user see or do at each step?
-- What is the final successful state?
-
-### Phase 4 — States & Edge Cases
-- What UI states exist? (loading, empty, error, partial, disabled, read-only, etc.)
-- What validation exists, and what triggers it?
-- Can the user abandon mid-flow? What happens to any progress or data already entered?
-- What happens if the user is unauthenticated or unauthorized?
-
-### Phase 5 — Terminal States & Dead-ends
-- List every way the flow can end: success, failure, timeout, cancelled, redirected.
-- Are there dead-ends where the user is stuck with no clear next action? How do they recover or exit?
-- What happens immediately after each terminal state — redirect, notification, next CTA?
+Depth reference:
+- *Light* — cover only the highest-stakes unknowns; appropriate for small, well-scoped, low-risk changes
+- *Standard* — cover all essential concerns; the right default for most changes
+- *Thorough* — no gaps acceptable; appropriate for complex, high-risk, or cross-cutting changes
 
 ---
 
-## Program Change Interview
+## Step 2 — Map the Concerns
 
-Run phases in order. Same conduct rules: synthesize each phase in one sentence, one follow-up max.
+Select the concerns that apply to this change. Use the examples below as starting points — add, remove, or merge based on what the initial request already covers and what genuinely matters for this specific change.
 
-### Phase 1 — Problem
-- What is the current behavior, and what should it be instead?
-- Is this a bug fix, optimization, new capability, or refactor?
+If the change spans multiple types, address user-facing concerns first (they drive implementation decisions).
 
-### Phase 2 — Contracts & Scope
-- What functions, APIs, modules, or interfaces are changing?
-- What currently depends on this code — callers, consumers, other modules?
-- Is this a breaking change? If yes, what needs to be updated to match?
-- What are the inputs and expected outputs (or side effects)?
+### UI Feature
+- **Entry points** — how does a user reach this feature?
+- **Happy path** — step-by-step flow from entry to successful completion
+- **States** — loading, empty, error, disabled, partial, unauthorized
+- **Terminal states** — every way the flow ends, and what happens next
+- **Testing** — what behaviors need proof?
 
-### Phase 3 — Failure Modes
-- In what ways can this fail at runtime?
-- Should failures be surfaced (error thrown, logged) or handled silently with a fallback?
-- What is the blast radius if this fails in production?
-- Is the change rollback-safe without a data migration?
+### UI Styling
+- **Visual intent** — what should change visually, or what problem does the current style have?
+- **Scope** — which components, pages, or elements are affected?
+- **Constraints** — design system tokens, accessibility (contrast, focus), responsive behavior
+- **Done state** — how will you recognize that the styling is correct?
 
-### Phase 4 — Data & State
-- Does this touch persistent data (database, files, cache, external state)?
-- Is a migration or backfill needed for existing data?
-- Are there concurrency concerns — race conditions, shared mutable state, ordering dependencies?
+### Logic / Behavior Change
+- **Current vs. desired** — what behavior changes, exactly?
+- **Contracts** — what calls this code, what does it call, and what must not change externally?
+- **Failure modes** — how can this fail, and how should failures be handled?
+- **Testing** — what proves correctness?
 
-### Phase 5 — Testing
-- What existing tests will this break?
-- What new tests are needed to prove correctness?
-- Can the changed logic be tested in isolation (unit), or does it require integration fixtures?
+### Tooling (dev tooling, scripts, CI)
+- **Problem** — what workflow gap or pain does this solve?
+- **Integration** — what processes, scripts, or team workflows does this touch?
+- **Configuration** — what needs to be set up or changed?
+- **Validation** — how will you know the tool works correctly?
+
+### AI / Gen-AI Tooling
+Same concerns as dev tooling, plus:
+- **Model and prompt design** — what model, what prompt shape, what constraints?
+- **Evaluation** — how will you assess output quality?
+
+### Refactor
+- **Preservation contract** — what must be externally identical before and after?
+- **Scope** — which files, modules, or interfaces are in scope?
+- **Testing strategy** — what existing tests prove no regression, and what gaps need covering first?
+
+### Config / Data Change
+- **What changes** — which config keys, data fields, or schemas?
+- **Impact** — who or what is affected (callers, deployed environments, users)?
+- **Migration / rollback** — does existing data or config need updating? Is it safe to revert?
+- **Validation** — how do you confirm correctness after the change?
+
+---
+
+### Deriving concerns for novel change types
+
+If the change does not fit a type above, derive the essential concerns by working through these questions:
+
+1. **End state** — what is different after this change, and for whom?
+2. **Dependencies** — who or what depends on what is changing (callers, users, workflows, systems)?
+3. **Risk** — what could go wrong, and how bad would it be?
+4. **Verification** — how will you know it worked?
+5. **Constraints** — what bounds the solution (compatibility, performance, design, policy)?
+
+Add specifics based on what the change actually involves.
+
+---
+
+## Step 3 — Interview
+
+**Ask when:**
+- The answer is not inferable from the request or codebase context
+- A wrong assumption would cause meaningful rework or a wrong spec
+- The answer changes what gets built in a non-trivial way
+- There is genuine ambiguity where multiple valid answers exist
+
+**Skip when:**
+- The user already answered it, explicitly or implicitly
+- It can be safely assumed from standard practice or context
+- Asking it requires more precision than the change warrants
+- It is a hypothetical edge case unlikely to matter for this specific change
+
+**Conduct:**
+- Group questions by concern — present related questions together
+- Synthesize answers in one sentence before moving on (catches misreads early)
+- One follow-up per concern maximum — surface the most important gap, not every gap
+- Stop when you have enough to write a complete, unambiguous spec
+- Keep it conversational — ask as a collaborator thinking through a design, not a form-filler
 
 ---
 
 ## Output
 
-Produce the spec automatically after all phases are covered — do not wait to be asked.
+Produce the spec automatically after the interview — do not wait to be asked. Omit sections that were not relevant to the interview.
 
 ### UI feature output — user stories
 
@@ -110,7 +144,7 @@ As a [user], when [flow ends with outcome], I [what happens next — redirect / 
 
 ### Motivation
 [Current behavior] → [desired behavior], because [reason].
-Type: bug fix | optimization | new capability | refactor
+Type: bug fix | optimization | new capability | refactor | tooling | styling | config
 
 ### Contracts
 What changes: [function signatures, interfaces, data shapes, side effects]
@@ -129,13 +163,3 @@ Update: [existing tests that must change]
 Add: [new tests required]
 Isolation: unit / integration — [brief reason]
 ```
-
----
-
-## Interview conduct
-
-- One phase at a time — do not front-load all questions
-- Synthesize answers in one sentence before moving on (confirms understanding, catches misreads)
-- One follow-up per phase maximum — surface the most important gap, not every gap
-- Do not produce output until all phases are done
-- Keep questions conversational, not form-like — the interview should feel like talking through a design, not filling out a ticket

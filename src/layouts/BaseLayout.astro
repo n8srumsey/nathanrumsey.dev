@@ -1,14 +1,24 @@
 ---
 import '../styles/global.css';
 import NavBar from '../components/nav/NavBar.astro';
+import MailIcon from '../components/icons/MailIcon.astro';
+import LinkedInIcon from '../components/icons/LinkedInIcon.astro';
+import RssIcon from '../components/icons/RssIcon.astro';
+import { getCollection } from 'astro:content';
 
 interface Props {
   title: string;
   description?: string;
+  image?: string;
+  type?: string;
 }
 
-const { title, description = 'Nathan Rumsey — Software Engineer' } = Astro.props;
+const { title, description = 'Nathan Rumsey — Software Engineer', image, type = 'website' } = Astro.props;
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+const ogImage = image ? new URL(image, Astro.site).toString() : undefined;
+
+const resumeEntries = await getCollection('resume');
+const basics = resumeEntries[0]?.data.basics;
 ---
 
 <!DOCTYPE html>
@@ -17,10 +27,21 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content={type} />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:site_name" content="Nathan Rumsey" />
+    {ogImage && <meta property="og:image" content={ogImage} />}
+    <meta name="twitter:card" content={ogImage ? 'summary_large_image' : 'summary'} />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    {ogImage && <meta name="twitter:image" content={ogImage} />}
     <link rel="canonical" href={canonicalURL} />
     <link rel="sitemap" href="/sitemap-index.xml" />
     <link rel="alternate" type="application/rss+xml" title="Nathan Rumsey" href="/rss.xml" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" href="/favicon.ico" sizes="any" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,400;0,14..32,500;0,14..32,600;0,14..32,700;1,14..32,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
@@ -36,10 +57,25 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
         <main class="px-8 py-10 grow">
           <slot />
         </main>
-        <footer class="border-t border-border px-8 py-5 text-sm text-muted-foreground mt-auto flex gap-4">
-          <a href="/rss.xml" class="hover:text-foreground transition-colors">RSS</a>
+        <footer class="border-t border-border px-8 py-5 text-sm text-muted-foreground mt-auto flex items-center gap-4">
+          <a href="/rss.xml" class="flex items-center gap-1.5 hover:text-foreground transition-colors">
+            <RssIcon size={14} />RSS
+          </a>
           <span aria-hidden="true">·</span>
-          <a href="mailto:nathan@nathanrumsey.dev" class="hover:text-foreground transition-colors">nathan@nathanrumsey.dev</a>
+          {basics?.email && (
+            <a href={`mailto:${basics.email}`} class="flex items-center gap-1.5 hover:text-foreground transition-colors">
+              <MailIcon size={14} />{basics.email}
+            </a>
+          )}
+          {basics?.social?.linkedin && (
+            <>
+              <span aria-hidden="true">·</span>
+              <a href={basics.social.linkedin} target="_blank" rel="noopener noreferrer"
+                class="flex items-center gap-1.5 hover:text-foreground transition-colors">
+                <LinkedInIcon size={14} />LinkedIn
+              </a>
+            </>
+          )}
         </footer>
       </div>
     </div>

@@ -130,6 +130,9 @@ Generate:
 
 ## Test Plan
 [What was verified — manual steps, test suite, or "N/A — config-only change"]
+
+---
+*AI-assisted.*
 ```
 
 ## Step 8 — Dry-run preview

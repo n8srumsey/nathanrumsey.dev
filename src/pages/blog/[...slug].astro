@@ -5,6 +5,9 @@ import SeriesIcon from '../../components/icons/SeriesIcon.astro';
 import ChevronLeftIcon from '../../components/icons/ChevronLeftIcon.astro';
 import ChevronRightIcon from '../../components/icons/ChevronRightIcon.astro';
 import TagLink from '../../components/ui/TagLink.astro';
+import MdxImage from '../../components/ui/MdxImage.astro';
+import IconLink from '../../components/ui/IconLink';
+import ProjectIcon from '../../components/icons/ProjectIcon';
 import { getCollection, render } from 'astro:content';
 import { readingTime } from '../../utils/readingTime';
 import { idToSlug } from '../../utils/slugs';
@@ -30,6 +33,9 @@ if (post.data.series) {
 }
 
 const postSlug = idToSlug(post.id);
+
+const allProjects = await getCollection('projects');
+const relatedProjects = allProjects.filter(p => p.data.relatedPosts.includes(postSlug));
 const seriesIndex = seriesEntry ? seriesEntry.data.posts.indexOf(postSlug) : -1;
 const prevSlug = seriesEntry && seriesIndex > 0
   ? seriesEntry.data.posts[seriesIndex - 1]
@@ -63,7 +69,7 @@ const crumbs = [
 ];
 ---
 
-<BaseLayout title={`${post.data.title} — Nathan Rumsey`} description={post.data.description}>
+<BaseLayout title={`${post.data.title} — Nathan Rumsey`} description={post.data.description} image={post.data.heroImage} type="article">
   <article>
     <Breadcrumb crumbs={crumbs} />
     <header class="pb-8 mb-8 border-b border-border">
@@ -91,10 +97,36 @@ const crumbs = [
           </a>
         </div>
       )}
+      {relatedProjects.length > 0 && (
+        <div class="flex flex-wrap gap-x-3 gap-y-1 mt-3 font-mono text-sm text-muted-foreground">
+          {relatedProjects.map(project => (
+            <IconLink
+              href={`/projects/${idToSlug(project.id)}`}
+              Icon={ProjectIcon}
+              label={project.data.name}
+            />
+          ))}
+        </div>
+      )}
     </header>
 
+    {post.data.heroImage && (
+      <figure class="my-8">
+        <img
+          src={post.data.heroImage}
+          alt={post.data.imageCaption ?? ''}
+          class="w-full rounded-lg aspect-video object-cover"
+        />
+        {post.data.imageCaption && (
+          <figcaption class="mt-2 text-sm text-muted-foreground font-mono text-center">
+            {post.data.imageCaption}
+          </figcaption>
+        )}
+      </figure>
+    )}
+
     <div class="prose prose-invert max-w-none">
-      <Content />
+      <Content components={{ img: MdxImage }} />
     </div>
 
     {seriesEntry && (
