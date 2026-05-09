@@ -1,4 +1,4 @@
-import { writeFileSync } from 'node:fs';
+import { writeFileSync, mkdirSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { join, dirname } from 'node:path';
 import sharp from 'sharp';
@@ -53,6 +53,8 @@ function buildIco(pngBuffers: Buffer[], sizes: number[]): Buffer {
 
   return buffer;
 }
+
+mkdirSync(publicDir, { recursive: true });
 
 const svg = buildSvg();
 writeFileSync(join(publicDir, 'favicon.svg'), svg);
