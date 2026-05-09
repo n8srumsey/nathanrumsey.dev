@@ -13,7 +13,9 @@ test('resume page loads with sections', async ({ page }) => {
   await expect(page).toHaveTitle(/Resume/);
   await expect(page.getByRole('heading', { name: /Experience/i })).toBeVisible();
   await expect(page.getByRole('heading', { name: /Education/i })).toBeVisible();
+  await expect(page.getByRole('heading', { name: /Projects/i })).toBeVisible();
   await expect(page.getByRole('heading', { name: /Skills/i })).toBeVisible();
+  await expect(page.getByRole('heading', { name: /OpenResponse/i })).toBeVisible();
 });
 
 test('blog index loads', async ({ page }) => {
