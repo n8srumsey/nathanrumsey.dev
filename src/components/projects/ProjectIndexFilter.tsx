@@ -126,8 +126,7 @@ export default function ProjectIndexFilter({ projects }: { projects: ProjectData
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-4">
-        <h1 className="text-2xl font-bold">Projects</h1>
+      <div className="flex justify-end mb-4">
         <div className="flex items-center gap-2">
           <label className="font-mono text-xs text-muted-foreground" htmlFor="projects-sort">Sort</label>
           <select

@@ -112,8 +112,7 @@ export default function BlogIndexFilter({ posts }: { posts: BlogPostData[] }) {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-4">
-        <h1 className="text-2xl font-bold">Blog</h1>
+      <div className="flex justify-end mb-4">
         <div className="flex items-center gap-2">
           <label className="font-mono text-xs text-muted-foreground" htmlFor="blog-sort">Sort</label>
           <select
