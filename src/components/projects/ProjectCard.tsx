@@ -18,6 +18,8 @@ export type ProjectData = {
   relatedSeries?: { slug: string; name: string };
   relatedPosts: { slug: string; title: string }[];
   image?: string;
+  start?: string;
+  end?: string;
 };
 
 interface Props {

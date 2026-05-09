@@ -7,7 +7,7 @@ import ChevronDownIcon from '../icons/ChevronDownIcon';
 
 export type { ProjectData };
 
-type ProjectSort = 'featured' | 'az' | 'za';
+type ProjectSort = 'featured' | 'az' | 'za' | 'newest' | 'oldest';
 
 interface ProjectFilters {
   tags: string[];
@@ -45,6 +45,34 @@ function toSearch(f: ProjectFilters): string {
   return p.toString();
 }
 
+function effectiveEndDate(p: ProjectData): Date | null {
+  if (p.end) {
+    const d = new Date(p.end);
+    return isNaN(d.getTime()) ? null : d;
+  }
+  if (p.start) {
+    const d = new Date(p.start);
+    return isNaN(d.getTime()) ? null : new Date();
+  }
+  return null;
+}
+
+function nullDateTieBreak(a: ProjectData, b: ProjectData): number {
+  if (a.featured && !b.featured) return -1;
+  if (!a.featured && b.featured) return 1;
+  return a.name.localeCompare(b.name);
+}
+
+function byDate(a: ProjectData, b: ProjectData, dir: 1 | -1): number {
+  const da = effectiveEndDate(a);
+  const db = effectiveEndDate(b);
+  if (!da && !db) return nullDateTieBreak(a, b);
+  if (!da) return 1;
+  if (!db) return -1;
+  const diff = dir * (db.getTime() - da.getTime());
+  return diff !== 0 ? diff : nullDateTieBreak(a, b);
+}
+
 function applyFilters(projects: ProjectData[], f: ProjectFilters): ProjectData[] {
   return projects
     .filter(project => {
@@ -57,12 +85,14 @@ function applyFilters(projects: ProjectData[], f: ProjectFilters): ProjectData[]
     })
     .sort((a, b) => {
       switch (f.sort) {
-        case 'featured':
-          if (a.featured && !b.featured) return -1;
-          if (!a.featured && b.featured) return 1;
-          return a.name.localeCompare(b.name);
+        case 'featured': {
+          if (a.featured !== b.featured) return a.featured ? -1 : 1;
+          return byDate(a, b, 1);
+        }
         case 'az': return a.name.localeCompare(b.name);
         case 'za': return b.name.localeCompare(a.name);
+        case 'newest': return byDate(a, b, 1);
+        case 'oldest': return byDate(a, b, -1);
       }
     });
 }
@@ -121,6 +151,8 @@ export default function ProjectIndexFilter({ projects }: { projects: ProjectData
         <DropdownSelect
           options={[
             { value: 'featured', label: 'Featured first' },
+            { value: 'newest', label: 'Newest' },
+            { value: 'oldest', label: 'Oldest' },
             { value: 'az', label: 'A → Z' },
             { value: 'za', label: 'Z → A' },
           ]}
