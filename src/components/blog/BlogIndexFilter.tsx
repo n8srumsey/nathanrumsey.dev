@@ -129,11 +129,7 @@ export default function BlogIndexFilter({ posts }: { posts: BlogPostData[] }) {
           <button
             onClick={() => setPanelOpen(o => !o)}
             aria-expanded={panelOpen}
-            className={`font-mono text-xs px-2 py-1 rounded border transition-colors cursor-pointer flex items-center gap-1 ${
-              activeCount > 0
-                ? 'bg-primary-subtle border-primary text-primary'
-                : 'bg-surface border-border text-muted-foreground hover:border-primary/40'
-            }`}
+            className="font-mono text-xs px-2 py-1 rounded border border-border bg-surface text-foreground flex items-center gap-1 hover:border-primary/40 transition-colors cursor-pointer"
           >
             {activeCount > 0 ? `Filter (${activeCount})` : 'Filter'}
             <ChevronDownIcon className={panelOpen ? 'rotate-180' : ''} />

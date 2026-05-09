@@ -71,7 +71,7 @@ const toggleBtnClass = (active: boolean) =>
   `font-mono text-xs px-2 py-0.5 rounded-full border transition-colors cursor-pointer ${
     active
       ? 'bg-primary-subtle border-primary text-primary'
-      : 'bg-surface border-border text-muted-foreground hover:border-primary/40'
+      : 'bg-surface border-border text-foreground hover:border-primary/40'
   }`;
 
 const tagChip = 'flex items-center gap-1 font-mono text-xs px-2 py-0.5 rounded-full border bg-primary-subtle border-primary text-primary';
@@ -129,20 +129,11 @@ export default function ProjectIndexFilter({ projects }: { projects: ProjectData
           ariaLabel="Sort order"
         />
 
-        <button onClick={() => set({ source: !filters.source })} className={toggleBtnClass(filters.source)}>Source</button>
-        <button onClick={() => set({ live: !filters.live })} className={toggleBtnClass(filters.live)}>Live</button>
-        <button onClick={() => set({ featured: !filters.featured })} className={toggleBtnClass(filters.featured)}>Featured</button>
-        <button onClick={() => set({ blog: !filters.blog })} className={toggleBtnClass(filters.blog)}>Blog</button>
-
         <div ref={tagsRef} className="relative">
           <button
             onClick={() => setTagsOpen(o => !o)}
             aria-expanded={tagsOpen}
-            className={`font-mono text-xs px-2 py-1 rounded border transition-colors cursor-pointer flex items-center gap-1 ${
-              filters.tags.length > 0
-                ? 'bg-primary-subtle border-primary text-primary'
-                : 'bg-surface border-border text-muted-foreground hover:border-primary/40'
-            }`}
+            className="font-mono text-xs px-2 py-1 rounded border border-border bg-surface text-foreground flex items-center gap-1 hover:border-primary/40 transition-colors cursor-pointer"
           >
             {filters.tags.length > 0 ? `Tags (${filters.tags.length})` : 'Tags'}
             <ChevronDownIcon className={tagsOpen ? 'rotate-180' : ''} />
@@ -153,6 +144,11 @@ export default function ProjectIndexFilter({ projects }: { projects: ProjectData
             </div>
           )}
         </div>
+
+        <button onClick={() => set({ source: !filters.source })} className={toggleBtnClass(filters.source)}>Source</button>
+        <button onClick={() => set({ live: !filters.live })} className={toggleBtnClass(filters.live)}>Live</button>
+        <button onClick={() => set({ featured: !filters.featured })} className={toggleBtnClass(filters.featured)}>Featured</button>
+        <button onClick={() => set({ blog: !filters.blog })} className={toggleBtnClass(filters.blog)}>Blog</button>
 
         <div className="flex-1" />
 
