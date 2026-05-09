@@ -3,6 +3,8 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
 import Breadcrumb from '../../../components/ui/Breadcrumb.astro';
 import { getCollection } from 'astro:content';
 import { idToSlug } from '../../../utils/slugs';
+import IconLink from '../../../components/ui/IconLink';
+import ProjectIcon from '../../../components/icons/ProjectIcon';
 
 export async function getStaticPaths() {
   const allSeries = await getCollection('series');
@@ -14,6 +16,10 @@ export async function getStaticPaths() {
 
 const { seriesEntry } = Astro.props;
 const allPosts = await getCollection('blog', ({ data }) => !data.draft);
+const seriesSlug = idToSlug(seriesEntry.id);
+
+const allProjects = await getCollection('projects');
+const relatedProjects = allProjects.filter(p => p.data.relatedSeries === seriesSlug);
 
 const posts = seriesEntry.data.posts
   .map(slug => allPosts.find(p => idToSlug(p.id) === slug))
@@ -32,6 +38,17 @@ const posts = seriesEntry.data.posts
     <h1 class="text-2xl font-bold">{seriesEntry.data.name}</h1>
     {seriesEntry.data.description && (
       <p class="mt-2 text-muted-foreground max-w-prose leading-relaxed">{seriesEntry.data.description}</p>
+    )}
+    {relatedProjects.length > 0 && (
+      <div class="flex flex-wrap gap-x-3 gap-y-1 mt-3 font-mono text-sm text-muted-foreground">
+        {relatedProjects.map(project => (
+          <IconLink
+            href={`/projects/${idToSlug(project.id)}`}
+            Icon={ProjectIcon}
+            label={project.data.name}
+          />
+        ))}
+      </div>
     )}
   </header>
 

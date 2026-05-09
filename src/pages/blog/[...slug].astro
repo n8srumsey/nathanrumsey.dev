@@ -6,6 +6,8 @@ import ChevronLeftIcon from '../../components/icons/ChevronLeftIcon.astro';
 import ChevronRightIcon from '../../components/icons/ChevronRightIcon.astro';
 import TagLink from '../../components/ui/TagLink.astro';
 import MdxImage from '../../components/ui/MdxImage.astro';
+import IconLink from '../../components/ui/IconLink';
+import ProjectIcon from '../../components/icons/ProjectIcon';
 import { getCollection, render } from 'astro:content';
 import { readingTime } from '../../utils/readingTime';
 import { idToSlug } from '../../utils/slugs';
@@ -31,6 +33,9 @@ if (post.data.series) {
 }
 
 const postSlug = idToSlug(post.id);
+
+const allProjects = await getCollection('projects');
+const relatedProjects = allProjects.filter(p => p.data.relatedPosts.includes(postSlug));
 const seriesIndex = seriesEntry ? seriesEntry.data.posts.indexOf(postSlug) : -1;
 const prevSlug = seriesEntry && seriesIndex > 0
   ? seriesEntry.data.posts[seriesIndex - 1]
@@ -90,6 +95,17 @@ const crumbs = [
             <SeriesIcon />
             {seriesEntry.data.name}
           </a>
+        </div>
+      )}
+      {relatedProjects.length > 0 && (
+        <div class="flex flex-wrap gap-x-3 gap-y-1 mt-3 font-mono text-sm text-muted-foreground">
+          {relatedProjects.map(project => (
+            <IconLink
+              href={`/projects/${idToSlug(project.id)}`}
+              Icon={ProjectIcon}
+              label={project.data.name}
+            />
+          ))}
         </div>
       )}
     </header>
