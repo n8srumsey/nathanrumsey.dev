@@ -2,51 +2,15 @@ import { writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { join, dirname } from 'node:path';
 import sharp from 'sharp';
+import { FAVICON_VIEWBOX, faviconShapes, faviconStyles } from '../src/utils/favicon.ts';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const publicDir = join(__dirname, '../public');
 
-// Color tokens — keep in sync with src/styles/global.css
-const DARK = {
-  frame: 'hsl(220 13% 18%)',
-  screen: 'hsl(207 35% 8%)',
-  primary: 'hsl(162 68% 44%)',
-};
-const LIGHT = {
-  frame: '#4b5563',
-  screen: '#1e293b',
-};
-
 function buildSvg(): string {
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
-  <style>
-    .frame { fill: ${DARK.frame}; }
-    .screen { fill: ${DARK.screen}; }
-    .monogram { fill: ${DARK.primary}; }
-    .keyline { fill: ${DARK.screen}; }
-    @media (prefers-color-scheme: light) {
-      .frame { fill: ${LIGHT.frame}; }
-      .screen { fill: ${LIGHT.screen}; }
-      .keyline { fill: ${LIGHT.screen}; }
-    }
-  </style>
-  <!-- Monitor bezel -->
-  <rect class="frame" x="4" y="4" width="120" height="82" rx="7"/>
-  <!-- Screen -->
-  <rect class="screen" x="12" y="12" width="104" height="66"/>
-  <!-- NR monogram -->
-  <text class="monogram" x="64" y="45" text-anchor="middle" dominant-baseline="middle"
-        font-family="'Courier New', Courier, monospace" font-weight="700" font-size="44">NR</text>
-  <!-- Stand -->
-  <rect class="frame" x="60" y="86" width="8" height="14"/>
-  <!-- Base -->
-  <rect class="frame" x="36" y="99" width="56" height="7" rx="3"/>
-  <!-- Keyboard -->
-  <rect class="frame" x="12" y="109" width="104" height="16" rx="5"/>
-  <!-- Key rows -->
-  <rect class="keyline" x="18" y="112" width="92" height="3" rx="1"/>
-  <rect class="keyline" x="18" y="117" width="92" height="3" rx="1"/>
-  <rect class="keyline" x="22" y="122" width="84" height="2" rx="1"/>
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${FAVICON_VIEWBOX}">
+  ${faviconStyles()}
+  ${faviconShapes()}
 </svg>`;
 }
 
