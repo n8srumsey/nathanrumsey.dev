@@ -1,6 +1,10 @@
 ---
 import '../styles/global.css';
 import NavBar from '../components/nav/NavBar.astro';
+import MailIcon from '../components/icons/MailIcon.astro';
+import LinkedInIcon from '../components/icons/LinkedInIcon.astro';
+import RssIcon from '../components/icons/RssIcon.astro';
+import { getCollection } from 'astro:content';
 
 interface Props {
   title: string;
@@ -9,6 +13,9 @@ interface Props {
 
 const { title, description = 'Nathan Rumsey — Software Engineer' } = Astro.props;
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+
+const resumeEntries = await getCollection('resume');
+const basics = resumeEntries[0]?.data.basics;
 ---
 
 <!DOCTYPE html>
@@ -36,10 +43,25 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
         <main class="px-8 py-10 grow">
           <slot />
         </main>
-        <footer class="border-t border-border px-8 py-5 text-sm text-muted-foreground mt-auto flex gap-4">
-          <a href="/rss.xml" class="hover:text-foreground transition-colors">RSS</a>
+        <footer class="border-t border-border px-8 py-5 text-sm text-muted-foreground mt-auto flex items-center gap-4">
+          <a href="/rss.xml" class="flex items-center gap-1.5 hover:text-foreground transition-colors">
+            <RssIcon size={14} />RSS
+          </a>
           <span aria-hidden="true">·</span>
-          <a href="mailto:nathan@nathanrumsey.dev" class="hover:text-foreground transition-colors">nathan@nathanrumsey.dev</a>
+          {basics?.email && (
+            <a href={`mailto:${basics.email}`} class="flex items-center gap-1.5 hover:text-foreground transition-colors">
+              <MailIcon size={14} />{basics.email}
+            </a>
+          )}
+          {basics?.social?.linkedin && (
+            <>
+              <span aria-hidden="true">·</span>
+              <a href={basics.social.linkedin} target="_blank" rel="noopener noreferrer"
+                class="flex items-center gap-1.5 hover:text-foreground transition-colors">
+                <LinkedInIcon size={14} />LinkedIn
+              </a>
+            </>
+          )}
         </footer>
       </div>
     </div>
