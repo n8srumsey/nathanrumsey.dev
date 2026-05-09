@@ -61,7 +61,6 @@ function applyFilters(posts: BlogPostData[], f: BlogFilters): BlogPostData[] {
 const lengthLabel = (l: LengthBucket) =>
   l === 'short' ? '≤2 min' : l === 'medium' ? '3–8 min' : '>8 min';
 
-const selectClass = 'font-mono text-xs border border-border rounded px-2 py-1 bg-surface text-foreground';
 const primaryChip = 'flex items-center gap-1 font-mono text-xs px-2 py-0.5 rounded-full border bg-primary-subtle border-primary text-primary';
 const neutralChip = 'flex items-center gap-1 font-mono text-xs px-2 py-0.5 rounded-full border bg-surface border-border text-foreground';
 
@@ -139,26 +138,28 @@ export default function BlogIndexFilter({ posts }: { posts: BlogPostData[] }) {
             <div className="absolute left-0 top-full mt-1 w-72 z-10 flex flex-col gap-2 p-3 border border-border rounded-lg bg-surface shadow-md">
               <TagAutocomplete allTags={allTags} activeTags={filters.tags} onSelect={addTag} />
               <div className="flex flex-wrap gap-2">
-                <select
-                  aria-label="Filter by year"
+                <DropdownSelect
+                  options={[
+                    { value: '', label: 'All years' },
+                    ...allYears.map(y => ({ value: String(y), label: String(y) })),
+                  ]}
                   value={filters.year}
-                  onChange={e => set({ year: e.target.value })}
-                  className={selectClass}
-                >
-                  <option value="">All years</option>
-                  {allYears.map(y => <option key={y} value={String(y)}>{y}</option>)}
-                </select>
-                <select
-                  aria-label="Filter by reading length"
+                  onChange={val => set({ year: val })}
+                  ariaLabel="Filter by year"
+                  sortSelectedToTop
+                />
+                <DropdownSelect
+                  options={[
+                    { value: '', label: 'Any length' },
+                    { value: 'short', label: 'Short (≤2 min)' },
+                    { value: 'medium', label: 'Medium (3–8 min)' },
+                    { value: 'long', label: 'Long (>8 min)' },
+                  ]}
                   value={filters.length}
-                  onChange={e => set({ length: e.target.value as LengthBucket })}
-                  className={selectClass}
-                >
-                  <option value="">Any length</option>
-                  <option value="short">Short (≤2 min)</option>
-                  <option value="medium">Medium (3–8 min)</option>
-                  <option value="long">Long (&gt;8 min)</option>
-                </select>
+                  onChange={val => set({ length: val as LengthBucket })}
+                  ariaLabel="Filter by reading length"
+                  sortSelectedToTop
+                />
               </div>
             </div>
           )}

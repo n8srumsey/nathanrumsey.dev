@@ -11,12 +11,16 @@ interface Props {
   value: string;
   onChange: (value: string) => void;
   ariaLabel?: string;
+  sortSelectedToTop?: boolean;
 }
 
-export function DropdownSelect({ options, value, onChange, ariaLabel }: Props) {
+export function DropdownSelect({ options, value, onChange, ariaLabel, sortSelectedToTop = false }: Props) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   const selectedLabel = options.find(o => o.value === value)?.label ?? value;
+  const displayOptions = sortSelectedToTop
+    ? [...options.filter(o => o.value === value), ...options.filter(o => o.value !== value)]
+    : options;
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
@@ -32,7 +36,7 @@ export function DropdownSelect({ options, value, onChange, ariaLabel }: Props) {
   };
 
   const onKeyDown = (e: React.KeyboardEvent) => {
-    const idx = options.findIndex(o => o.value === value);
+    const idx = displayOptions.findIndex(o => o.value === value);
     if (e.key === 'Escape') {
       setOpen(false);
     } else if (e.key === 'Enter' || e.key === ' ') {
@@ -40,10 +44,10 @@ export function DropdownSelect({ options, value, onChange, ariaLabel }: Props) {
       setOpen(o => !o);
     } else if (e.key === 'ArrowDown') {
       e.preventDefault();
-      if (idx < options.length - 1) select(options[idx + 1].value);
+      if (idx < displayOptions.length - 1) select(displayOptions[idx + 1].value);
     } else if (e.key === 'ArrowUp') {
       e.preventDefault();
-      if (idx > 0) select(options[idx - 1].value);
+      if (idx > 0) select(displayOptions[idx - 1].value);
     }
   };
 
@@ -71,7 +75,7 @@ export function DropdownSelect({ options, value, onChange, ariaLabel }: Props) {
           aria-label={ariaLabel}
           className="absolute left-0 top-full mt-0.5 min-w-full z-20 bg-surface border border-border rounded shadow-md"
         >
-          {options.map(opt => (
+          {displayOptions.map(opt => (
             <li
               key={opt.value}
               role="option"
