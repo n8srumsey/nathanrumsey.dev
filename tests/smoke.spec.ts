@@ -9,6 +9,22 @@ test('landing page loads with nav links', async ({ page }) => {
   await expect(page.getByRole('contentinfo').getByRole('link', { name: 'LinkedIn' })).toHaveAttribute('href', /linkedin\.com/);
 });
 
+test('landing page hero and callouts are visible', async ({ page }) => {
+  await page.goto('/');
+  await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+  await expect(page.getByText('Latest Post')).toBeVisible();
+  await expect(page.getByText('Featured Project')).toBeVisible();
+  await expect(page.getByRole('link', { name: 'All posts →' })).toHaveAttribute('href', '/blog');
+  await expect(page.getByRole('link', { name: 'All projects →' })).toHaveAttribute('href', '/projects');
+});
+
+test('landing page callout links navigate correctly', async ({ page }) => {
+  await page.goto('/');
+  const postLink = page.locator('text=Latest Post').locator('..').getByRole('link').first();
+  const href = await postLink.getAttribute('href');
+  expect(href).toMatch(/^\/blog\//);
+});
+
 test('resume page loads with sections', async ({ page }) => {
   await page.goto('/resume');
   await expect(page).toHaveTitle(/Resume/);
