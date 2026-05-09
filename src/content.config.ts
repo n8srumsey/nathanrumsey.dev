@@ -48,6 +48,7 @@ const projects = defineCollection({
     relatedPosts: z.array(z.string()).default([]),
     image: z.string().optional(),
     imageCaption: z.string().optional(),
+    homepagePin: z.boolean().optional(),
     annotations: z.array(AnnotationSchema).optional(),
   }),
 });
