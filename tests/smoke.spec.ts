@@ -6,6 +6,7 @@ test('landing page loads with nav links', async ({ page }) => {
   await expect(page.getByRole('navigation').getByRole('link', { name: 'Resume' })).toBeVisible();
   await expect(page.getByRole('navigation').getByRole('link', { name: 'Blog' })).toBeVisible();
   await expect(page.getByRole('navigation').getByRole('link', { name: 'Projects' })).toBeVisible();
+  await expect(page.getByRole('contentinfo').getByRole('link', { name: 'LinkedIn' })).toHaveAttribute('href', /linkedin\.com/);
 });
 
 test('resume page loads with sections', async ({ page }) => {
@@ -16,6 +17,8 @@ test('resume page loads with sections', async ({ page }) => {
   await expect(page.getByRole('heading', { name: /Projects/i })).toBeVisible();
   await expect(page.getByRole('heading', { name: /Skills/i })).toBeVisible();
   await expect(page.getByRole('heading', { name: /OpenResponse/i })).toBeVisible();
+  await expect(page.getByRole('main').getByRole('link', { name: 'GitHub' })).toHaveAttribute('href', /github\.com/);
+  await expect(page.getByRole('main').getByRole('link', { name: 'LinkedIn' })).toHaveAttribute('href', /linkedin\.com/);
 });
 
 test('blog index loads', async ({ page }) => {
