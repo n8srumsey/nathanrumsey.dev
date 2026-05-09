@@ -9,10 +9,13 @@ import { getCollection } from 'astro:content';
 interface Props {
   title: string;
   description?: string;
+  image?: string;
+  type?: string;
 }
 
-const { title, description = 'Nathan Rumsey — Software Engineer' } = Astro.props;
+const { title, description = 'Nathan Rumsey — Software Engineer', image, type = 'website' } = Astro.props;
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+const ogImage = image ? new URL(image, Astro.site).toString() : undefined;
 
 const resumeEntries = await getCollection('resume');
 const basics = resumeEntries[0]?.data.basics;
@@ -24,6 +27,16 @@ const basics = resumeEntries[0]?.data.basics;
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content={type} />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:site_name" content="Nathan Rumsey" />
+    {ogImage && <meta property="og:image" content={ogImage} />}
+    <meta name="twitter:card" content={ogImage ? 'summary_large_image' : 'summary'} />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    {ogImage && <meta name="twitter:image" content={ogImage} />}
     <link rel="canonical" href={canonicalURL} />
     <link rel="sitemap" href="/sitemap-index.xml" />
     <link rel="alternate" type="application/rss+xml" title="Nathan Rumsey" href="/rss.xml" />
