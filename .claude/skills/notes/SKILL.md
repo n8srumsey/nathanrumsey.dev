@@ -1,6 +1,6 @@
 ---
 description: Update .claude/NOTES.md — the living project state document tracking status, scope, next steps, blockers, and open considerations. Run at end of session or when user says they're wrapping up, closing, or done.
-effort: medium
+effort: low
 ---
 
 # /notes
