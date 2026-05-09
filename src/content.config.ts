@@ -26,6 +26,7 @@ const series = defineCollection({
   schema: z.object({
     name: z.string(),
     description: z.string().optional(),
+    heroImage: z.string().optional(),
     posts: z.array(z.string()),
   }),
 });
