@@ -1,11 +1,25 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
+import { idToSlug } from '../utils/slugs';
+import IconLink from '../components/ui/IconLink';
+import GitHubIcon from '../components/icons/GitHubIcon';
+import GlobeIcon from '../components/icons/GlobeIcon';
+import ProjectIcon from '../components/icons/ProjectIcon';
 
 const resumeEntries = await getCollection('resume');
 const resumeEntry = resumeEntries[0];
 if (!resumeEntry) throw new Error('src/content/resume/main.yaml not found');
 const resume = resumeEntry.data;
+
+const featuredProjects = (await getCollection('projects'))
+  .filter(p => p.data.featured)
+  .sort((a, b) => {
+    if (!a.data.start && !b.data.start) return 0;
+    if (!a.data.start) return 1;
+    if (!b.data.start) return -1;
+    return b.data.start.localeCompare(a.data.start);
+  });
 
 function formatDate(ym: string): string {
   const [year, month] = ym.split('-');
@@ -105,6 +119,61 @@ function formatDate(ym: string): string {
       ))}
     </div>
   </section>
+
+  {featuredProjects.length > 0 && (
+    <section class="mt-10">
+      <h2 class="text-base font-semibold uppercase tracking-wide text-muted-foreground border-b border-border pb-1 mb-5">
+        Projects
+      </h2>
+      <div class="space-y-8">
+        {featuredProjects.map(project => {
+          const hasDetailPage = Boolean(project.body && project.body.trim().length > 0);
+          const slug = idToSlug(project.id);
+          return (
+            <div>
+              <div class="flex justify-between items-baseline gap-4">
+                <h3 class="font-medium">{project.data.name}</h3>
+                {project.data.start && (
+                  <span class="font-mono text-sm text-muted-foreground shrink-0">
+                    {formatDate(project.data.start)} — {project.data.end ? formatDate(project.data.end) : 'Present'}
+                  </span>
+                )}
+              </div>
+              {(hasDetailPage || project.data.liveUrl || project.data.repoUrl) && (
+                <div class="flex flex-wrap gap-x-4 gap-y-1 font-mono text-sm text-muted-foreground mt-0.5">
+                  {project.data.repoUrl && (
+                    <IconLink href={project.data.repoUrl} Icon={GitHubIcon} iconSize={14} label="Source Code" external />
+                  )}
+                  {project.data.liveUrl && (
+                    <IconLink href={project.data.liveUrl} Icon={GlobeIcon} iconSize={14} label="Live Website" external />
+                  )}
+                  {hasDetailPage && (
+                    <IconLink href={`/projects/${slug}`} Icon={ProjectIcon} iconSize={14} label="Details" />
+                  )}
+                </div>
+              )}
+              {project.data.tags.length > 0 && (
+                <p class="font-mono text-sm text-muted-foreground mt-1">{project.data.tags.join(', ')}</p>
+              )}
+              {project.data.resumeSummary && (
+                <p class="mt-2 text-sm leading-relaxed text-muted-foreground">{project.data.resumeSummary}</p>
+              )}
+              {project.data.resumeHighlights && project.data.resumeHighlights.length > 0 && (
+                <ul class="mt-2 space-y-1.5">
+                  {project.data.resumeHighlights.map(h => (
+                    <li class="flex gap-2 items-start text-sm">
+                      <span class="text-primary shrink-0 mt-0.5" aria-hidden="true">–</span>
+                      <span>{h}</span>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          );
+        })}
+      </div>
+    </section>
+  )}
 
   <section class="mt-10">
     <h2 class="text-base font-semibold uppercase tracking-wide text-muted-foreground border-b border-border pb-1 mb-5">
