@@ -103,7 +103,7 @@ export default function ProjectCard({ project, onTagClick, activeTags }: Props) 
           {innerContent}
           {readMoreLink}
         </div>
-        <div className="w-36 shrink-0 self-stretch">
+        <div className="w-44 shrink-0 self-stretch">
           <img src={project.image} alt="" className="w-full h-full object-cover" aria-hidden="true" />
         </div>
       </article>
