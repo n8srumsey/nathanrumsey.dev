@@ -36,6 +36,7 @@ const projectData: ProjectData[] = projects.map(project => {
       ? { slug: idToSlug(seriesEntry.id), name: seriesEntry.data.name }
       : undefined,
     relatedPosts: relatedPostEntries.map(p => ({ slug: idToSlug(p.id), title: p.data.title })),
+    image: project.data.image,
   };
 });
 ---

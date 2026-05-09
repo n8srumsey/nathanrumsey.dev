@@ -39,6 +39,7 @@ const postData: BlogPostData[] = posts.map(post => ({
   description: post.data.description,
   tags: post.data.tags,
   readingMinutes: readingTime(post.body ?? ''),
+  image: post.data.heroImage,
   ...getSeriesProps(post),
 }));
 ---

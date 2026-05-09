@@ -40,6 +40,7 @@ const projects = defineCollection({
     featured: z.boolean().default(false),
     relatedSeries: z.string().optional(),
     relatedPosts: z.array(z.string()).default([]),
+    image: z.string().optional(),
     annotations: z.array(AnnotationSchema).optional(),
   }),
 });
