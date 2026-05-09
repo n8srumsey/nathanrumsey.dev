@@ -1,43 +1,87 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import MailIcon from '../components/icons/MailIcon.astro';
+import GitHubIcon from '../components/icons/GitHubIcon.astro';
+import LinkedInIcon from '../components/icons/LinkedInIcon.astro';
 import { getCollection } from 'astro:content';
+import { idToSlug } from '../utils/slugs';
 
 const resumeEntries = await getCollection('resume');
 const basics = resumeEntries[0]?.data.basics;
+
+const allPosts = await getCollection('blog', ({ data }) => !data.draft);
+const latestPost = allPosts.sort((a, b) => b.data.date.getTime() - a.data.date.getTime())[0];
+
+const allProjects = await getCollection('projects');
+const pinnedProject = allProjects.find(p => p.data.homepagePin);
+const featuredProject = pinnedProject ?? allProjects
+  .filter(p => p.data.featured)
+  .sort((a, b) => (b.data.start ?? '').localeCompare(a.data.start ?? ''))[0];
 ---
 
 <BaseLayout title="Nathan Rumsey">
-  <section class="py-8">
+  <!-- Hero -->
+  <section class="py-8 pb-10">
     <h1 class="text-3xl font-bold tracking-tight">{basics?.name ?? 'Nathan Rumsey'}</h1>
-    <p class="text-lg text-muted-foreground mt-2">{basics?.title ?? 'Software Engineer'}</p>
+    <p class="text-lg text-muted-foreground mt-1">{basics?.title ?? 'Software Engineer'}</p>
 
-    <p class="mt-6 text-muted-foreground max-w-prose leading-relaxed">
-      I build software. This is my portfolio, resume, and a place for writing about things I find worth writing about.
+    <p class="mt-5 text-muted-foreground max-w-prose leading-relaxed">
+      I build backend systems where correctness isn't optional — financial engines, data pipelines,
+      and tooling that teams depend on to ship with confidence. I care about getting it right past
+      the PR merge: clean design, real test coverage, and systems that hold up when it matters.
     </p>
 
-    <div class="mt-6 flex flex-wrap gap-4 text-sm font-mono">
+    <div class="mt-5 flex flex-wrap gap-4 text-sm">
       {basics?.email && (
-        <a
-          href={`mailto:${basics.email}`}
-          class="text-muted-foreground hover:text-primary transition-colors"
-        >
-          {basics.email}
+        <a href={`mailto:${basics.email}`} class="flex items-center gap-1.5 text-muted-foreground hover:text-primary transition-colors">
+          <MailIcon size={14} />{basics.email}
         </a>
       )}
-      <a
-        href="https://linkedin.com/in/nathan-s-rumsey"
-        target="_blank"
-        rel="noopener noreferrer"
-        class="text-muted-foreground hover:text-primary transition-colors"
-      >
-        LinkedIn
-      </a>
-    </div>
-
-    <div class="mt-8 flex gap-6 text-sm">
-      <a href="/resume" class="font-medium text-primary hover:text-primary/80 transition-colors underline underline-offset-4">Resume</a>
-      <a href="/blog" class="font-medium text-primary hover:text-primary/80 transition-colors underline underline-offset-4">Blog</a>
-      <a href="/projects" class="font-medium text-primary hover:text-primary/80 transition-colors underline underline-offset-4">Projects</a>
+      {basics?.social?.github && (
+        <a href={basics.social.github} target="_blank" rel="noopener noreferrer" class="flex items-center gap-1.5 text-muted-foreground hover:text-primary transition-colors">
+          <GitHubIcon size={14} />GitHub
+        </a>
+      )}
+      {basics?.social?.linkedin && (
+        <a href={basics.social.linkedin} target="_blank" rel="noopener noreferrer" class="flex items-center gap-1.5 text-muted-foreground hover:text-primary transition-colors">
+          <LinkedInIcon size={14} />LinkedIn
+        </a>
+      )}
     </div>
   </section>
+
+  <!-- Callouts -->
+  {(latestPost || featuredProject) && (
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pb-8">
+      {latestPost && (
+        <div class="border border-border rounded-lg p-5 bg-surface flex flex-col gap-3">
+          <span class="font-mono text-xs text-primary tracking-wider uppercase">Latest Post</span>
+          <div>
+            <a href={`/blog/${idToSlug(latestPost.id)}`} class="font-semibold hover:text-primary transition-colors">
+              {latestPost.data.title}
+            </a>
+            <p class="text-sm text-muted-foreground mt-1 line-clamp-2">{latestPost.data.description}</p>
+          </div>
+          <a href="/blog" class="font-mono text-xs text-muted-foreground hover:text-primary transition-colors mt-auto self-end">
+            All posts →
+          </a>
+        </div>
+      )}
+
+      {featuredProject && (
+        <div class="border border-border rounded-lg p-5 bg-surface flex flex-col gap-3">
+          <span class="font-mono text-xs text-primary tracking-wider uppercase">Featured Project</span>
+          <div>
+            <a href={`/projects/${idToSlug(featuredProject.id)}`} class="font-semibold hover:text-primary transition-colors">
+              {featuredProject.data.name}
+            </a>
+            <p class="text-sm text-muted-foreground mt-1 line-clamp-2">{featuredProject.data.description}</p>
+          </div>
+          <a href="/projects" class="font-mono text-xs text-muted-foreground hover:text-primary transition-colors mt-auto self-end">
+            All projects →
+          </a>
+        </div>
+      )}
+    </div>
+  )}
 </BaseLayout>
