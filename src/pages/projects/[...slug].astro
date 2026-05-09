@@ -56,10 +56,10 @@ const relatedPostEntries = project.data.relatedPosts
       {(project.data.repoUrl || project.data.liveUrl || seriesEntry || relatedPostEntries.length > 0) && (
         <div class="flex flex-wrap gap-x-4 gap-y-1.5 mt-4 font-mono text-sm text-muted-foreground">
           {project.data.repoUrl && (
-            <IconLink href={project.data.repoUrl} Icon={GitHubIcon} iconSize={14} label="Source" external />
+            <IconLink href={project.data.repoUrl} Icon={GitHubIcon} iconSize={14} label="Source Code" external />
           )}
           {project.data.liveUrl && (
-            <IconLink href={project.data.liveUrl} Icon={GlobeIcon} iconSize={14} label="Live" external />
+            <IconLink href={project.data.liveUrl} Icon={GlobeIcon} iconSize={14} label="Live Website" external />
           )}
           {seriesEntry && (
             <IconLink href={`/blog/series/${idToSlug(seriesEntry.id)}`} Icon={LayersIcon} iconSize={14} label={seriesEntry.data.name} />
