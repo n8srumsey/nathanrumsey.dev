@@ -120,7 +120,7 @@ export default function BlogPostCard({ post, onTagClick, activeTags }: Props) {
         </>
       )}
 
-      <p className="mt-3 text-sm text-muted-foreground leading-relaxed">{post.description}</p>
+      <p className="mt-3 text-sm text-muted-foreground leading-relaxed line-clamp-3">{post.description}</p>
     </div>
   );
 
