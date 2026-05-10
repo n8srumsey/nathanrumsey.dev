@@ -1,5 +1,5 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
+import DocumentLayout from '../layouts/DocumentLayout.astro';
 import { getCollection } from 'astro:content';
 import { idToSlug } from '../utils/slugs';
 import IconLink from '../components/ui/IconLink';
@@ -8,6 +8,7 @@ import GlobeIcon from '../components/icons/GlobeIcon';
 import ProjectIcon from '../components/icons/ProjectIcon';
 import LinkedInIcon from '../components/icons/LinkedInIcon';
 import MailIcon from '../components/icons/MailIcon';
+import DownloadIcon from '../components/icons/DownloadIcon.astro';
 
 const resumeEntries = await getCollection('resume');
 const resumeEntry = resumeEntries[0];
@@ -32,22 +33,28 @@ function formatDate(ym: string): string {
 }
 ---
 
-<BaseLayout title={`Resume — ${resume.basics.name}`} description="Professional resume">
+<DocumentLayout title={`Resume — ${resume.basics.name}`} description="Professional resume">
   <div>
     <div class="flex items-center justify-between">
       <h1 class="text-2xl font-bold">{resume.basics.name}</h1>
-      {resume.basics.social && (
-        <div class="flex items-center gap-3">
+      <div class="flex items-center gap-3">
+        {resume.basics.social?.github && (
           <a href={resume.basics.social.github} target="_blank" rel="noopener noreferrer"
             aria-label="GitHub" class="text-muted-foreground hover:text-primary transition-colors">
             <GitHubIcon size={18} />
           </a>
+        )}
+        {resume.basics.social?.linkedin && (
           <a href={resume.basics.social.linkedin} target="_blank" rel="noopener noreferrer"
             aria-label="LinkedIn" class="text-muted-foreground hover:text-primary transition-colors">
             <LinkedInIcon size={18} />
           </a>
-        </div>
-      )}
+        )}
+        <a href="/resume.pdf" target="_blank" rel="noopener noreferrer" aria-label="View PDF resume"
+          class="text-muted-foreground hover:text-primary transition-colors">
+          <DownloadIcon size={18} />
+        </a>
+      </div>
     </div>
     <div class="flex items-start justify-between gap-8 mt-1">
       <div class="space-y-1">
@@ -200,4 +207,4 @@ function formatDate(ym: string): string {
       ))}
     </div>
   </section>
-</BaseLayout>
+</DocumentLayout>

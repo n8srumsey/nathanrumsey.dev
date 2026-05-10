@@ -17,8 +17,6 @@ interface BlogFilters {
   sort: BlogSort;
 }
 
-const DEFAULTS: BlogFilters = { tags: [], year: '', length: '', sort: 'newest' };
-
 function readFromURL(): BlogFilters {
   const p = new URLSearchParams(window.location.search);
   return {
@@ -65,13 +63,12 @@ const primaryChip = 'flex items-center gap-1 font-mono text-xs px-2 py-0.5 round
 const neutralChip = 'flex items-center gap-1 font-mono text-xs px-2 py-0.5 rounded-full border bg-surface border-border text-foreground';
 
 export default function BlogIndexFilter({ posts }: { posts: BlogPostData[] }) {
-  const [filters, setFilters] = useState<BlogFilters>(DEFAULTS);
+  const [filters, setFilters] = useState<BlogFilters>(readFromURL);
   const [panelOpen, setPanelOpen] = useState(false);
   const filterRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const sync = () => setFilters(readFromURL());
-    sync();
     window.addEventListener('popstate', sync);
     return () => window.removeEventListener('popstate', sync);
   }, []);
@@ -99,7 +96,6 @@ export default function BlogIndexFilter({ posts }: { posts: BlogPostData[] }) {
   );
   const results = useMemo(() => applyFilters(posts, filters), [posts, filters]);
 
-  const hasFilters = filters.tags.length > 0 || !!filters.year || !!filters.length;
   const activeCount = filters.tags.length + (filters.year ? 1 : 0) + (filters.length ? 1 : 0);
 
   const addTag = (tag: string) => {
@@ -176,40 +172,38 @@ export default function BlogIndexFilter({ posts }: { posts: BlogPostData[] }) {
       </div>
 
       {/* Line 2: active filter chips — non-tag first, then tags */}
-      {hasFilters && (
-        <div className="flex flex-wrap items-center gap-1.5 mb-4">
-          {filters.year && (
-            <span className={neutralChip}>
-              {filters.year}
-              <button
-                onClick={() => set({ year: '' })}
-                aria-label="Remove year filter"
-                className="hover:text-primary cursor-pointer leading-none"
-              >×</button>
-            </span>
-          )}
-          {filters.length && (
-            <span className={neutralChip}>
-              {lengthLabel(filters.length)}
-              <button
-                onClick={() => set({ length: '' })}
-                aria-label="Remove length filter"
-                className="hover:text-primary cursor-pointer leading-none"
-              >×</button>
-            </span>
-          )}
-          {filters.tags.map(tag => (
-            <span key={tag} className={primaryChip}>
-              {tag}
-              <button
-                onClick={() => removeTag(tag)}
-                aria-label={`Remove tag: ${tag}`}
-                className="hover:opacity-70 cursor-pointer leading-none"
-              >×</button>
-            </span>
-          ))}
-        </div>
-      )}
+      <div className="flex flex-wrap items-center gap-1.5 mb-4 min-h-6">
+        {filters.year && (
+          <span className={neutralChip}>
+            {filters.year}
+            <button
+              onClick={() => set({ year: '' })}
+              aria-label="Remove year filter"
+              className="hover:text-primary cursor-pointer leading-none"
+            >×</button>
+          </span>
+        )}
+        {filters.length && (
+          <span className={neutralChip}>
+            {lengthLabel(filters.length)}
+            <button
+              onClick={() => set({ length: '' })}
+              aria-label="Remove length filter"
+              className="hover:text-primary cursor-pointer leading-none"
+            >×</button>
+          </span>
+        )}
+        {filters.tags.map(tag => (
+          <span key={tag} className={primaryChip}>
+            {tag}
+            <button
+              onClick={() => removeTag(tag)}
+              aria-label={`Remove tag: ${tag}`}
+              className="hover:opacity-70 cursor-pointer leading-none"
+            >×</button>
+          </span>
+        ))}
+      </div>
 
       {results.length === 0 ? (
         <div className="py-16 text-center text-muted-foreground space-y-3">
@@ -222,7 +216,7 @@ export default function BlogIndexFilter({ posts }: { posts: BlogPostData[] }) {
           </button>
         </div>
       ) : (
-        <div className="space-y-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {results.map(post => (
             <BlogPostCard key={post.slug} post={post} onTagClick={addTag} activeTags={filters.tags} />
           ))}

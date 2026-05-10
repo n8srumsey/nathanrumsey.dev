@@ -1,0 +1,41 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import MailIcon from '../components/icons/MailIcon.astro';
+import GitHubIcon from '../components/icons/GitHubIcon.astro';
+import LinkedInIcon from '../components/icons/LinkedInIcon.astro';
+import { getCollection } from 'astro:content';
+
+const resumeEntries = await getCollection('resume');
+const basics = resumeEntries[0]?.data.basics;
+---
+
+<BaseLayout title="About — Nathan Rumsey">
+  <section class="max-w-2xl w-full mx-auto px-8 py-10 my-8">
+    <h1 class="text-3xl font-bold tracking-tight">{basics?.name ?? 'Nathan Rumsey'}</h1>
+    <p class="text-lg text-muted-foreground mt-1">{basics?.title ?? 'Software Engineer'}</p>
+
+    {basics?.summary && (
+      <p class="mt-6 text-muted-foreground leading-relaxed max-w-prose">
+        {basics.summary}
+      </p>
+    )}
+
+    <div class="mt-8 flex flex-wrap gap-5 text-sm">
+      {basics?.email && (
+        <a href={`mailto:${basics.email}`} class="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors">
+          <MailIcon size={15} />{basics.email}
+        </a>
+      )}
+      {basics?.social?.github && (
+        <a href={basics.social.github} target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors">
+          <GitHubIcon size={15} />GitHub
+        </a>
+      )}
+      {basics?.social?.linkedin && (
+        <a href={basics.social.linkedin} target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors">
+          <LinkedInIcon size={15} />LinkedIn
+        </a>
+      )}
+    </div>
+  </section>
+</BaseLayout>

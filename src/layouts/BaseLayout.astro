@@ -51,34 +51,32 @@ const basics = resumeEntries[0]?.data.basics;
 
     <NavBar currentPath={Astro.url.pathname} />
 
-    <!-- Floating content column -->
-    <div class="grow flex flex-col max-w-3xl w-full mx-auto my-8 px-4">
-      <div class="bg-surface rounded-xl shadow-lg flex flex-col grow">
-        <main class="px-8 py-10 grow">
-          <slot />
-        </main>
-        <footer class="border-t border-border px-8 py-5 text-sm text-muted-foreground mt-auto flex items-center gap-4">
-          <a href="/rss.xml" class="flex items-center gap-1.5 hover:text-foreground transition-colors">
-            <RssIcon size={14} />RSS
+    <main class="grow flex flex-col">
+      <slot />
+    </main>
+
+    <footer class="shrink-0 border-t border-border text-sm text-muted-foreground">
+      <div class="max-w-6xl mx-auto px-8 py-4 flex items-center gap-4">
+        <a href="/rss.xml" class="flex items-center gap-1.5 hover:text-foreground transition-colors">
+          <RssIcon size={14} />RSS
+        </a>
+        <span aria-hidden="true">·</span>
+        {basics?.email && (
+          <a href={`mailto:${basics.email}`} class="flex items-center gap-1.5 hover:text-foreground transition-colors">
+            <MailIcon size={14} />{basics.email}
           </a>
-          <span aria-hidden="true">·</span>
-          {basics?.email && (
-            <a href={`mailto:${basics.email}`} class="flex items-center gap-1.5 hover:text-foreground transition-colors">
-              <MailIcon size={14} />{basics.email}
+        )}
+        {basics?.social?.linkedin && (
+          <>
+            <span aria-hidden="true">·</span>
+            <a href={basics.social.linkedin} target="_blank" rel="noopener noreferrer"
+              class="flex items-center gap-1.5 hover:text-foreground transition-colors">
+              <LinkedInIcon size={14} />LinkedIn
             </a>
-          )}
-          {basics?.social?.linkedin && (
-            <>
-              <span aria-hidden="true">·</span>
-              <a href={basics.social.linkedin} target="_blank" rel="noopener noreferrer"
-                class="flex items-center gap-1.5 hover:text-foreground transition-colors">
-                <LinkedInIcon size={14} />LinkedIn
-              </a>
-            </>
-          )}
-        </footer>
+          </>
+        )}
       </div>
-    </div>
+    </footer>
 
   </body>
 </html>
