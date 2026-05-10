@@ -18,6 +18,7 @@ const isActive = (href: string) =>
       <FaviconIcon size={20} />
       Nathan Rumsey
     </a>
+    <NavItem href="/about" active={isActive('/about')}>About</NavItem>
     <NavItem href="/resume" active={isActive('/resume')}>Resume</NavItem>
     <NavItem href="/projects" active={isActive('/projects')}>Projects</NavItem>
     <NavItem href="/blog" active={isActive('/blog')}>Blog</NavItem>
