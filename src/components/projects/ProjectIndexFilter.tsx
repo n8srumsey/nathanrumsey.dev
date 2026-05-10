@@ -18,10 +18,6 @@ interface ProjectFilters {
   sort: ProjectSort;
 }
 
-const DEFAULTS: ProjectFilters = {
-  tags: [], source: false, live: false, featured: false, blog: false, sort: 'featured',
-};
-
 function readFromURL(): ProjectFilters {
   const p = new URLSearchParams(window.location.search);
   return {
@@ -107,13 +103,12 @@ const toggleBtnClass = (active: boolean) =>
 const tagChip = 'flex items-center gap-1 font-mono text-xs px-2 py-0.5 rounded-full border bg-primary-subtle border-primary text-primary';
 
 export default function ProjectIndexFilter({ projects }: { projects: ProjectData[] }) {
-  const [filters, setFilters] = useState<ProjectFilters>(DEFAULTS);
+  const [filters, setFilters] = useState<ProjectFilters>(readFromURL);
   const [tagsOpen, setTagsOpen] = useState(false);
   const tagsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const sync = () => setFilters(readFromURL());
-    sync();
     window.addEventListener('popstate', sync);
     return () => window.removeEventListener('popstate', sync);
   }, []);
@@ -193,20 +188,18 @@ export default function ProjectIndexFilter({ projects }: { projects: ProjectData
       </div>
 
       {/* Line 2: active tag chips */}
-      {filters.tags.length > 0 && (
-        <div className="flex flex-wrap items-center gap-1.5 mb-4">
-          {filters.tags.map(tag => (
-            <span key={tag} className={tagChip}>
-              {tag}
-              <button
-                onClick={() => removeTag(tag)}
-                aria-label={`Remove tag: ${tag}`}
-                className="hover:opacity-70 cursor-pointer leading-none"
-              >×</button>
-            </span>
-          ))}
-        </div>
-      )}
+      <div className="flex flex-wrap items-center gap-1.5 mb-4 min-h-6">
+        {filters.tags.map(tag => (
+          <span key={tag} className={tagChip}>
+            {tag}
+            <button
+              onClick={() => removeTag(tag)}
+              aria-label={`Remove tag: ${tag}`}
+              className="hover:opacity-70 cursor-pointer leading-none"
+            >×</button>
+          </span>
+        ))}
+      </div>
 
       {results.length === 0 ? (
         <div className="py-16 text-center text-muted-foreground space-y-3">
