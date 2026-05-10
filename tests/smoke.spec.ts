@@ -31,8 +31,8 @@ test('about page loads', async ({ page }) => {
   await page.goto('/about');
   await expect(page).toHaveTitle(/About/);
   await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
-  await expect(page.getByRole('link', { name: /GitHub/i })).toHaveAttribute('href', /github\.com/);
-  await expect(page.getByRole('link', { name: /LinkedIn/i })).toHaveAttribute('href', /linkedin\.com/);
+  await expect(page.getByRole('main').getByRole('link', { name: /GitHub/i })).toHaveAttribute('href', /github\.com/);
+  await expect(page.getByRole('main').getByRole('link', { name: /LinkedIn/i })).toHaveAttribute('href', /linkedin\.com/);
 });
 
 test('resume page loads with sections', async ({ page }) => {
@@ -94,6 +94,6 @@ test('RSS feed is accessible', async ({ page }) => {
 
 test('nav routes correctly from landing page', async ({ page }) => {
   await page.goto('/');
-  await page.getByRole('navigation').getByRole('link', { name: 'Blog' }).click();
+  await page.getByLabel('Main navigation').getByRole('link', { name: 'Blog' }).click();
   await expect(page).toHaveURL('/blog');
 });
