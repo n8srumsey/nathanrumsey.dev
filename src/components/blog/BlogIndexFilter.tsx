@@ -222,7 +222,7 @@ export default function BlogIndexFilter({ posts }: { posts: BlogPostData[] }) {
           </button>
         </div>
       ) : (
-        <div className="space-y-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {results.map(post => (
             <BlogPostCard key={post.slug} post={post} onTagClick={addTag} activeTags={filters.tags} />
           ))}

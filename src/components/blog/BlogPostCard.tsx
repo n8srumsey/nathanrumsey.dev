@@ -81,7 +81,7 @@ export default function BlogPostCard({ post, onTagClick, activeTags }: Props) {
   const mainContent = (
     <div className="relative pointer-events-none pb-5">
       <div className="flex flex-wrap items-baseline gap-x-3 gap-y-0.5">
-        <h2 className="font-semibold font-mono">
+        <h2 className="font-semibold font-mono line-clamp-2">
           <a href={`/blog/${post.slug}`} className="hover:underline pointer-events-auto">{post.title}</a>
         </h2>
         <div className="flex items-center gap-x-2 font-mono text-sm text-muted-foreground">
@@ -93,7 +93,7 @@ export default function BlogPostCard({ post, onTagClick, activeTags }: Props) {
 
       {hasSeries && hasTags && inlineLayout ? (
         <div className="flex flex-wrap items-center gap-1.5 font-mono text-sm text-muted-foreground mt-1">
-          <span className="shrink-0 flex items-center gap-1">
+          <span className="shrink-0 flex items-center gap-2">
             {post.seriesPosition != null && <span>Part {post.seriesPosition} of</span>}
             <a href={`/blog/series/${post.seriesSlug!}`} className="hover:text-primary transition-colors flex items-center gap-1 pointer-events-auto">
               <LayersIcon />
@@ -108,11 +108,11 @@ export default function BlogPostCard({ post, onTagClick, activeTags }: Props) {
       ) : (
         <>
           {hasSeries && (
-            <div className="flex items-center gap-1 font-mono text-sm text-muted-foreground mt-1">
-              {post.seriesPosition != null && <span>Part {post.seriesPosition} of</span>}
-              <a href={`/blog/series/${post.seriesSlug!}`} className="hover:text-primary transition-colors flex items-center gap-1 pointer-events-auto">
-                <LayersIcon />
-                {post.seriesLabel}
+            <div className="flex items-center gap-2 font-mono text-sm text-muted-foreground mt-1">
+              {post.seriesPosition != null && <span className="shrink-0">Part {post.seriesPosition} of</span>}
+              <a href={`/blog/series/${post.seriesSlug!}`} className="hover:text-primary transition-colors flex items-center gap-1 min-w-0 overflow-hidden pointer-events-auto">
+                <LayersIcon className="shrink-0" />
+                <span className="truncate">{post.seriesLabel}</span>
               </a>
             </div>
           )}

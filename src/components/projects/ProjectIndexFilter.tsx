@@ -219,7 +219,7 @@ export default function ProjectIndexFilter({ projects }: { projects: ProjectData
           </button>
         </div>
       ) : (
-        <div className="space-y-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {results.map(project => (
             <ProjectCard key={project.slug} project={project} onTagClick={addTag} activeTags={filters.tags} />
           ))}

@@ -46,7 +46,7 @@ export default function ProjectCard({ project, onTagClick, activeTags }: Props) 
   const innerContent = (
     <div className="relative flex items-start justify-between gap-4 pointer-events-none pb-5">
       <div className="flex-1 min-w-0">
-        <h2 className="font-semibold font-mono">
+        <h2 className="font-semibold font-mono line-clamp-2">
           {href !== '#' ? (
             <a
               href={href}
@@ -58,7 +58,7 @@ export default function ProjectCard({ project, onTagClick, activeTags }: Props) 
             </a>
           ) : project.name}
         </h2>
-        <p className="text-sm text-muted-foreground mt-1 leading-relaxed">{project.description}</p>
+        <p className="text-sm text-muted-foreground mt-1 leading-relaxed line-clamp-2">{project.description}</p>
         {project.tags.length > 0 && (
           <TagList tags={project.tags} activeTags={activeTags} onTagClick={onTagClick} />
         )}
@@ -117,7 +117,7 @@ export default function ProjectCard({ project, onTagClick, activeTags }: Props) 
       {overlayLink}
       <div className="relative flex items-start justify-between gap-4 pointer-events-none">
         <div className="flex-1 min-w-0">
-          <h2 className="font-semibold font-mono">
+          <h2 className="font-semibold font-mono line-clamp-2">
             {href !== '#' ? (
               <a
                 href={href}
@@ -129,7 +129,7 @@ export default function ProjectCard({ project, onTagClick, activeTags }: Props) 
               </a>
             ) : project.name}
           </h2>
-          <p className="text-sm text-muted-foreground mt-1 leading-relaxed">{project.description}</p>
+          <p className="text-sm text-muted-foreground mt-1 leading-relaxed line-clamp-2">{project.description}</p>
           {project.tags.length > 0 && (
             <TagList tags={project.tags} activeTags={activeTags} onTagClick={onTagClick} />
           )}
