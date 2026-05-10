@@ -1,5 +1,5 @@
 ---
-import BaseLayout from '../../layouts/BaseLayout.astro';
+import DocumentLayout from '../../layouts/DocumentLayout.astro';
 import Breadcrumb from '../../components/ui/Breadcrumb.astro';
 import GitHubIcon from '../../components/icons/GitHubIcon';
 import GlobeIcon from '../../components/icons/GlobeIcon';
@@ -36,7 +36,7 @@ const relatedPostEntries = project.data.relatedPosts
   .filter((p): p is NonNullable<typeof p> => p !== undefined);
 ---
 
-<BaseLayout title={`${project.data.name} — Nathan Rumsey`} description={project.data.description} image={project.data.image}>
+<DocumentLayout title={`${project.data.name} — Nathan Rumsey`} description={project.data.description} image={project.data.image}>
   <article>
     <Breadcrumb crumbs={[
       { label: 'Projects', href: '/projects' },
@@ -93,4 +93,4 @@ const relatedPostEntries = project.data.relatedPosts
       </div>
     )}
   </article>
-</BaseLayout>
+</DocumentLayout>

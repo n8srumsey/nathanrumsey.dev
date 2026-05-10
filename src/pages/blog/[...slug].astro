@@ -1,5 +1,5 @@
 ---
-import BaseLayout from '../../layouts/BaseLayout.astro';
+import DocumentLayout from '../../layouts/DocumentLayout.astro';
 import Breadcrumb from '../../components/ui/Breadcrumb.astro';
 import SeriesIcon from '../../components/icons/SeriesIcon.astro';
 import ChevronLeftIcon from '../../components/icons/ChevronLeftIcon.astro';
@@ -69,7 +69,7 @@ const crumbs = [
 ];
 ---
 
-<BaseLayout title={`${post.data.title} — Nathan Rumsey`} description={post.data.description} image={post.data.heroImage} type="article">
+<DocumentLayout title={`${post.data.title} — Nathan Rumsey`} description={post.data.description} image={post.data.heroImage} type="article">
   <article>
     <Breadcrumb crumbs={crumbs} />
     <header class="pb-8 mb-8 border-b border-border">
@@ -162,4 +162,4 @@ const crumbs = [
       </nav>
     )}
   </article>
-</BaseLayout>
+</DocumentLayout>
