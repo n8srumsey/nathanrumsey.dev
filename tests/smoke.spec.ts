@@ -3,9 +3,11 @@ import { test, expect } from '@playwright/test';
 test('landing page loads with nav links', async ({ page }) => {
   await page.goto('/');
   await expect(page).toHaveTitle(/Nathan Rumsey/);
-  await expect(page.getByRole('navigation').getByRole('link', { name: 'Resume' })).toBeVisible();
-  await expect(page.getByRole('navigation').getByRole('link', { name: 'Blog' })).toBeVisible();
-  await expect(page.getByRole('navigation').getByRole('link', { name: 'Projects' })).toBeVisible();
+  const topNav = page.getByRole('navigation', { name: 'Main navigation' });
+  await expect(topNav.getByRole('link', { name: 'About' })).toBeVisible();
+  await expect(topNav.getByRole('link', { name: 'Resume' })).toBeVisible();
+  await expect(topNav.getByRole('link', { name: 'Blog' })).toBeVisible();
+  await expect(topNav.getByRole('link', { name: 'Projects' })).toBeVisible();
   await expect(page.getByRole('contentinfo').getByRole('link', { name: 'LinkedIn' })).toHaveAttribute('href', /linkedin\.com/);
 });
 
@@ -23,6 +25,14 @@ test('landing page callout links navigate correctly', async ({ page }) => {
   const postLink = page.locator('text=Latest Post').locator('..').getByRole('link').first();
   const href = await postLink.getAttribute('href');
   expect(href).toMatch(/^\/blog\//);
+});
+
+test('about page loads', async ({ page }) => {
+  await page.goto('/about');
+  await expect(page).toHaveTitle(/About/);
+  await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+  await expect(page.getByRole('link', { name: /GitHub/i })).toHaveAttribute('href', /github\.com/);
+  await expect(page.getByRole('link', { name: /LinkedIn/i })).toHaveAttribute('href', /linkedin\.com/);
 });
 
 test('resume page loads with sections', async ({ page }) => {

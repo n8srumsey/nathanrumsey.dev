@@ -3,6 +3,7 @@ import { checkA11y, injectAxe } from 'axe-playwright';
 
 const routes = [
   { path: '/', label: 'landing' },
+  { path: '/about', label: 'about' },
   { path: '/resume', label: 'resume' },
   { path: '/blog', label: 'blog index' },
   { path: '/blog/hello-world', label: 'blog post' },
