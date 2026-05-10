@@ -60,12 +60,7 @@ const crumbs = [
   ...(seriesEntry && seriesSlug && seriesLabel
     ? [{ label: seriesLabel, href: `/blog/series/${seriesSlug}`, icon: 'series' as const, truncate: true }]
     : []),
-  {
-    label: seriesEntry && seriesPosition
-      ? `Part ${seriesPosition} · ${post.data.title}`
-      : post.data.title,
-    truncate: !!seriesEntry,
-  },
+  { label: post.data.title, truncate: !!seriesEntry },
 ];
 ---
 
@@ -89,15 +84,27 @@ const crumbs = [
         </div>
       )}
       {seriesEntry && seriesSlug && seriesPosition && (
-        <div class="flex items-center gap-1.5 font-mono text-sm text-muted-foreground mt-3">
+        <div class="flex items-center flex-wrap gap-x-1.5 gap-y-1 font-mono text-sm text-muted-foreground mt-3">
           <span>Part {seriesPosition} of</span>
           <a href={`/blog/series/${seriesSlug}`} class="hover:text-primary transition-colors flex items-center gap-1">
             <SeriesIcon />
             {seriesEntry.data.name}
           </a>
+          {relatedProjects.length > 0 && (
+            <>
+              <span>·</span>
+              {relatedProjects.map(project => (
+                <IconLink
+                  href={`/projects/${idToSlug(project.id)}`}
+                  Icon={ProjectIcon}
+                  label={project.data.name}
+                />
+              ))}
+            </>
+          )}
         </div>
       )}
-      {relatedProjects.length > 0 && (
+      {!seriesEntry && relatedProjects.length > 0 && (
         <div class="flex flex-wrap gap-x-3 gap-y-1 mt-3 font-mono text-sm text-muted-foreground">
           {relatedProjects.map(project => (
             <IconLink
