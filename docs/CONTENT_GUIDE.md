@@ -227,11 +227,14 @@ experience:
 
 education:
   - institution: "University Name"
-    degree: "B.S."
-    field: "Computer Science"   # optional
+    location: "City, State"
+    degree: "B.S. in Computer Science"   # optional
     start: "YYYY-MM"
     end: "YYYY-MM"              # omit for in-progress
-    description: "Optional additional context."
+    gpa: "Optional additional context."
+    activities: "Optional additional context."
+    awards: "Optional additional context
+
 
 skills:
   categories:

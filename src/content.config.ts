@@ -81,11 +81,13 @@ const resume = defineCollection({
     })),
     education: z.array(z.object({
       institution: z.string(),
+      location: z.string(),
       degree: z.string(),
-      field: z.string().optional(),
       start: z.string(),
       end: z.string().optional(),
-      description: z.string().optional(),
+      gpa: z.string().optional(),
+      activities: z.string().optional(),
+      awards: z.string().optional(),
       annotations: z.array(AnnotationSchema).optional(),
     })),
     skills: z.object({

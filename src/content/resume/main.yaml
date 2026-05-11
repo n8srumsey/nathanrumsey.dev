@@ -43,13 +43,12 @@ experience:
 
 education:
   - institution: Oregon State University
-    degree: B.S.
-    field: Computer Science, AI Focus; Minor in Mathematics
+    location: Corvallis, OR
+    degree: B.S. Computer Science, AI Focus; Minor in Mathematics
     start: "2021-09"
     end: "2025-06"
-    description: >
-      GPA: 3.94; Graduated Summa Cum Laude.
-      Activities: AI Club President, Triathlon Club Vice President, Treasurer, and Race Director.
+    gpa: 3.94; Graduated Summa Cum Laude.
+    activities: AI Club President, Triathlon Club Vice President, Treasurer, and Race Director.
 
 skills:
   categories:
