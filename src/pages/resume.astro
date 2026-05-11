@@ -1,23 +1,23 @@
 ---
-import DocumentLayout from '../layouts/DocumentLayout.astro';
-import { getCollection } from 'astro:content';
-import { idToSlug } from '../utils/slugs';
-import IconLink from '../components/ui/IconLink';
-import GitHubIcon from '../components/icons/GitHubIcon';
-import GlobeIcon from '../components/icons/GlobeIcon';
-import ProjectIcon from '../components/icons/ProjectIcon';
-import LinkedInIcon from '../components/icons/LinkedInIcon';
-import MailIcon from '../components/icons/MailIcon';
-import DownloadIcon from '../components/icons/DownloadIcon.astro';
-import TagLink from '../components/ui/TagLink.astro';
+import DocumentLayout from "../layouts/DocumentLayout.astro";
+import { getCollection } from "astro:content";
+import { idToSlug } from "../utils/slugs";
+import IconLink from "../components/ui/IconLink";
+import GitHubIcon from "../components/icons/GitHubIcon";
+import GlobeIcon from "../components/icons/GlobeIcon";
+import ProjectIcon from "../components/icons/ProjectIcon";
+import LinkedInIcon from "../components/icons/LinkedInIcon";
+import MailIcon from "../components/icons/MailIcon";
+import DownloadIcon from "../components/icons/DownloadIcon.astro";
+import TagLink from "../components/ui/TagLink.astro";
 
-const resumeEntries = await getCollection('resume');
+const resumeEntries = await getCollection("resume");
 const resumeEntry = resumeEntries[0];
-if (!resumeEntry) throw new Error('src/content/resume/main.yaml not found');
+if (!resumeEntry) throw new Error("src/content/resume/main.yaml not found");
 const resume = resumeEntry.data;
 
-const featuredProjects = (await getCollection('projects'))
-  .filter(p => p.data.featured)
+const featuredProjects = (await getCollection("projects"))
+  .filter((p) => p.data.featured)
   .sort((a, b) => {
     if (!a.data.start && !b.data.start) return 0;
     if (!a.data.start) return 1;
@@ -26,33 +26,55 @@ const featuredProjects = (await getCollection('projects'))
   });
 
 function formatDate(ym: string): string {
-  const [year, month] = ym.split('-');
-  return new Date(Number(year), Number(month) - 1).toLocaleDateString('en-US', {
-    month: 'short',
-    year: 'numeric',
+  const [year, month] = ym.split("-");
+  return new Date(Number(year), Number(month) - 1).toLocaleDateString("en-US", {
+    month: "short",
+    year: "numeric",
   });
 }
 ---
 
-<DocumentLayout title={`Resume — ${resume.basics.name}`} description="Professional resume">
+<DocumentLayout
+  title={`Resume — ${resume.basics.name}`}
+  description="Professional resume"
+>
   <div>
     <div class="flex items-center justify-between">
       <h1 class="text-2xl font-bold">{resume.basics.name}</h1>
       <div class="flex items-center gap-3">
-        {resume.basics.social?.github && (
-          <a href={resume.basics.social.github} target="_blank" rel="noopener noreferrer"
-            aria-label="GitHub" class="text-muted-foreground hover:text-primary transition-colors">
-            <GitHubIcon size={18} />
-          </a>
-        )}
-        {resume.basics.social?.linkedin && (
-          <a href={resume.basics.social.linkedin} target="_blank" rel="noopener noreferrer"
-            aria-label="LinkedIn" class="text-muted-foreground hover:text-primary transition-colors">
-            <LinkedInIcon size={18} />
-          </a>
-        )}
-        <a href="/resume.pdf" target="_blank" rel="noopener noreferrer" aria-label="View PDF resume"
-          class="text-muted-foreground hover:text-primary transition-colors">
+        {
+          resume.basics.social?.github && (
+            <a
+              href={resume.basics.social.github}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="GitHub"
+              class="text-muted-foreground hover:text-primary transition-colors"
+            >
+              <GitHubIcon size={18} />
+            </a>
+          )
+        }
+        {
+          resume.basics.social?.linkedin && (
+            <a
+              href={resume.basics.social.linkedin}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="LinkedIn"
+              class="text-muted-foreground hover:text-primary transition-colors"
+            >
+              <LinkedInIcon size={18} />
+            </a>
+          )
+        }
+        <a
+          href="/resume.pdf"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="View PDF resume"
+          class="text-muted-foreground hover:text-primary transition-colors"
+        >
           <DownloadIcon size={18} />
         </a>
       </div>
@@ -60,159 +82,265 @@ function formatDate(ym: string): string {
     <div class="flex items-start justify-between gap-8 mt-1">
       <div class="space-y-1">
         <p class="text-muted-foreground">{resume.basics.title}</p>
-        {resume.basics.location && (
-          <p class="font-mono text-sm text-muted-foreground">{resume.basics.location}</p>
-        )}
+        {
+          resume.basics.location && (
+            <p class="font-mono text-sm text-muted-foreground">
+              {resume.basics.location}
+            </p>
+          )
+        }
       </div>
       <div class="font-mono text-sm space-y-1 shrink-0 text-muted-foreground">
-        {resume.basics.email && (
-          <div class="flex justify-end">
-            <IconLink href={`mailto:${resume.basics.email}`} Icon={MailIcon} iconSize={14} label={resume.basics.email} />
-          </div>
-        )}
-        {resume.basics.website && (
-          <div class="flex justify-end">
-            <IconLink href={resume.basics.website} Icon={GlobeIcon} iconSize={14} label={resume.basics.website.replace(/^https?:\/\//, '')} external />
-          </div>
-        )}
+        {
+          resume.basics.email && (
+            <div class="flex justify-end">
+              <IconLink
+                href={`mailto:${resume.basics.email}`}
+                Icon={MailIcon}
+                iconSize={14}
+                label={resume.basics.email}
+              />
+            </div>
+          )
+        }
+        {
+          resume.basics.website && (
+            <div class="flex justify-end">
+              <IconLink
+                href={resume.basics.website}
+                Icon={GlobeIcon}
+                iconSize={14}
+                label={resume.basics.website.replace(/^https?:\/\//, "")}
+                external
+              />
+            </div>
+          )
+        }
       </div>
     </div>
   </div>
 
-  {resume.basics.summary && (
-    <p class="mt-4 leading-relaxed text-foreground">{resume.basics.summary}</p>
-  )}
+  {
+    resume.basics.summary && (
+      <p class="mt-4 leading-relaxed text-foreground">
+        {resume.basics.summary}
+      </p>
+    )
+  }
 
   <section class="mt-10">
-    <h2 class="text-base font-semibold uppercase tracking-wide text-muted-foreground border-b border-border pb-1 mb-5">
+    <h2
+      class="text-base font-semibold uppercase tracking-wide text-muted-foreground border-b border-border pb-1 mb-5"
+    >
       Experience
     </h2>
     <div class="space-y-8">
-      {resume.experience.map(exp => (
-        <div>
-          <div class="flex justify-between items-baseline gap-4">
-            <h3 class="font-medium">{exp.role}</h3>
-            <span class="font-mono text-sm text-muted-foreground shrink-0">
-              {formatDate(exp.start)} — {exp.end ? formatDate(exp.end) : 'Present'}
-            </span>
+      {
+        resume.experience.map((exp) => (
+          <div>
+            <div class="flex justify-between items-baseline gap-4">
+              <h3 class="font-medium">{exp.role}</h3>
+              <span class="font-mono text-sm text-muted-foreground shrink-0">
+                {formatDate(exp.start)} —{" "}
+                {exp.end ? formatDate(exp.end) : "Present"}
+              </span>
+            </div>
+            <p class="text-sm text-muted-foreground mt-0.5">
+              {exp.company}
+              {exp.location ? ` · ${exp.location}` : ""}
+            </p>
+            {/* annotations not rendered in MVP — see docs/ARCHITECTURE.md */}
+            <p class="mt-2 text-sm leading-relaxed text-foreground">
+              {exp.description}
+            </p>
+            {exp.highlights.length > 0 && (
+              <ul class="mt-2 space-y-1.5">
+                {exp.highlights.map((h) => (
+                  <li class="flex gap-2 items-start text-sm">
+                    <span
+                      class="text-primary shrink-0 mt-0.5"
+                      aria-hidden="true"
+                    >
+                      –
+                    </span>
+                    <span>{h}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
-          <p class="text-sm text-muted-foreground mt-0.5">
-            {exp.company}{exp.location ? ` · ${exp.location}` : ''}
-          </p>
-          {/* annotations not rendered in MVP — see docs/ARCHITECTURE.md */}
-          <p class="mt-2 text-sm leading-relaxed text-foreground">{exp.description}</p>
-          {exp.highlights.length > 0 && (
-            <ul class="mt-2 space-y-1.5">
-              {exp.highlights.map(h => (
-                <li class="flex gap-2 items-start text-sm">
-                  <span class="text-primary shrink-0 mt-0.5" aria-hidden="true">–</span>
-                  <span>{h}</span>
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
-      ))}
+        ))
+      }
     </div>
   </section>
 
   <section class="mt-10">
-    <h2 class="text-base font-semibold uppercase tracking-wide text-muted-foreground border-b border-border pb-1 mb-5">
+    <h2
+      class="text-base font-semibold uppercase tracking-wide text-muted-foreground border-b border-border pb-1 mb-5"
+    >
       Education
     </h2>
     <div class="space-y-4">
-      {resume.education.map(edu => (
-        <div>
-          <div class="flex justify-between items-baseline gap-4">
-            <h3 class="font-medium">{edu.institution}</h3>
-            <span class="font-mono text-sm text-muted-foreground shrink-0">
-              {formatDate(edu.start)} — {edu.end ? formatDate(edu.end) : 'Present'}
-            </span>
+      {
+        resume.education.map((edu) => (
+          <div>
+            <div class="flex justify-between items-baseline gap-4">
+              <div class="flex gap-4 text-sm">
+                <h3 class="font-medium">{edu.institution}</h3>
+                <span class="font-mono text-muted-foreground w-28 shrink-0">
+                  {edu.location}
+                </span>
+              </div>
+              <span class="font-mono text-sm text-muted-foreground shrink-0">
+                {formatDate(edu.start)} —{" "}
+                {edu.end ? formatDate(edu.end) : "Present"}
+              </span>
+            </div>
+
+            <div class="flex gap-4 text-sm">
+              <span class="font-mono text-muted-foreground w-28 shrink-0">
+                Degree
+              </span>
+              <span>{edu.degree}</span>
+            </div>
+            {edu.gpa && (
+              <div class="flex gap-4 text-sm">
+                <span class="font-mono text-muted-foreground w-28 shrink-0">
+                  GPA
+                </span>
+                <span>{edu.gpa}</span>
+              </div>
+            )}
+            {edu.activities && (
+              <div class="flex gap-4 text-sm">
+                <span class="font-mono text-muted-foreground w-28 shrink-0">
+                  Activities
+                </span>
+                <span>{edu.activities}</span>
+              </div>
+            )}
           </div>
-          <p class="text-sm text-muted-foreground mt-0.5">
-            {edu.degree}{edu.field ? ` · ${edu.field}` : ''}
-          </p>
-          {edu.description && (
-            <p class="mt-1 text-sm text-muted-foreground">{edu.description}</p>
-          )}
-        </div>
-      ))}
+        ))
+      }
     </div>
   </section>
 
-  {featuredProjects.length > 0 && (
-    <section class="mt-10">
-      <h2 class="text-base font-semibold uppercase tracking-wide text-muted-foreground border-b border-border pb-1 mb-5">
-        Projects
-      </h2>
-      <div class="space-y-8">
-        {featuredProjects.map(project => {
-          const hasDetailPage = Boolean(project.body && project.body.trim().length > 0);
-          const slug = idToSlug(project.id);
-          return (
-            <div>
-              <div class="flex justify-between items-baseline gap-4">
-                <h3 class="font-medium">{project.data.name}</h3>
-                {project.data.start && (
-                  <span class="font-mono text-sm text-muted-foreground shrink-0">
-                    {formatDate(project.data.start)} — {project.data.end ? formatDate(project.data.end) : 'Present'}
-                  </span>
+  {
+    featuredProjects.length > 0 && (
+      <section class="mt-10">
+        <h2 class="text-base font-semibold uppercase tracking-wide text-muted-foreground border-b border-border pb-1 mb-5">
+          Projects
+        </h2>
+        <div class="space-y-8">
+          {featuredProjects.map((project) => {
+            const hasDetailPage = Boolean(
+              project.body && project.body.trim().length > 0,
+            );
+            const slug = idToSlug(project.id);
+            return (
+              <div>
+                <div class="flex justify-between items-baseline gap-4">
+                  <h3 class="font-medium">{project.data.name}</h3>
+                  {project.data.start && (
+                    <span class="font-mono text-sm text-muted-foreground shrink-0">
+                      {formatDate(project.data.start)} —{" "}
+                      {project.data.end
+                        ? formatDate(project.data.end)
+                        : "Present"}
+                    </span>
+                  )}
+                </div>
+                <div class="flex justify-between items-center">
+                  {project.data.tags.length > 0 && (
+                    <div class="flex-1 min-w-9 flex flex-1 min-w-0 overflow-hidden gap-2 mask-[linear-gradient(to_right,_black_70%,_transparent_100%)]">
+                      {project.data.tags.map((tag) => (
+                        <TagLink
+                          href={`/projects?tag=${encodeURIComponent(tag)}`}
+                          tag={tag}
+                        />
+                      ))}
+                    </div>
+                  )}
+                  {(hasDetailPage ||
+                    project.data.liveUrl ||
+                    project.data.repoUrl) && (
+                    <div class="flex flex-wrap gap-x-4 gap-y-1 font-mono text-sm text-muted-foreground mt-0.5 shrink-0">
+                      {project.data.repoUrl && (
+                        <IconLink
+                          href={project.data.repoUrl}
+                          Icon={GitHubIcon}
+                          iconSize={14}
+                          label="Source Code"
+                          external
+                        />
+                      )}
+                      {project.data.liveUrl && (
+                        <IconLink
+                          href={project.data.liveUrl}
+                          Icon={GlobeIcon}
+                          iconSize={14}
+                          label="Live Website"
+                          external
+                        />
+                      )}
+                      {hasDetailPage && (
+                        <IconLink
+                          href={`/projects/${slug}`}
+                          Icon={ProjectIcon}
+                          iconSize={14}
+                          label="More Information"
+                        />
+                      )}
+                    </div>
+                  )}
+                </div>
+
+                {project.data.resumeSummary && (
+                  <p class="mt-2 text-sm leading-relaxed text-foreground">
+                    {project.data.resumeSummary}
+                  </p>
                 )}
+                {project.data.resumeHighlights &&
+                  project.data.resumeHighlights.length > 0 && (
+                    <ul class="mt-2 space-y-1.5">
+                      {project.data.resumeHighlights.map((h) => (
+                        <li class="flex gap-2 items-start text-sm">
+                          <span
+                            class="text-primary shrink-0 mt-0.5"
+                            aria-hidden="true"
+                          >
+                            –
+                          </span>
+                          <span>{h}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
               </div>
-              <div class="flex justify-between items-center">
-                {project.data.tags.length > 0 && (
-                  <div class="flex-1 min-w-9 flex flex-1 min-w-0 overflow-hidden gap-2 mask-[linear-gradient(to_right,_black_70%,_transparent_100%)]">
-                    {project.data.tags.map(tag => (
-                      <TagLink href={`/projects?tag=${encodeURIComponent(tag)}`} tag={tag}/>
-                    ))}
-                  </div>
-                )}
-                {(hasDetailPage || project.data.liveUrl || project.data.repoUrl) && (
-                  <div class="flex flex-wrap gap-x-4 gap-y-1 font-mono text-sm text-muted-foreground mt-0.5 shrink-0">
-                    {project.data.repoUrl && (
-                      <IconLink href={project.data.repoUrl} Icon={GitHubIcon} iconSize={14} label="Source Code" external />
-                    )}
-                    {project.data.liveUrl && (
-                      <IconLink href={project.data.liveUrl} Icon={GlobeIcon} iconSize={14} label="Live Website" external />
-                    )}
-                    {hasDetailPage && (
-                      <IconLink href={`/projects/${slug}`} Icon={ProjectIcon} iconSize={14} label="More Information" />
-                    )}
-                  </div>
-                )}
-              </div>
-              
-              {project.data.resumeSummary && (
-                <p class="mt-2 text-sm leading-relaxed text-foreground">{project.data.resumeSummary}</p>
-              )}
-              {project.data.resumeHighlights && project.data.resumeHighlights.length > 0 && (
-                <ul class="mt-2 space-y-1.5">
-                  {project.data.resumeHighlights.map(h => (
-                    <li class="flex gap-2 items-start text-sm">
-                      <span class="text-primary shrink-0 mt-0.5" aria-hidden="true">–</span>
-                      <span>{h}</span>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
-          );
-        })}
-      </div>
-    </section>
-  )}
+            );
+          })}
+        </div>
+      </section>
+    )
+  }
 
   <section class="mt-10">
-    <h2 class="text-base font-semibold uppercase tracking-wide text-muted-foreground border-b border-border pb-1 mb-5">
+    <h2
+      class="text-base font-semibold uppercase tracking-wide text-muted-foreground border-b border-border pb-1 mb-5"
+    >
       Skills
     </h2>
     <div class="space-y-3">
-      {resume.skills.categories.map(cat => (
-        <div class="flex gap-4 text-sm">
-          <span class="font-mono text-muted-foreground w-28 shrink-0">{cat.name}</span>
-          <span>{cat.items.join(', ')}</span>
-        </div>
-      ))}
+      {
+        resume.skills.categories.map((cat) => (
+          <div class="flex gap-4 text-sm">
+            <span class="font-mono text-muted-foreground w-28 shrink-0">
+              {cat.name}
+            </span>
+            <span>{cat.items.join(", ")}</span>
+          </div>
+        ))
+      }
     </div>
   </section>
 </DocumentLayout>
