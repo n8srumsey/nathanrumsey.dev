@@ -1,0 +1,39 @@
+---
+import { formatDate } from '../../../utils/dates';
+interface Props {
+    experience: ExperienceData
+}
+const { experience } = Astro.props;
+---
+
+<div>
+    <div class="flex justify-between items-baseline gap-4">
+        <h3 class="font-medium">{experience.role}</h3>
+        <span class="font-mono text-sm text-muted-foreground shrink-0">
+        {formatDate(experience.start)} —{" "}
+        {experience.end ? formatDate(experience.end) : "Present"}
+        </span>
+    </div>
+
+    <div class="flex justify-between">
+        <p class="text-sm text-muted-foreground mt-0.5"> {experience.company} </p>
+        {experience.location && <p class="text-sm text-muted-foreground mt-0.5"> {experience.location} </p>}
+    </div>
+
+    {/* annotations not rendered in MVP — see docs/ARCHITECTURE.md */}
+
+    <p class="mt-2 text-sm leading-relaxed text-foreground">
+        {experience.description}
+    </p>
+
+    {experience.highlights.length > 0 && (
+        <ul class="mt-2 space-y-1.5">
+        {experience.highlights.map((h) => (
+            <li class="flex gap-2 items-start text-sm">
+                <span class="text-primary shrink-0 mt-0.5" aria-hidden="true">–</span>
+                <span>{h}</span>
+            </li>
+        ))}
+        </ul>
+    )}
+</div>

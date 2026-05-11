@@ -1,0 +1,14 @@
+---
+import SkillCategory from './elements/SkillCategory.astro';
+
+interface Props {
+  skills: SkillsData[]
+}
+const { skills } = Astro.props;
+---
+<section class="mt-10">
+    <h2 class="text-base font-semibold uppercase tracking-wide text-muted-foreground border-b border-border pb-1 mb-5" >Skills</h2>
+    <div class="space-y-3">
+      {skills.map((cat) => (<SkillCategory category={cat}/>))}
+    </div>
+</section>

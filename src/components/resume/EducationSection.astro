@@ -1,0 +1,11 @@
+---
+import EducationEntry from './elements/EducationEntry.astro'
+interface Props {
+    education: EducationData[]
+}
+const { education } = Astro.props
+---
+<section class="mt-10">
+    <h2 class="text-base font-semibold uppercase tracking-wide text-muted-foreground border-b border-border pb-1 mb-5">Education</h2>
+    <div class="space-y-4"> {education.map((edu) => (<EducationEntry entry={edu}/>))} </div>
+</section>

@@ -1,0 +1,58 @@
+---
+import GitHubIcon from "../../icons/GitHubIcon"
+import GlobeIcon from "../../icons/GlobeIcon";
+import ProjectIcon from "../../icons/ProjectIcon";
+import TagLink from "../../ui/TagLink.astro";
+import IconLink from "../../ui/IconLink";
+import { idToSlug } from "../../../utils/slugs";
+import { formatDate } from "../../../utils/dates";
+import ResumeProjectLinks from "../../ui/ResumeProjectLinks.astro";
+interface Props {
+    project: ProjectData
+}
+const { project } = Astro.props
+const hasDetailPage = Boolean(project.body && project.body.trim().length > 0);
+const slug = idToSlug(project.id);
+---
+
+<div>
+    <div class="flex justify-between items-baseline gap-4">
+        <h3 class="font-medium">{project.data.name}</h3>      
+        {project.data.start && project.data.resumeDisplayDate && (
+            <span class="font-mono text-sm text-muted-foreground shrink-0">
+                {formatDate(project.data.start).concat(" — ", project.data.end ? formatDate(project.data.end) : "Present")}
+            </span>
+        )}
+        {!(project.data.start && project.data.resumeDisplayDate) && (
+            <ResumeProjectLinks hasDetailPage={hasDetailPage} liveUrl={project.data.liveUrl} repoUrl={project.data.repoUrl} slug={slug}/>
+        )}
+    </div>
+    <div class="flex justify-between items-baseline items-center">
+        {project.data.tags.length > 0 && (
+            <div class="flex-1 flex min-w-9 p-1 gap-2 mask-[linear-gradient(to_right,_black_70%,_transparent_100%)]">
+                {project.data.tags.map((tag) => (<TagLink href={`/projects?tag=${encodeURIComponent(tag)}`} tag={tag} /> ))}
+            </div>
+        )}
+        {(project.data.start && project.data.resumeDisplayDate) && (
+            <ResumeProjectLinks hasDetailPage={hasDetailPage} liveUrl={project.data.liveUrl} repoUrl={project.data.repoUrl} slug={slug}/>
+        )}
+    </div>
+
+    {project.data.resumeSummary && (
+        <p class="mt-2 text-sm leading-relaxed text-foreground">
+            {project.data.resumeSummary}
+        </p>
+    )}
+    {project.data.resumeHighlights && project.data.resumeHighlights.length > 0 && (
+        <ul class="mt-2 space-y-1.5">
+            {project.data.resumeHighlights.map((h) => (
+                <li class="flex gap-2 items-start text-sm">
+                    <span class="text-primary shrink-0 mt-0.5" aria-hidden="true">–</span>
+                    <span>{h}</span>
+                </li>
+            ))}
+        </ul>
+    )}
+</div>
+        
+          
