@@ -172,10 +172,10 @@ export default function ProjectIndexFilter({ projects }: { projects: ProjectData
           )}
         </div>
 
-        <button onClick={() => set({ source: !filters.source })} className={toggleBtnClass(filters.source)}>Source</button>
+        <button onClick={() => set({ source: !filters.source })} className={toggleBtnClass(filters.source)}>Source Available</button>
         <button onClick={() => set({ live: !filters.live })} className={toggleBtnClass(filters.live)}>Live</button>
         <button onClick={() => set({ featured: !filters.featured })} className={toggleBtnClass(filters.featured)}>Featured</button>
-        <button onClick={() => set({ blog: !filters.blog })} className={toggleBtnClass(filters.blog)}>Blog</button>
+        <button onClick={() => set({ blog: !filters.blog })} className={toggleBtnClass(filters.blog)}>Blog Content</button>
 
         <div className="flex-1" />
 
