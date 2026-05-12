@@ -52,7 +52,7 @@ export default function ProjectCard({ project, onTagClick, activeTags }: Props) 
               href={href}
               target={isExternal ? '_blank' : undefined}
               rel={isExternal ? 'noopener noreferrer' : undefined}
-              className="hover:underline pointer-events-auto"
+              className="hover:text-primary hover:underline pointer-events-auto"
             >
               {project.name}
             </a>
@@ -123,7 +123,7 @@ export default function ProjectCard({ project, onTagClick, activeTags }: Props) 
                 href={href}
                 target={isExternal ? '_blank' : undefined}
                 rel={isExternal ? 'noopener noreferrer' : undefined}
-                className="hover:underline pointer-events-auto"
+                className="hover:text-primary hover:underline pointer-events-auto"
               >
                 {project.name}
               </a>

@@ -34,7 +34,7 @@ export default function BlogPostCard({ post, onTagClick, activeTags }: Props) {
     <div className="relative pointer-events-none pb-5">
       <div className="flex flex-wrap items-baseline gap-x-3 gap-y-0.5">
         <h2 className="font-semibold font-mono line-clamp-2">
-          <a href={`/blog/${post.slug}`} className="hover:underline pointer-events-auto">{post.title}</a>
+          <a href={`/blog/${post.slug}`} className="hover:underline hover:text-primary pointer-events-auto">{post.title}</a>
         </h2>
         <div className="flex items-center gap-x-2 font-mono text-sm text-muted-foreground">
           <time dateTime={post.date}>{dateStr}</time>
