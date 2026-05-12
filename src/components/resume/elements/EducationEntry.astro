@@ -13,23 +13,27 @@ const { entry } = Astro.props
         </span>
     </div>
 
-    <div class="flex justify-between items-baseline mb-4">
+    <div class="flex justify-between items-baseline mb-2">
         <span class="font-mono text-sm text-muted-foreground">{entry.degree}</span>
         <span class="font-mono text-sm text-muted-foreground">{entry.location}</span>
     </div>
 
-    {entry.gpa && (
-        <div class="flex gap-4 text-sm">
-            <span class="font-mono text-muted-foreground w-28 shrink-0">GPA</span>
-            <span>{entry.gpa}</span>
-        </div>
-    )}
+    <ul class="mt-2 space-y-1.5">
+        {entry.gpa && (
+            <li class="flex gap-2 items-start text-sm">
+                <span class="text-primary shrink-0 mt-0.5" aria-hidden="true">–</span>
+                <span class="font-medium">GPA:</span>
+                <span class="italic">{entry.gpa}</span>
+            </li>
+        )}
 
-    {entry.activities && (
-        <div class="flex gap-4 text-sm">
-            <span class="font-mono text-muted-foreground w-28 shrink-0">Activities</span>
-            <span>{entry.activities}</span>
-        </div>
-    )}
+        {entry.activities && (
+            <li class="flex gap-2 items-start text-sm">
+                <span class="text-primary shrink-0 mt-0.5" aria-hidden="true">–</span>
+                <span class="font-medium">Activities:</span>
+                <span class="italic">{entry.activities}</span>
+            </li>
+        )}
+    </ul>
 </div>
 
