@@ -43,7 +43,7 @@ type EducationData = {
     }[] | undefined;
 }
 
-type ProjectData = {
+type ResumeProjectData = {
     id: string;
     body?: string;
     collection: "projects";
