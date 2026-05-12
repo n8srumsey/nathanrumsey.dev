@@ -22,7 +22,7 @@ const basics = resumeEntries[0]?.data.basics;
 ---
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scrollbar-thin scrollbar-thumb-scroll-thumb scrollbar-track-scroll-track">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -55,25 +55,20 @@ const basics = resumeEntries[0]?.data.basics;
       <slot />
     </main>
 
-    <footer class="shrink-0 border-t border-border text-sm text-muted-foreground">
-      <div class="max-w-6xl mx-auto px-8 py-4 flex items-center gap-4">
-        <a href="/rss.xml" class="flex items-center gap-1.5 hover:text-foreground transition-colors">
+    <footer class="shrink-0 border-t border-border text-sm text-muted-foreground flex items-center">
+      <div class="max-w-6xl mx-auto px-8 py-4 flex items-center gap-8">
+        <a href="/rss.xml" class="flex items-center gap-1.5 hover:text-primary transition-colors">
           <RssIcon size={14} />RSS
         </a>
-        <span aria-hidden="true">·</span>
         {basics?.email && (
-          <a href={`mailto:${basics.email}`} class="flex items-center gap-1.5 hover:text-foreground transition-colors">
+          <a href={`mailto:${basics.email}`} class="flex items-center gap-1.5 hover:text-primary transition-colors">
             <MailIcon size={14} />{basics.email}
           </a>
         )}
         {basics?.social?.linkedin && (
-          <>
-            <span aria-hidden="true">·</span>
-            <a href={basics.social.linkedin} target="_blank" rel="noopener noreferrer"
-              class="flex items-center gap-1.5 hover:text-foreground transition-colors">
-              <LinkedInIcon size={14} />LinkedIn
-            </a>
-          </>
+          <a href={basics.social.linkedin} target="_blank" rel="noopener noreferrer" class="flex items-center gap-1.5 hover:text-primary transition-colors">
+            <LinkedInIcon size={14} />LinkedIn
+          </a>
         )}
       </div>
     </footer>

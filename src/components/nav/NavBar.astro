@@ -8,13 +8,12 @@ interface Props {
 
 const { currentPath } = Astro.props;
 
-const isActive = (href: string) =>
-  currentPath === href || currentPath.startsWith(href + '/');
+const isActive = (href: string) => currentPath === href || currentPath.startsWith(href + '/');
 ---
 
 <header class="bg-nav border-b border-border shrink-0">
   <nav aria-label="Main navigation" class="max-w-6xl mx-auto px-8 py-4 flex items-center gap-1 text-sm">
-    <a href="/" aria-label="Home" class="flex items-center gap-2 font-semibold text-foreground mr-auto transition-opacity duration-150 hover:opacity-70">
+    <a href="/" aria-label="Home" class="flex items-baseline gap-2 font-semibold text-foreground mr-auto px-3 py-2 transition-color duration-150 hover:text-primary">
       <FaviconIcon size={20} />
       Nathan Rumsey
     </a>

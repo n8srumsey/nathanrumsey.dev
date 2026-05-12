@@ -9,7 +9,10 @@ const { href, active = false } = Astro.props;
 
 <a
   href={href}
-  class={`px-3 py-1.5 rounded-full transition-colors duration-150 ${active ? 'text-foreground bg-primary-subtle' : 'text-muted-foreground hover:text-foreground hover:bg-primary-subtle'}`}
+  class={`px-3 py-2 transition-all duration-200 ease-out font-semibold
+  ${active 
+    ? 'text-primary border-b-2 border-primary' 
+    : 'text-foreground border-b-2 border-transparent hover:text-primary hover:border-primary/50'}`}
   aria-current={active ? 'page' : undefined}
 >
   <slot />
