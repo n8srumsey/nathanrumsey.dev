@@ -10,7 +10,7 @@ const basics = resumeEntries[0]?.data.basics;
 ---
 
 <BaseLayout title="About — Nathan Rumsey">
-  <section class="max-w-2xl w-full mx-auto px-8 py-10 my-8">
+  <article class="max-w-2xl w-full mx-auto px-8 py-10 my-8">
     <h1 class="text-3xl font-bold tracking-tight">{basics?.name ?? 'Nathan Rumsey'}</h1>
     <p class="text-lg text-muted-foreground mt-1">{basics?.title ?? 'Software Engineer'}</p>
 
@@ -37,5 +37,5 @@ const basics = resumeEntries[0]?.data.basics;
         </a>
       )}
     </div>
-  </section>
+  </article>
 </BaseLayout>
