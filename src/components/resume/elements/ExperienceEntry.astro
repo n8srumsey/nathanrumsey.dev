@@ -1,5 +1,6 @@
 ---
 import { formatDate } from '../../../utils/dates';
+import ResumeList from '../../ui/ResumeList.astro';
 interface Props {
     experience: ExperienceData
 }
@@ -27,13 +28,8 @@ const { experience } = Astro.props;
     </p>
 
     {experience.highlights.length > 0 && (
-        <ul class="mt-2 space-y-1.5">
-        {experience.highlights.map((h) => (
-            <li class="flex gap-2 items-start text-sm">
-                <span class="text-primary shrink-0 mt-0.5" aria-hidden="true">–</span>
-                <span>{h}</span>
-            </li>
-        ))}
-        </ul>
+        <ResumeList>
+            {experience.highlights.map((h) => (<li>{h}</li>))}
+        </ResumeList>
     )}
 </div>

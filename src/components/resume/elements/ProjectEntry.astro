@@ -7,8 +7,9 @@ import IconLink from "../../ui/IconLink";
 import { idToSlug } from "../../../utils/slugs";
 import { formatDate } from "../../../utils/dates";
 import ResumeProjectLinks from "../../ui/ResumeProjectLinks.astro";
+import ResumeList from "../../ui/ResumeList.astro";
 interface Props {
-    project: ProjectData
+    project: ResumeProjectData
 }
 const { project } = Astro.props
 const hasDetailPage = Boolean(project.body && project.body.trim().length > 0);
@@ -44,14 +45,9 @@ const slug = idToSlug(project.id);
         </p>
     )}
     {project.data.resumeHighlights && project.data.resumeHighlights.length > 0 && (
-        <ul class="mt-2 space-y-1.5">
-            {project.data.resumeHighlights.map((h) => (
-                <li class="flex gap-2 items-start text-sm">
-                    <span class="text-primary shrink-0 mt-0.5" aria-hidden="true">–</span>
-                    <span>{h}</span>
-                </li>
-            ))}
-        </ul>
+        <ResumeList>
+            {project.data.resumeHighlights.map((h) => (<li>{h}</li>))}
+        </ResumeList>
     )}
 </div>
         

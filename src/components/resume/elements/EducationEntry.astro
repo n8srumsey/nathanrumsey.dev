@@ -1,4 +1,5 @@
 ---
+import ResumeList from '../../ui/ResumeList.astro'
 import { formatDate } from '../../../utils/dates'
 interface Props {
     entry: EducationData
@@ -18,22 +19,20 @@ const { entry } = Astro.props
         <span class="font-mono text-sm text-muted-foreground">{entry.location}</span>
     </div>
 
-    <ul class="mt-2 space-y-1.5">
+    <ResumeList>
         {entry.gpa && (
-            <li class="flex gap-2 items-start text-sm">
-                <span class="text-primary shrink-0 mt-0.5" aria-hidden="true">–</span>
+            <li class="gap-2 items-start">
                 <span class="font-medium">GPA:</span>
-                <span class="italic">{entry.gpa}</span>
+                <span>{entry.gpa}</span>
             </li>
         )}
 
         {entry.activities && (
-            <li class="flex gap-2 items-start text-sm">
-                <span class="text-primary shrink-0 mt-0.5" aria-hidden="true">–</span>
+            <li class="gap-2 items-start">
                 <span class="font-medium">Activities:</span>
-                <span class="italic">{entry.activities}</span>
+                <span>{entry.activities}</span>
             </li>
         )}
-    </ul>
+    </ResumeList>
 </div>
 
