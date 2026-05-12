@@ -62,7 +62,7 @@ export default function BlogPostCard({ post, onTagClick, activeTags }: Props) {
     <a
       href={`/blog/${post.slug}`}
       className="absolute bottom-3.5 right-4 flex items-center gap-0.5 font-mono text-xs text-muted-foreground group-hover:text-primary group-hover:font-medium transition-colors"
-      aria-hidden="true"
+      aria-label={`${post.title} Blog Post`}
       tabIndex={-1}
     >
       Read more
@@ -76,7 +76,7 @@ export default function BlogPostCard({ post, onTagClick, activeTags }: Props) {
         <a
           href={`/blog/${post.slug}`}
           className="absolute inset-0 rounded-lg"
-          aria-hidden="true"
+          aria-label={`${post.title} Blog Post`}
           tabIndex={-1}
         />
         <div className="flex-1 min-w-0 p-5 relative">
@@ -95,7 +95,7 @@ export default function BlogPostCard({ post, onTagClick, activeTags }: Props) {
       <a
         href={`/blog/${post.slug}`}
         className="absolute inset-0 rounded-lg"
-        aria-hidden="true"
+        aria-label={`${post.title} Blog Post`}
         tabIndex={-1}
       />
       {mainContent}

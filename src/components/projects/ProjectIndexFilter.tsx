@@ -1,11 +1,9 @@
 import { useState, useEffect, useMemo, useRef } from 'react';
 import { navigate } from '../../utils/filterSort';
-import ProjectCard, { type ProjectData } from './ProjectCard';
+import ProjectCard from './ProjectCard';
 import { TagAutocomplete } from '../ui/TagAutocomplete';
 import { DropdownSelect } from '../ui/DropdownSelect';
 import ChevronDownIcon from '../icons/ChevronDownIcon';
-
-export type { ProjectData };
 
 type ProjectSort = 'featured' | 'az' | 'za' | 'newest' | 'oldest';
 
@@ -97,7 +95,7 @@ const toggleBtnClass = (active: boolean) =>
   `font-mono text-xs px-2 py-0.5 rounded-full border transition-colors cursor-pointer ${
     active
       ? 'bg-primary-subtle border-primary text-primary'
-      : 'bg-surface border-border text-foreground hover:border-primary/40'
+      : 'bg-surface border-border text-foreground hover:bg-primary-subtle hover:border-primary hover:text-primary'
   }`;
 
 const tagChip = 'flex items-center gap-1 font-mono text-xs px-2 py-0.5 rounded-full border bg-primary-subtle border-primary text-primary';

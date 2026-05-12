@@ -6,22 +6,6 @@ import ArticleIcon from '../icons/ArticleIcon';
 import IconLink from '../ui/IconLink';
 import TagList from '../ui/TagList';
 
-export type ProjectData = {
-  slug: string;
-  name: string;
-  description: string;
-  tags: string[];
-  featured: boolean;
-  repoUrl?: string;
-  liveUrl?: string;
-  hasDetailPage: boolean;
-  relatedSeries?: { slug: string; name: string };
-  relatedPosts: { slug: string; title: string }[];
-  image?: string;
-  start?: string;
-  end?: string;
-};
-
 interface Props {
   project: ProjectData;
   onTagClick: (tag: string) => void;
@@ -38,7 +22,7 @@ export default function ProjectCard({ project, onTagClick, activeTags }: Props) 
     <a
       href={`/projects/${project.slug}`}
       className="absolute inset-0 rounded-lg"
-      aria-hidden="true"
+      aria-label={`${project.name} Project Page`}
       tabIndex={-1}
     />
   ) : null;
