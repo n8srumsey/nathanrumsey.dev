@@ -2,6 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
 import { idToSlug } from '../utils/slugs';
+import LandingFeaturedCard from '../components/landing/LandingFeaturedCard.astro';
 
 const resumeEntries = await getCollection('resume');
 const basics = resumeEntries[0]?.data.basics;
@@ -34,32 +35,22 @@ const featuredProject = pinnedProject ?? allProjects
     <section class="pb-16 px-6">
       <div class="max-w-4xl mx-auto grid grid-cols-1 sm:grid-cols-2 gap-4">
         {latestPost && (
-          <div class="border border-border rounded-lg p-5 bg-surface flex flex-col gap-3">
-            <span class="font-mono text-xs text-primary tracking-wider uppercase">Latest Post</span>
-            <div>
-              <a href={`/blog/${idToSlug(latestPost.id)}`} class="font-semibold hover:text-primary transition-colors">
-                {latestPost.data.title}
-              </a>
-              <p class="text-sm text-muted-foreground mt-1 line-clamp-2">{latestPost.data.description}</p>
-            </div>
-            <a href="/blog" class="font-mono text-xs text-muted-foreground hover:text-primary transition-colors mt-auto self-end">
-              All posts →
-            </a>
-          </div>
+          <LandingFeaturedCard 
+              callout='Latest Post' 
+              title={latestPost.data.title} 
+              contentUrl={`/blog/${idToSlug(latestPost.id)}`} 
+              description={latestPost.data.description} 
+              moreText='All posts'
+              moreLink='/blog'/>
         )}
         {featuredProject && (
-          <div class="border border-border rounded-lg p-5 bg-surface flex flex-col gap-3">
-            <span class="font-mono text-xs text-primary tracking-wider uppercase">Featured Project</span>
-            <div>
-              <a href={`/projects/${idToSlug(featuredProject.id)}`} class="font-semibold hover:text-primary transition-colors">
-                {featuredProject.data.name}
-              </a>
-              <p class="text-sm text-muted-foreground mt-1 line-clamp-2">{featuredProject.data.description}</p>
-            </div>
-            <a href="/projects" class="font-mono text-xs text-muted-foreground hover:text-primary transition-colors mt-auto self-end">
-              All projects →
-            </a>
-          </div>
+          <LandingFeaturedCard 
+              callout='Featured Project' 
+              title={featuredProject.data.name} 
+              contentUrl={`/projects/${idToSlug(featuredProject.id)}`} 
+              description={featuredProject.data.description} 
+              moreText='All projects' 
+              moreLink='/projects'/>
         )}
       </div>
     </section>

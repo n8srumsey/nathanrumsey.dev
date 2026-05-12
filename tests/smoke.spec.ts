@@ -16,8 +16,8 @@ test('landing page hero and callouts are visible', async ({ page }) => {
   await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
   await expect(page.getByText('Latest Post')).toBeVisible();
   await expect(page.getByText('Featured Project')).toBeVisible();
-  await expect(page.getByRole('link', { name: 'All posts →' })).toHaveAttribute('href', '/blog');
-  await expect(page.getByRole('link', { name: 'All projects →' })).toHaveAttribute('href', '/projects');
+  await expect(page.getByRole('link', { name: 'All posts' })).toHaveAttribute('href', '/blog');
+  await expect(page.getByRole('link', { name: 'All projects' })).toHaveAttribute('href', '/projects');
 });
 
 test('landing page callout links navigate correctly', async ({ page }) => {
