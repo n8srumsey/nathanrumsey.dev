@@ -62,13 +62,13 @@ const resume = defineCollection({
     basics: z.object({
       name: z.string(),
       title: z.string(),
-      email: z.string().email().optional(),
-      website: z.string().url().optional(),
+      email: z.email().optional(),
+      website: z.url().optional(),
       location: z.string().optional(),
       summary: z.string().optional(),
       social: z.object({
-        github: z.string().url(),
-        linkedin: z.string().url(),
+        github: z.url(),
+        linkedin: z.url(),
       }).optional(),
     }),
     experience: z.array(z.object({
