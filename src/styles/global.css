@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
+@plugin "tailwind-scrollbar";
 
 @theme {
   /* Fonts */
@@ -33,6 +34,75 @@
   --shadow-sm: 0 1px 2px hsl(207 35% 4% / 0.6);
   --shadow-md: 0 4px 12px hsl(207 35% 4% / 0.5), 0 1px 3px hsl(207 35% 4% / 0.4);
   --shadow-lg: 0 0 0 1px hsl(215 15% 14% / 0.9), 0 8px 48px hsl(207 35% 4% / 0.6);
+
+  /* Scrollbar */
+  --color-scroll-thumb: hsl(162 68% 44%);
+  --color-scroll-track: transparent;
+}
+
+/* Scrollbar Overriding Configuration */
+@layer base {
+  html {
+    scrollbar-gutter: stable;
+  }
+
+  ::-webkit-scrollbar-button {
+    display: none;
+  }
+
+  html {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-scroll-thumb) var(--color-scroll-track);
+  }
+
+  :where(pre, code, .overflow-x-auto)::-webkit-scrollbar {
+    height: 6px;
+  }
+
+  :where(pre, code, .overflow-x-auto)::-webkit-scrollbar-track {
+    background: var(--color-scroll-track);
+  }
+
+  :where(pre, code, .overflow-x-auto)::-webkit-scrollbar-thumb {
+    background: var(--color-scroll-thumb);
+    border-radius: 4px;
+  }
+
+  :where(pre, code, .overflow-x-auto)::-webkit-scrollbar-button {
+    display: block;
+    height: 8px;
+    width: 8px;
+    background: var(--color-scroll-track);
+  }
+
+  :where(pre, code, .overflow-x-auto)::-webkit-scrollbar-button:single-button:horizontal:decrement {
+    background: url("data:image/svg+xml,...") center center no-repeat;
+  }
+  
+  :where(pre, code, .overflow-x-auto)::-webkit-scrollbar-thumb:hover {
+    background: color-mix(in srgb, var(--color-scroll-thumb), black 20%);
+  }
+}
+
+@layer components {
+  .resume-list {
+    @apply mt-2 space-y-1.5 ml-2 list-none;
+  }
+
+  .resume-list > li {
+    @apply text-sm relative pl-6;
+    
+    &::before {
+      content: '\2013';
+      position: absolute;
+      left: 0;
+      top: 0.15em;
+      color: theme('colors.primary.DEFAULT');
+      width: 1rem;
+      text-align: center;
+      pointer-events: none;
+    }
+  }
 }
 
 /* Subtle dot-grid pattern on the outer background */
@@ -40,3 +110,4 @@ body {
   background-image: radial-gradient(circle, hsl(162 68% 70% / 0.05) 1px, transparent 1px);
   background-size: 28px 28px;
 }
+
