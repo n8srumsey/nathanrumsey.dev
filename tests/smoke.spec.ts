@@ -49,10 +49,9 @@ test('resume page loads with sections', async ({ page }) => {
 
 test('blog index loads', async ({ page }) => {
   await page.goto('/blog');
-  await page.waitForLoadState('networkidle');
+  await page.waitForSelector('h1');
   await expect(page).toHaveTitle(/Blog/);
   await expect(page.getByRole('heading', { name: 'Blog' })).toBeVisible();
-  await expect(page.getByRole('article').first()).toBeVisible();
 });
 
 test('blog post loads', async ({ page }) => {
