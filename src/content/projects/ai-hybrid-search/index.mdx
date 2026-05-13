@@ -1,16 +1,97 @@
 ---
 name: AI-Powered Hybrid Search Engine
 description: High-performance file search combining keyword and vector-based semantic retrieval, achieving 0.06s latency across 100k+ files.
-tags: [Python, Redis, SQLite, FAISS, REST API]
-featured: false
+tags: [Python, Flask, Redis, SQLite, Rest API, LMDB, FAISS, GloVe, NLP]
+featured: true
+repoUrl: https://github.com/n8srumsey/HybridFileSearchEngine
 image: https://picsum.photos/seed/neural/400/300
+imageCaption: Caption goes here.
+start: "2025-01"
+end: "2025-03"
+resumeDisplayDate: false
+resumeDisplayPriority: 8
+resumeSummary: A high-performance local file search engine combining traditional keyword search with vector-based semantic retrieval using custom-trained language model embeddings.
+resumeHighlights: 
+- Engineered a hybrid search engine combining keyword and vector-based semantic retrieval using custom-trained embeddings and FAISS, achieving 0.06s latency and 10x faster results than Windows Search for 100k+ files.
+- Designed a modular, event-driven AI indexing pipeline with a Redis worker queue, SQLite metadata store, and incremental updates enabling near-real-time synchronization of file changes via semantic embeddings.
 ---
+
+import { Image } from 'astro:assets';
+import system_architecture from './system_architecture.png';
 
 ## Overview
 
-A high-performance local file search engine combining traditional keyword search with vector-based semantic retrieval using custom-trained embeddings. Built in five weeks as an independent project.
+Default file operating system search tools on Windows and Linux such as File Explorer and Nautilus often suffer from poor performance, prompting the need for a more efficient alternative. This project develops a high-performance desktop search application that supports multiple retrieval models, including keyword-based and semantic similarity searches. The system features efficient indexing, metadata-based filtering, and search result context previews, all accessible via a command-line interface.
 
-## Highlights
+## Problem Statement
 
-- Engineered a hybrid search engine combining keyword and vector-based semantic retrieval using custom-trained embeddings and FAISS, achieving 0.06s latency and 10x faster results than Windows Search for 100k+ files.
-- Designed a modular, event-driven AI indexing pipeline with a Redis worker queue, SQLite metadata store, and incremental updates enabling near-real-time synchronization of file changes via semantic embeddings.
+File system search is a fundamental feature in operating systems, enabling users to locate files and directories efficiently. However, default tools like Windows File Explorer and Nautilus in Linux have been reported to exhibit performance issues. Users have noted that Windows File Explorer's search functionality can be notably slow, even in directories with relatively few files. Similarly, Nautilus has been observed to perform poorly when parsing large directories.
+
+Several alternative tools have been developed to enhance the file search experience. For instance, Microsoft's PowerToys includes an improved search utility that offers faster performance and additional features. Open-source solutions like "Everything" for Windows and "FSearch" for Linux provide more efficient search capabilities compared to the default file managers. However, these alternatives may present concerns such as security vulnerabilities or lack of file content indexing.
+
+The motivation for this project stems from the need for a more efficient and effective file search tool that overcomes the limitations of existing solutions, notably query time and search performance. By leveraging advanced information retrieval (IR) techniques, the proposed system aims to improve user productivity through faster and more accurate search results.
+
+## Solution
+
+This project's solution involves developing a local file search engine that supports multiple retrieval models, including keyword-based and semantic similarity searches. Users have the flexibility to choose between these models to suit their specific search needs. The system features an interactive command-line interface, allowing for efficient searching, filtering, and inspection of results.
+
+Unlike default tools, which are slow and limited to filename search, this system supports both keyword-based and semantic content retrieval. Key features include rapid indexing, flexible query processing, metadata filtering, and content previews—all accessible via a command-line interface. The focus is on engineering an efficient, privacy-preserving solution using proven information retrieval methods, rather than inventing new ones.
+
+## System Architecture
+
+With efficiency and query time as a key goal of this project, the system architecture prioritizes responsiveness, and avoids any delays due to programs loading dependencies or language models into memory prior to the start of the program. 
+
+<Image src={system_architecture} alt="Architecture diagram showing X and Y" />
+
+As depicted in the system architecture diagram above, there are five key components to this software:
+
+### 1. CLI Interface and Python Package API
+
+The CLI Interface and Python Package API provide the primary methods by which users interact with the system. The CLI is designed for terminal-based usage, enabling users to execute searches or initiate indexing tasks directly from the command line. Meanwhile, the Python package exposes a simple programmatic interface, allowing integration into other Python workflows or applications. These interfaces both connect to the search system via a REST API, maintaining a modular architecture that separates the user-facing components from the backend logic.
+
+### 2. Search REST API
+
+The Search REST API is served by a Flask-based web server that acts as the main gateway between users and the core search functionality. It handles HTTP requests from both the CLI and Python API and routes them to the appropriate backend services. This design allows for stateless, asynchronous communication with the Indexing and Search Worker, enabling scalable access patterns and decoupling the UI layer from backend logic. The REST API returns results in structured JSON format, making it easily consumable by both humans and other programs.
+
+### 3. Indexing and Search Worker
+
+The Indexing and Search Worker is the central logic engine of the system. It is responsible for processing file paths pushed to the Redis job queue by the file crawler. Once triggered, the worker performs two key tasks: (1) indexing the file content for BoW and semantic vector search, and (2) serving search queries via the FAISS and LMDB indexes. It loads and manages access to the Gensim-based embedding model (e.g., GloVe) in memory at startup to eliminate runtime loading latency, ensuring fast query responses. This design ensures that model initialization and disk reads do not occur during the query loop, aligning with the system's responsiveness goals.
+
+### 4. File System Crawler
+
+The File System Crawler is inspired by design patterns common in web crawlers, particularly focused crawling and revisit strategies. Implemented in Python, the crawler performs recursive traversal of directories starting from a given root. It maintains a persistent record of visited files using SQLite, tracking metadata such as file paths and modification times. Files that are new or have changed since the last crawl are pushed to a Redis queue for indexing. The crawler operates independently of the indexer, enabling asynchronous and decoupled execution. To avoid redundant work and ensure efficiency, it employs secondary checks using file hashes in addition to timestamp-based heuristics. This layered strategy helps reduce the cost of unnecessary re-indexing while still detecting moved or updated files.
+
+### 5. Data Storage Solutions
+
+The project makes use of four distinct data storage solutions, each chosen due to distinct needs:
+
+- **SQLite** — A lightweight, serverless, file-based relational database designed for fast local storage of structured data. Chosen to track metadata from the file crawler—such as visited paths, modification times, and internal flags—due to its tabular structure and high performance in local, embedded use cases. Preferred over heavier RDBMS options like MySQL or PostgreSQL because it requires no advanced setup steps or server process.
+
+- **Redis** — An in-memory key-value store commonly used for caching and lightweight message brokering. Enables asynchronous communication between the file crawler and indexing worker by serving as a job queue. Its native support for list and stream data structures, atomic operations, and ease of setup made it more suitable than IPC or file-based signaling methods.
+
+- **LMDB** — A high-performance, ACID-compliant key-value store optimized for low-overhead and fast reads. Stores the Bag-of-Words inverted index and FAISS vector ID mappings, which require persistent, key-based access. Selected over alternatives like RocksDB or LevelDB due to its speed, minimal dependencies, and zero-copy reads—making it ideal for memory-efficient, low-latency workloads.
+
+- **FAISS** — A library for fast similarity search and clustering of dense vectors, commonly used for nearest-neighbor queries. Indexes dense embeddings of file contents (e.g., from GloVe) to enable semantic search. Selected over alternatives like Annoy or HNSWLib for its superior scalability, GPU support, and tight integration with Python.
+
+## Evaluation
+
+Evaluation was conducted using standardized IR metrics such as Precision@K and NDCG on the SARA Sensitivity-Aware Relevance Assessments dataset, using document metadata to simulate a hierarchical file system environment. The selected dataset has documents made up of a 1.7k document subset of the 500k documents in the original Enron Email Collection and 150 queries and 34k associated query-document relevance labels.
+
+| Method | P@10 | MAP | MRR | mNDCG@10 | Avg. Query Time (s) |
+|---|---|---|---|---|---|
+| Hybrid | 0.1220 | 0.2429 | 0.4454 | 0.1398 | 0.0539 |
+| BM25Okapi | 0.2273 | 0.3210 | 0.5066 | 0.2702 | 0.0485 |
+| GloVe Semantic | 0.0827 | 0.1355 | 0.2280 | 0.0837 | 0.0077 |
+| SARA BM25 Benchmark | 0.1893 | N/A | N/A | 0.2009 | N/A |
+
+While the semantic search method using GloVe embeddings had the lowest average query time at 0.0077 seconds, it also showed the weakest performance across ranking metrics such as P@10 (0.0827) and MRR (0.2280). In contrast, the BM25Okapi implementation performed best overall in retrieval effectiveness, with the highest scores in P@10 (0.2273), MAP (0.3210), MRR (0.5066), and mNDCG@10 (0.2702), while maintaining a relatively low query time of 0.0485 seconds. The hybrid method, which combines BM25 and semantic results, demonstrated a trade-off between speed and performance, offering improved metrics over semantic alone, but falling short of pure BM25Okapi. The SARA BM25 benchmark scores (P@10 = 0.1893, mNDCG@10 = 0.2009) further highlight the effectiveness of the BM25Okapi approach used in this project, which exceeded both benchmark metrics, validating the engine's competitiveness on a real-world query relevance task. The hybrid approach provides a balanced middle ground, maintaining reasonable speed while incorporating semantic retrieval, making it a practical option for systems where interpretability and contextual matching are also important.
+
+## Results & Discussion
+
+This project demonstrates substantial improvements over default file system search tools like Windows File Explorer and Nautilus, which are limited to filename-based queries and often require up to 10 seconds to return results—even in relatively small directories. These tools lack support for content-based or semantically meaningful retrieval. In contrast, the developed system returns results in well under one second across all retrieval models, with semantic queries averaging 0.0077 seconds and hybrid methods completing in approximately 0.05 seconds. This responsiveness is especially beneficial for users navigating large or deeply nested file structures. Beyond speed, the system enables semantic similarity search and context-rich ranking, producing results that are more relevant and informative than those from purely lexical approaches.
+
+## Future Work
+
+Performance can be further improved by introducing multiprocessing. Currently, the hybrid search runs BM25 and semantic models sequentially before interleaving results; executing these in parallel could significantly reduce query latency. Likewise, indexing throughput could be increased by parallelizing file parsing and embedding generation across CPU cores.
+
+In addition to speed, future work could enhance ranking quality. Replacing the current hybrid interleaving strategy with a learning-to-rank (LTR) approach would allow the system to optimize result ordering based on relevance signals. Similarly, dynamically weighting the contributions of BM25 and semantic scores—rather than using fixed weights—could yield more adaptable and context-aware rankings. Finally, transitioning from static embeddings like GloVe to contextual representations such as BERT, DistilBERT, or SBERT would enable the semantic model to better capture word meaning in context, further improving retrieval effectiveness.
