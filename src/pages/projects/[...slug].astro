@@ -8,8 +8,10 @@ import ArticleIcon from '../../components/icons/ArticleIcon';
 import IconLink from '../../components/ui/IconLink';
 import TagLink from '../../components/ui/TagLink.astro';
 import MdxImage from '../../components/ui/MdxImage.astro';
+import MarkdownString from '../../components/ui/MarkdownString.astro';
 import { getCollection, render } from 'astro:content';
 import { idToSlug } from '../../utils/slugs';
+import PhotoswipeImage from '../../components/ui/PhotoswipeImage.astro';
 
 export async function getStaticPaths() {
   const projects = await getCollection('projects');
@@ -81,7 +83,7 @@ const relatedPostEntries = project.data.relatedPosts
         />
         {project.data.imageCaption && (
           <figcaption class="mt-2 text-sm text-muted-foreground font-mono text-center">
-            {project.data.imageCaption}
+            <MarkdownString content={project.data.imageCaption} />
           </figcaption>
         )}
       </figure>

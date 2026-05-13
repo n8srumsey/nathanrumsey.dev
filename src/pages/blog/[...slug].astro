@@ -11,6 +11,7 @@ import ProjectIcon from '../../components/icons/ProjectIcon';
 import { getCollection, render } from 'astro:content';
 import { readingTime } from '../../utils/readingTime';
 import { idToSlug } from '../../utils/slugs';
+import MarkdownString from '../../components/ui/MarkdownString.astro';
 
 export async function getStaticPaths() {
   const posts = await getCollection('blog', ({ data }) => !data.draft);
@@ -126,7 +127,7 @@ const crumbs = [
         />
         {post.data.imageCaption && (
           <figcaption class="mt-2 text-sm text-muted-foreground font-mono text-center">
-            {post.data.imageCaption}
+            <MarkdownString content={post.data.imageCaption} />
           </figcaption>
         )}
       </figure>
