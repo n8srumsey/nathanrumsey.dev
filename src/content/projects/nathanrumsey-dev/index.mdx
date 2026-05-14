@@ -4,31 +4,18 @@ description: "Personal portfolio, resume, and dev diary. The site you're reading
 tags: [Astro, TypeScript, Tailwind, MDX]
 repoUrl: https://github.com/n8srumsey/nathanrumsey.dev
 liveUrl: https://nathanrumsey.dev
-featured: true
+featured: false
 start: "2026-05"
 resumeDisplayDate: true
 resumeDisplayPriority: 1
 resumeSummary: "Personal portfolio website. Static site with a blog, project catalog, and dynamically-driven resume page, all content-driven via MDX and YAML files."
 resumeHighlights:
-  - "Designed and built full-stack portfolio site using Astro 6, React 19, Tailwind CSS v4, and MDX, covering blog, project catalog, and resume page — all data-driven with zero hardcoded content."
+  - "Designed and built full-stack portfolio site using Astro, React, Tailwind CSS, and MDX, covering a blog, project catalog, and resume page, all data-driven with no hardcoded content."
   - "Implemented type-safe Content Layer with Zod schema validation and build-time error detection; deployed via GitHub Actions to Cloudflare Pages."
-relatedSeries: building-nathanrumsey-dev
+relatedPosts: [introducing-nathanrumsey-dev]
+
 ---
 
 ## Overview
 
-This site is my portfolio, resume, and writing outlet. It's built to be a static artifact — no server, served from a CDN — while allowing content updates through plaintext files rather than UI changes.
-
-## Stack
-
-- **Astro 6** — content-first static site generator with built-in content collections
-- **React 19** — interactive islands via `@astrojs/react`, only where needed
-- **Tailwind CSS v4** — utility-first styling via the Vite plugin (no `tailwind.config.ts`)
-- **MDX** — markdown with embedded React components for blog posts and project pages
-
-## Design Goals
-
-- Resume, blog, and project catalog are all data-driven: edit a file, rebuild, done
-- Blog supports series grouping, tags, reading time, and syntax highlighting out of the box
-- Minimal dependencies — simple utilities are rolled rather than imported
-- Full static output: no server required after deploy
+This site is my portfolio, resume, and writing outlet. It's built to be a static artifact with no server, served from a CDN, while allowing content updates through plaintext content files in the source code.
