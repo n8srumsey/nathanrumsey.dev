@@ -6,6 +6,7 @@ import ChevronLeftIcon from '../../components/icons/ChevronLeftIcon.astro';
 import ChevronRightIcon from '../../components/icons/ChevronRightIcon.astro';
 import TagLink from '../../components/ui/TagLink.astro';
 import MdxImage from '../../components/ui/MdxImage.astro';
+import MdxTable from '../../components/ui/MdxTable';
 import IconLink from '../../components/ui/IconLink';
 import ProjectIcon from '../../components/icons/ProjectIcon';
 import { getCollection, render } from 'astro:content';
@@ -134,7 +135,7 @@ const crumbs = [
     )}
 
     <div class="prose prose-invert max-w-none">
-      <Content components={{ img: MdxImage }} />
+      <Content components={{ img: MdxImage, table: MdxTable }} />
     </div>
 
     {seriesEntry && (

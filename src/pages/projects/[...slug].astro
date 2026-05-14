@@ -8,6 +8,7 @@ import ArticleIcon from '../../components/icons/ArticleIcon';
 import IconLink from '../../components/ui/IconLink';
 import TagLink from '../../components/ui/TagLink.astro';
 import MdxImage from '../../components/ui/MdxImage.astro';
+import MdxTable from '../../components/ui/MdxTable';
 import MarkdownString from '../../components/ui/MarkdownString.astro';
 import { getCollection, render } from 'astro:content';
 import { idToSlug } from '../../utils/slugs';
@@ -100,7 +101,7 @@ const relatedPostEntries = project.data.relatedPosts
 
     {hasBody && (
       <div class="prose prose-invert max-w-none">
-        <Content components={{ img: MdxImage }} />
+        <Content components={{ img: MdxImage, table: MdxTable }} />
       </div>
     )}
   </article>
