@@ -46,6 +46,16 @@ const basics = resumeEntries[0]?.data.basics;
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,400;0,14..32,500;0,14..32,600;0,14..32,700;1,14..32,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
     <title>{title}</title>
+    <script is:inline>
+      (function () {
+        try {
+          if (localStorage.getItem('theme') === 'light') {
+            document.documentElement.setAttribute('data-theme', 'light');
+          }
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        } catch (_) {}
+      })();
+    </script>
   </head>
   <body class="bg-background text-foreground font-sans min-h-screen flex flex-col">
 

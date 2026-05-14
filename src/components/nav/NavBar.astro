@@ -1,6 +1,7 @@
 ---
 import NavItem from './NavItem.astro';
 import FaviconIcon from '../icons/FaviconIcon.astro';
+import ThemeToggle from './ThemeToggle.astro';
 
 interface Props {
   currentPath: string;
@@ -31,6 +32,8 @@ const navLinks = [
         <NavItem href={href} active={isActive(href)}>{label}</NavItem>
       ))}
     </div>
+
+    <ThemeToggle />
 
     <!-- Hamburger button (mobile only) -->
     <button
