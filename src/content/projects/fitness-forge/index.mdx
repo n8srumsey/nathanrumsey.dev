@@ -1,0 +1,32 @@
+---
+name: Fitness Forge
+description: ML Researcht to detect presence and identify foodwaste
+tags: [Python, Machine Learning, Full Stack, Flask, Jinja]
+repoUrl: https://github.com/n8srumsey/fitness-forge
+featured: false
+homepagePin: false
+image: https://images.unsplash.com/photo-1685633225086-a762f29f2d03?q=80&w=774&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D
+imageCaption: Photo by [Rick Barrett](https://unsplash.com/@weareambitious) on [Unsplash](https://unsplash.com)
+start: "2026-02"
+resumeDisplayDate: true
+resumeDisplayPriority: 1
+resumeSummary: "ML Foodwaste Detection"
+resumeHighlights:
+  - Placeholder Resume Bulletpoint
+---
+
+I got tired of juggling fragmented tools to manage my swimming and indoor cycling training. One app handled my swim intervals, another tracked my bike power, and my calendar lived somewhere else entirely. The constant context switching and manual data entry made it impossible to see the bigger picture of my training load, or spot when I was pushing too hard too fast. I started building a unified platform that understands the nuances of multimodal training without forcing me to become a data administrator. The goal with this project is to have a self-hosted solution that works for me. I want to keep the door open to develop it into a more realized platform at scale for high numbers of users, but that is not the primary goal for the MVP.
+
+This project centralizes workout design, scheduling, and progression tracking into a single interactive timeline. It will surface useful context such as weather forecasts for outdoor sessions and warns me when my training load spikes beyond safe limits. The goal is to shift the cognitive load from managing the plan to executing the workout.
+
+## Planned Features
+- **Unified Workout Library**: Templates for swim, bike, run, and strength that I can customize and save as recurring regimes.
+- **Interactive Timeline**: A drag-and-drop calendar to visualize weekly load and prevent accidental overtraining.
+- **Smart Progression Checks**: An automated engine that flags when a new session increases volume or intensity by more than 10% compared to recent history.
+- **Contextual Data**: Integrated weather forecasts for outdoor sessions and hooks for Garmin data import.
+- **Micro-Goal Tracking**: A habit stack for daily mobility and recovery tasks that complements major workouts.
+
+## Tech Stack & Architecture
+- **Frontend**: Vite + React + TypeScript
+- **Backend**: Go (Golang)
+- **Architecture**: Service-based design. The MVP starts as a monolith for development speed, but the codebase is structured to allow straightforward extraction into independent services (analytics, notifications, data ingestion) as the system scales.

@@ -1,0 +1,27 @@
+---
+name: ML Competition Leaderboard
+description: Leaderboard to support evluation and administration of ML model development competitions.
+tags: [Python, Machine Learning, Full Stack, Flask, Jinja]
+repoUrl: https://github.com/n8srumsey/ml_leaderboard
+featured: false
+homepagePin: false
+image: https://images.unsplash.com/photo-1579407364450-481fe19dbfaa?q=80&w=1332&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D
+imageCaption: Photo by [Compagnons](https://unsplash.com/@sigmund) on [Unsplash](https://unsplash.com)
+start: "2022-05"
+end: "2022-06"
+resumeDisplayDate: false
+resumeDisplayPriority: 1
+resumeSummary: "ML Leaderboard"
+resumeHighlights:
+  - Placeholder Resume Bulletpoint
+---
+
+When I took over as President of the OSU AI Club, we were looking to run internal machine learning competitions, but had zero infrastructure to support them. External platforms like Kaggle were great for public contests, but they didn't fit our need for quick, private and club-aligned challenges with custom datasets. We needed a way to let members upload predictions and get instant feedback without manually grading CSVs.
+
+I built a lightweight competition engine from scratch to bridge that gap. The goal wasn't to build the next Kaggle, but more to create a functional tool that could launch within weeks. Using Flask and Jinja2, I focused on a bootstrapping a website that handled user acconts, joining and participating in competitions, submitting competition inference results, and leaderboards to track submission scoring. One of the more challenging tasks in this project was universal submission handling.
+
+Free and open-source datasets commonly used in ML research all follow unique dataset file formats and schema. Instead of forcing every new dataset to conform to a rigid, club-defined standard, I engineered the evaluation backend to be format-agnostic. The system parses the incoming prediction file, detects the schema, and dynamically routes it to the correct scoring logic. This meant that for any new competition, the only setup required was defining the ground truth and the metric to score subnmissions against.
+
+Technically, the system was designed to be "boringly simple" to ensure reliability. It runs synchronously, evaluating submissions immediately upon upload. While this wouldn't scale to millions of users, it was perfectly robust for our 100-200 active members. The architecture prioritized flexibility in data ingestion over complex queueing systems, allowing us to spin up a new contest in hours rather than weeks.
+
+The project successfully hosted three internal competitions, however, we had to soon stop using this platform for internal club competitions. Despite the code working flawlessly, we couldn't secure free campus hosting, and the club lacked the budget for persistent cloud infrastructure. We made the decision to migrate our competions to Kaggle for future events. At the end of the day, this project served its purpose: it proved the concept, engaged the club members members, and gave the opportunity to start hosting internal club competitions.
