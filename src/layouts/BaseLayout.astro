@@ -55,8 +55,8 @@ const basics = resumeEntries[0]?.data.basics;
       <slot />
     </main>
 
-    <footer class="shrink-0 border-t border-border text-sm text-muted-foreground flex items-center">
-      <div class="max-w-6xl mx-auto px-8 py-4 flex items-center gap-8">
+    <footer class="shrink-0 border-t border-border text-sm text-muted-foreground">
+      <div class="max-w-6xl mx-auto px-8 py-4 flex flex-col sm:flex-row items-center gap-2 sm:gap-8">
         <a href="/rss.xml" class="flex items-center gap-1.5 hover:text-primary transition-colors">
           <RssIcon size={14} />RSS
         </a>
@@ -86,6 +86,7 @@ const basics = resumeEntries[0]?.data.basics;
         bgOpacity: 0.9,
         showHideOpacity: true,
         closeOnVerticalDrag: true,
+        tapAction: 'close',
       });
 
       lightbox.init();
