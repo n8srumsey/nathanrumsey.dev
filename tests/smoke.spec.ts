@@ -8,6 +8,7 @@ test('landing page loads with nav links', async ({ page }) => {
   await expect(topNav.getByRole('link', { name: 'Resume' })).toBeVisible();
   await expect(topNav.getByRole('link', { name: 'Blog' })).toBeVisible();
   await expect(topNav.getByRole('link', { name: 'Projects' })).toBeVisible();
+  await expect(topNav.getByRole('button', { name: /Switch to (light|dark) mode/i })).toBeVisible();
   await expect(page.getByRole('contentinfo').getByRole('link', { name: 'LinkedIn' })).toHaveAttribute('href', /linkedin\.com/);
 });
 
