@@ -66,7 +66,7 @@ const crumbs = [
 ];
 ---
 
-<DocumentLayout title={`${post.data.title} — Nathan Rumsey`} description={post.data.description} image={post.data.heroImage} type="article">
+<DocumentLayout title={`${post.data.title} \u2014 Nathan Rumsey`} description={post.data.description} image={post.data.heroImage} type="article">
   <article>
     <Breadcrumb crumbs={crumbs} />
     <header class="pb-8 mb-8 border-b border-border">
@@ -75,7 +75,7 @@ const crumbs = [
         <time datetime={post.data.date.toISOString()}>
           {post.data.date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
         </time>
-        <span>·</span>
+        <span>{'\u00B7'}</span>
         <span>{mins} min read</span>
       </div>
       {post.data.tags.length > 0 && (
@@ -94,7 +94,7 @@ const crumbs = [
           </a>
           {relatedProjects.length > 0 && (
             <>
-              <span>·</span>
+              <span>{'\u00B7'}</span>
               {relatedProjects.map(project => (
                 <IconLink
                   href={`/projects/${idToSlug(project.id)}`}
@@ -149,7 +149,7 @@ const crumbs = [
                   Previous
                 </span>
                 <span class="text-xs pl-[22px] leading-snug">
-                  {prevSeriesPosition != null ? `Part ${prevSeriesPosition} · ` : ''}{prevPost.data.title}
+                  {prevSeriesPosition != null ? `Part ${prevSeriesPosition} \u00B7 ` : ''}{prevPost.data.title}
                 </span>
               </a>
             )}
@@ -162,7 +162,7 @@ const crumbs = [
                   <ChevronRightIcon />
                 </span>
                 <span class="text-xs pr-[22px] leading-snug text-right">
-                  {nextSeriesPosition != null ? `Part ${nextSeriesPosition} · ` : ''}{nextPost.data.title}
+                  {nextSeriesPosition != null ? `Part ${nextSeriesPosition} \u00B7 ` : ''}{nextPost.data.title}
                 </span>
               </a>
             )}

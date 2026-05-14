@@ -56,11 +56,7 @@ The project makes use of four distinct data storage solutions, each chosen due t
 
 ## Search Quality
 
-The system's retrieval effectiveness was validated against the SARA dataset—a sensitivity-aware relevance assessment built on a subset of the Enron Email Collection with 150 queries and 34k relevance labels—simulating a hierarchical file system environment.
-
-To ensure the engine doesn't just return results quickly, but returns the right results, the system was tested against the SARA dataset—a standard benchmark containing thousands of documents and human-rated relevance scores. This simulates a real-world scenario where a user asks a question and expects the most useful files to appear at the top of the list.
-
-We measured success using three practical lenses:
+To ensure the search engine returns relevant results, the system was tested against the SARA dataset, a standard benchmark containing thousands of documents and human-rated relevance scores. This simulates a real-world scenario where a user asks a question and expects the most useful files to appear at the top of the list. I measured success using these metrics:
 
 - **Precision (P@10)**: Out of the first 10 results shown, how many were actually relevant? This measures the "noise" of the results. If a user has to scroll past irrelevant files to find what they need, the score drops.
 - **Mean Average Precision (MAP)**: This looks at the precision of the entire list of results, rather than the first 10 results. It rewards systems that put relevant documents early and irrelevant documents at the end. A high MAP score means that the search engine consistently understands the user's intent across the whole evaluation set of queries.

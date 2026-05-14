@@ -120,8 +120,8 @@ const sortOptions = [
   { value: 'featured', label: 'Featured first' },
   { value: 'newest', label: 'Newest' },
   { value: 'oldest', label: 'Oldest' },
-  { value: 'az', label: 'A → Z' },
-  { value: 'za', label: 'Z → A' },
+  { value: 'az', label: 'A \u2192 Z' },
+  { value: 'za', label: 'Z \u2192 A' },
 ] as const;
 
 export default function ProjectIndexFilter({ projects }: { projects: ProjectData[] }) {
@@ -263,7 +263,7 @@ export default function ProjectIndexFilter({ projects }: { projects: ProjectData
               onClick={() => removeTag(tag)}
               aria-label={`Remove tag: ${tag}`}
               className="hover:opacity-70 cursor-pointer leading-none"
-            >×</button>
+            >{'\u00D7'}</button>
           </span>
         ))}
       </div>

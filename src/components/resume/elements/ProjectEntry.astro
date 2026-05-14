@@ -17,7 +17,7 @@ const slug = idToSlug(project.id);
         <h3 class="font-medium">{project.data.name}</h3>
         {project.data.start && project.data.resumeDisplayDate && (
             <span class="font-mono text-sm text-muted-foreground sm:shrink-0">
-                {formatDate(project.data.start).concat(" — ", project.data.end ? formatDate(project.data.end) : "Present")}
+                {formatDate(project.data.start).concat(" \u2014 ", project.data.end ? formatDate(project.data.end) : "Present")}
             </span>
         )}
         {!(project.data.start && project.data.resumeDisplayDate) && (

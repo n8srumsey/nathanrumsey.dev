@@ -38,7 +38,7 @@ export default function BlogPostCard({ post, onTagClick, activeTags }: Props) {
         </h2>
         <div className="flex items-center gap-x-2 font-mono text-sm text-muted-foreground">
           <time dateTime={post.date}>{dateStr}</time>
-          <span aria-hidden="true">·</span>
+          {'\u00B7'}
           <span>{post.readingMinutes} min read</span>
         </div>
       </div>

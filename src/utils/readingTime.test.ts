@@ -19,7 +19,7 @@ describe('readingTime', () => {
   });
 
   it('ignores extra whitespace between words', () => {
-    // 3 words regardless of spacing — filter(Boolean) drops empty tokens
+    // 3 words regardless of spacing \u2014 filter(Boolean) drops empty tokens
     expect(readingTime('word  word   word')).toBe(1);
   });
 });

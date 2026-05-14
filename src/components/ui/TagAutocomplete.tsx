@@ -7,7 +7,7 @@ interface Props {
   placeholder?: string;
 }
 
-export function TagAutocomplete({ allTags, activeTags, onSelect, placeholder = 'Search tags…' }: Props) {
+export function TagAutocomplete({ allTags, activeTags, onSelect, placeholder = 'Search tags\u2026' }: Props) {
   const [query, setQuery] = useState('');
   const [isOpen, setIsOpen] = useState(false);
   const [activeIndex, setActiveIndex] = useState(-1);

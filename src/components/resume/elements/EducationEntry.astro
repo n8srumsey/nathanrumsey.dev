@@ -10,7 +10,7 @@ const { entry } = Astro.props
     <div class="flex justify-between items-baseline gap-4">
         <h3 class="font-medium">{entry.institution}</h3>
         <span class="font-mono text-sm text-muted-foreground shrink-0">
-            {formatDate(entry.start).concat(" — ", entry.end ? formatDate(entry.end) : "Present")}
+            {formatDate(entry.start).concat(" \u2014 ", entry.end ? formatDate(entry.end) : "Present")}
         </span>
     </div>
 

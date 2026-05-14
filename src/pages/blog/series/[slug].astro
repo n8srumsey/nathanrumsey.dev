@@ -32,7 +32,7 @@ const totalMins = postMins.reduce((sum, m) => sum + m, 0);
 ---
 
 <GalleryLayout
-  title={`${seriesEntry.data.name} — Nathan Rumsey`}
+  title={`${seriesEntry.data.name} \u2014 Nathan Rumsey`}
   description={seriesEntry.data.description}
 >
   <Breadcrumb crumbs={[
@@ -54,7 +54,7 @@ const totalMins = postMins.reduce((sum, m) => sum + m, 0);
       <p class="mt-2 text-muted-foreground max-w-prose leading-relaxed">{seriesEntry.data.description}</p>
     )}
     <p class="font-mono text-sm text-muted-foreground mt-2">
-      {posts.length} {posts.length === 1 ? 'post' : 'posts'} · {totalMins} min read
+      {posts.length} {posts.length === 1 ? 'post' : 'posts'} {'\u00B7'} {totalMins} min read
     </p>
     {relatedProjects.length > 0 && (
       <div class="flex flex-wrap gap-x-3 gap-y-1 mt-3 font-mono text-sm text-muted-foreground">
@@ -79,7 +79,7 @@ const totalMins = postMins.reduce((sum, m) => sum + m, 0);
           </a>
           <p class="font-mono text-sm text-muted-foreground mt-0.5">
             {post.data.date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
-            {' · '}
+            {' \u00B7 '}
             {postMins[i]} min read
           </p>
           {post.data.tags.length > 0 && (

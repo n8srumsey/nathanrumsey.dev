@@ -40,7 +40,7 @@ const relatedPostEntries = project.data.relatedPosts
   .filter((p): p is NonNullable<typeof p> => p !== undefined);
 ---
 
-<DocumentLayout title={`${project.data.name} — Nathan Rumsey`} description={project.data.description} image={project.data.image}>
+<DocumentLayout title={`${project.data.name} \u2014 Nathan Rumsey`} description={project.data.description} image={project.data.image}>
   <article>
     <Breadcrumb crumbs={[
       { label: 'Projects', href: '/projects' },

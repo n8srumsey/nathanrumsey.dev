@@ -18,7 +18,7 @@ const { crumbs } = Astro.props;
         : 'flex items-center gap-1.5 shrink-0';
       return (
         <li class={liClass}>
-          {i > 0 && <span aria-hidden="true" class="shrink-0">›</span>}
+          {i > 0 && <span aria-hidden="true" class="shrink-0">{'\u203A'}</span>}
           {crumb.href ? (
             crumb.icon === 'series' ? (
               <a

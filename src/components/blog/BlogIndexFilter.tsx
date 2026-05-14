@@ -57,7 +57,7 @@ function applyFilters(posts: BlogPostData[], f: BlogFilters): BlogPostData[] {
 }
 
 const lengthLabel = (l: LengthBucket) =>
-  l === 'short' ? '≤2 min' : l === 'medium' ? '3–8 min' : '>8 min';
+  l === 'short' ? '\u22642 min' : l === 'medium' ? '3\u20138 min' : '>8 min';
 
 const primaryChip = 'flex items-center gap-1 font-mono text-xs px-2 py-0.5 rounded-full border bg-primary-subtle border-primary text-primary';
 const neutralChip = 'flex items-center gap-1 font-mono text-xs px-2 py-0.5 rounded-full border bg-surface border-border text-foreground';
@@ -112,8 +112,8 @@ export default function BlogIndexFilter({ posts }: { posts: BlogPostData[] }) {
           options={[
             { value: 'newest', label: 'Newest' },
             { value: 'oldest', label: 'Oldest' },
-            { value: 'az', label: 'A → Z' },
-            { value: 'za', label: 'Z → A' },
+            { value: 'az', label: 'A \u2192 Z' },
+            { value: 'za', label: 'Z \u2192 A' },
           ]}
           value={filters.sort}
           onChange={val => set({ sort: val as BlogSort })}
@@ -147,8 +147,8 @@ export default function BlogIndexFilter({ posts }: { posts: BlogPostData[] }) {
                 <DropdownSelect
                   options={[
                     { value: '', label: 'Any length' },
-                    { value: 'short', label: 'Short (≤2 min)' },
-                    { value: 'medium', label: 'Medium (3–8 min)' },
+                    { value: 'short', label: 'Short (\u22642 min)' },
+                    { value: 'medium', label: 'Medium (3\u20138 min)' },
                     { value: 'long', label: 'Long (>8 min)' },
                   ]}
                   value={filters.length}
@@ -171,7 +171,7 @@ export default function BlogIndexFilter({ posts }: { posts: BlogPostData[] }) {
         </button>
       </div>
 
-      {/* Line 2: active filter chips — non-tag first, then tags */}
+      {/* Line 2: active filter chips \u2014 non-tag first, then tags */}
       <div className="flex flex-wrap items-center gap-1.5 mb-4 min-h-6">
         {filters.year && (
           <span className={neutralChip}>
@@ -180,7 +180,7 @@ export default function BlogIndexFilter({ posts }: { posts: BlogPostData[] }) {
               onClick={() => set({ year: '' })}
               aria-label="Remove year filter"
               className="hover:text-primary cursor-pointer leading-none"
-            >×</button>
+            >{'\u00D7'}</button>
           </span>
         )}
         {filters.length && (
@@ -190,7 +190,7 @@ export default function BlogIndexFilter({ posts }: { posts: BlogPostData[] }) {
               onClick={() => set({ length: '' })}
               aria-label="Remove length filter"
               className="hover:text-primary cursor-pointer leading-none"
-            >×</button>
+            >{'\u00D7'}</button>
           </span>
         )}
         {filters.tags.map(tag => (
@@ -200,7 +200,7 @@ export default function BlogIndexFilter({ posts }: { posts: BlogPostData[] }) {
               onClick={() => removeTag(tag)}
               aria-label={`Remove tag: ${tag}`}
               className="hover:opacity-70 cursor-pointer leading-none"
-            >×</button>
+            >{'\u00D7'}</button>
           </span>
         ))}
       </div>
