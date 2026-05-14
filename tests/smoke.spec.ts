@@ -42,7 +42,7 @@ test('resume page loads with sections', async ({ page }) => {
   await expect(page.getByRole('heading', { name: /Education/i })).toBeVisible();
   await expect(page.getByRole('heading', { name: /Projects/i })).toBeVisible();
   await expect(page.getByRole('heading', { name: /Skills/i })).toBeVisible();
-  await expect(page.getByRole('heading', { name: /OpenResponse/i })).toBeVisible();
+  await expect(page.getByRole('heading', { name: /Open Response/i })).toBeVisible();
   await expect(page.getByRole('main').getByRole('link', { name: 'GitHub' })).toHaveAttribute('href', /github\.com/);
   await expect(page.getByRole('main').getByRole('link', { name: 'LinkedIn' })).toHaveAttribute('href', /linkedin\.com/);
 });
@@ -55,13 +55,13 @@ test('blog index loads', async ({ page }) => {
 });
 
 test('blog post loads', async ({ page }) => {
-  await page.goto('/blog/hello-world');
-  await expect(page).toHaveTitle(/Hello, World/);
+  await page.goto('/blog/introducing-nathanrumsey-dev');
+  await expect(page).toHaveTitle(/Introducing nathanrumsey\.dev/i);
 });
 
 test('series page loads', async ({ page }) => {
-  await page.goto('/blog/series/building-nathanrumsey-dev');
-  await expect(page.getByRole('heading', { name: 'Building nathanrumsey.dev' })).toBeVisible();
+  await page.goto('/blog/series/nathanrumsey-dev');
+  await expect(page.getByRole('heading', { name: 'About nathanrumsey.dev' })).toBeVisible();
 });
 
 test('projects catalog loads', async ({ page }) => {
