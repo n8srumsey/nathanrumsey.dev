@@ -109,12 +109,15 @@
   }
 }
 
-/* Make wide prose tables scrollable rather than causing page overflow */
+/* Make wide prose tables scrollable rather than causing page overflow; center narrow ones */
 .prose table {
   display: block;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
+  width: max-content;
   max-width: 100%;
+  margin-left: auto;
+  margin-right: auto;
   scrollbar-width: thin;
   scrollbar-color: var(--color-scroll-thumb) var(--color-scroll-track);
 }
