@@ -1,0 +1,70 @@
+---
+name: Indoor Localization
+description: Developed a zero-infrastructure indoor localization system using a CNN optimized via Bayesian Optimization, achieving 99.6% accuracy on a smartphone while balancing the tradeoff between training compute time and deployment scalability.
+tags: [Python, Machine Learning, Computer Vision, TensorFlow, Indoor Localization, Bayesian Optimization]
+#repoUrl: https://github.com/n8srumsey/ISEF-2019-UserLocalization
+featured: false
+homepagePin: false
+image: https://plus.unsplash.com/premium_photo-1723489242223-865b4a8cf7b8?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D
+imageCaption: Photo by [Curated Lifestyle](https://unsplash.com/@curatedlifestyle) on [Unsplash](https://unsplash.com)
+start: "2019-09"
+end: "2020-05"
+resumeDisplayDate: false
+resumeDisplayPriority: 1
+resumeSummary: "ML Indoor Localization"
+resumeHighlights:
+  - Placeholder Resume Bulletpoint
+---
+While GPS provides reliable outdoor navigation, indoor environments remain a "black box" for location services. Existing solutions rely on expensive proprietary hardware (beacons, Wi-Fi triangulation) or suffer from significant drift (dead reckoning). The challenge was to build a zero-infrastructure localization system that runs on ubiquitous hardware (smartphones) while meeting strict industry standards of >98% accuracy and 1-meter precision.
+
+The core engineering constraint was deployment time. Traditional computer vision mapping (SLAM) is accurate but computationally heavy and slow to deploy. The goal was to determine if a Convolutional Neural Network (CNN) could learn a "visual fingerprint" of an environment fast enough to be practical, without sacrificing the accuracy required for critical applications like hospital navigation or assisted living.
+
+I developed an image-based localization system that treats indoor positioning as a classification problem. Instead of calculating geometric poses, the system learns to recognize specific coordinates based on visual features (lighting, architecture, textures).
+
+To overcome the "black box" nature of deep learning tuning, I implemented Bayesian Optimization to automatically discover the optimal CNN architecture. This replaced manual trial-and-error with a probabilistic search strategy that balances exploration and exploitation, converging on high-performance hyperparameters with minimal computational waste.
+
+## Architecture & Engineering Decisions
+### The Visual Fingerprinting Approach
+The system operates on a "fingerprinting" principle:
+
+1. **Data Collection:** Captured ~600,000 images across a subsection of an office floor, creating a dense grid of 1-meter coordinate points.
+2. **Feature Learning:** A custom CNN was trained to map raw pixel data to specific (x, y) coordinates.
+3. **Inference:** A user takes a photo; the model predicts the most likely coordinate based on learned visual patterns.
+
+I deliberately chose a classification-based approach over regression or geometric methods (like Perspective-n-Point) or vSLAM (Visual Simultaneous Localization and Mapping).
+
+- **Why?** Classification is more robust to minor environmental noise (lighting changes, moving objects) and computationally lighter on the inference device.
+- **Cost:** This limits precision to the grid density (1 meter). However, this was a conscious decision to prioritize scalability and deployment speed over centimeter-level precision, which is often unnecessary for wayfinding.
+
+
+### Solving the Optimization Bottleneck
+Tuning a CNN involves navigating a high-dimensional space of hyperparameters (learning rate, batch size, dropout rates, layer depths).
+
+- **The Challenge:** Grid search is computationally prohibitive; random search is inefficient.
+- **The Solution:** I implemented Tree-Parzen Estimators (TPE), a variant of Bayesian Optimization. The algorithm builds a surrogate model of the performance landscape, predicting which hyperparameter sets are likely to yield improvements.
+- **Engineering Impact:** This reduced the search space from millions of permutations to ~100 targeted iterations. The system converged on an optimal configuration that manual tuning would likely have missed.
+
+
+### Mitigating Overfitting in High-Dimensional Data
+With only 600,000 images, the risk of the model memorizing noise rather than learning generalizable features was high. I implemented a three strategies strategy:
+
+1. **Strict Hold-Out Validation:** A 60/20/20 split (Train/Validation/Test) ensured the hyperparameter tuning process never "saw" the test data, preventing optimistic bias.
+2. **Dropout Regularization:** Randomly deactivating neurons during training forced the network to learn redundant representations, preventing co-adaptation of features.
+3. **L2 Regularization:** Added a cost penalty for complex weights, forcing the model to favor simpler, more generalizable solutions.
+
+## Validation & Results
+The system was rigorously evaluated against the initial design criteria.
+
+<div class="w-150 mx-auto">
+| Metric | Target | Achieved | Status |
+| :--- | :--- | :--- | :--- |
+| **Localization Accuracy** | > 98% | **99.62%** | Exceeded |
+| **Precision** | 1 meter | **1 meter** | Met |
+| **Hardware Requirement** | Ubiquitous | **Smartphone Camera** | Met |
+| **Deployment Time** | Low | **~1 Month (Compute)** | Falls short |
+</div>
+**Key Findings:**
+
+- **Accuracy:** The best-performing CNN achieved **99.62% testing accuracy**, significantly outperforming the 98% threshold.
+- **Generalization:** The gap between training (99.3%) and testing (99.6%) accuracy in the dataset splits was negligible, confirming that the regularization strategies successfully prevented overfitting.
+- **The Deployment Tradeoff:** While the model is lightweight for inference, the training phase required approximately one month of computational time on available hardware. This highlights the tradeoff of this approach that high-accuracy visual fingerprinting shifts the cost from runtime to deployment.

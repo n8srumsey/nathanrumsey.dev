@@ -1,23 +1,52 @@
 ---
-name: OpenResponse
-description: Real-time student engagement and analytics platform for scalable classroom interaction.
-tags: [React, JavaScript, MySQL, Redis, Docker, AWS]
+name: Open Response
+description: Real-time student engagement and performance analytics platform for data-driven, adaptive instruction.
+tags: [React, JavaScript/TypeScript, MySQL, Redis, Docker, AWS, CI/CD, Open-Source, Agile]
+repoUrl: https://github.com/OSU-MC/Open-Response
 featured: true
+homepagePin: true
+image: https://plus.unsplash.com/premium_photo-1671070687944-30bbb45f40bd?q=80&w=1373&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D
+imageCaption: Photo by [Giulia Squillace](https://unsplash.com/@giuliasq) on [Unsplash](https://unsplash.com)
 start: "2024-09"
 end: "2025-06"
-resumeDisplayDate: true
+resumeDisplayDate: false
 resumeDisplayPriority: 10
-resumeSummary: "Real-time student engagement and classroom analytics platform built over two semesters with a 5-person Agile team."
+resumeSummary: "Real-time student engagement and classroom analytics platform."
 resumeHighlights:
   - "Led a 5-developer Agile team building a scalable React/Express application on AWS, directing sprints and technical architecture while implementing accessibility via UX prototypes and automated testing for WCAG compliance."
   - "Architected a distributed backend deployed to containerized AWS infrastructure, supporting 10k+ concurrent users under load testing; built CI/CD pipelines to strengthen release reliability."
 ---
 
-## Overview
 
-OpenResponse is a real-time student engagement and analytics platform built for scalable classroom use. Led a 5-developer Agile team over two semesters, directing sprints and technical architecture while shipping a production-quality web application.
+Open Response addresses a critical gap in modern education: the prohibitive cost of classroom engagement tools. Commercial platforms like Top Hat and Poll Everywhere create financial barriers that limit access to real-time interaction for both students and professors.
 
-## Highlights
+Conceived in 2021 by Dr. Evan Thatcher (Senior Physics Instructor at Oregon State University) to eliminate these costs, the project stalled due to technical debt and an incomplete codebase. In September 2024, our six-person Agile team revived the initiative, undertaking a complete architectural rewrite to transform Open Response into a fully functional, open-source platform that delivers enterprise-grade features at zero cost.
 
-- Led a 5-developer Agile team building a scalable React/Express application on AWS, directing sprints and technical architecture while implementing accessibility via UX prototypes and automated testing for WCAG compliance.
-- Architected a distributed backend system deployed to containerized AWS infrastructure supporting up to 10k+ concurrent users under load testing, and built CI/CD pipelines strengthening release reliability.
+## Accomplishments
+Over nine-months (September 2024 to June 2025), we modernized the platform across three core pillars:
+
+1. **Technical Modernization**: We transitioned the system from a monolithic design to a distributed architecture, separating the core backend API from a dedicated lecture service to ensure real-time responsiveness.
+
+    - **Scalability**: Implemented Redis as a distributed cache to handle near-instantaneous interactivity, reducing reliance on the primary MySQL database and enabling support for 10,000+ concurrent users under load testing.
+    - **UX Overhaul**: Rebuilt the student interface, replacing the legacy UI with a polished, accessible design compliant with WCAG standards.
+    - **Infrastructure**: Deployed the solution on AWS infrastructure, ensuring scalable and fault-tolerant deployment through containers and orchestration with Docker Swarm on EC2.
+
+2. **Feature Completion**: We delivered a feature set that rivals commercial alternatives, including:
+
+    - Real-time question delivery and instant response recording.
+    - Flexible assessment tools with diverse question formats and customizable scoring.
+    - Automated grading with immediate student feedback.
+    - Integrated gradebook with CSV export to LMS platforms (Canvas, Google Classroom, etc.).
+    - Comprehensive course and roster management.
+
+3. **Software Quality**: When we inherited the codebase, even minor changes could destabilize the entire application. To address this fragility, we established a robust automated testing suite before undertaking the architectural rewrite. This foundation gave us the confidence to refactor and redistribute the system without regression, while ensuring long-term maintainability, consistent code quality, and smoother onboarding for future contributors.
+
+## My Contributions
+
+As the Technical Lead for the six-person team, I directed the project's technical vision and Agile execution:
+
+    - **Stakeholder Management & Roadmap Alignment**: Served as the primary point of contact between the development team and academic stakeholders (including Dr. Thatcher). Translated pedagogical requirements into a prioritized technical roadmap, ensuring all sprints delivered features that directly addressed classroom needs and institutional constraints.
+    - **Architecture & Leadership**: Led sprint planning and architectural decision-making, guiding the team in designing the distributed backend and defining the shift from monolith to microservices.
+    - **Cloud Infrastructure**: Architected the AWS deployment pipeline, implementing CI/CD workflows to automate testing and release reliability, ensuring the platform could scale to meet high-concurrency demands.
+    - **Accessibility & Quality**: Championed WCAG compliance by integrating automated accessibility testing into the CI pipeline and leading the UX redesign of the student interface.
+    - **Mentorship**: Facilitated code reviews and technical knowledge sharing, ensuring the team maintained high code quality standards throughout the development lifecycle.

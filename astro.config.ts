@@ -6,7 +6,11 @@ import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
   site: 'https://nathanrumsey.dev',
-  integrations: [react(), mdx(), sitemap()],
+  integrations: [react(), mdx({
+    optimize: {
+      ignoreElementNames: ['img'],
+    }
+  }), sitemap()],
   vite: {
     plugins: [tailwindcss()],
   },

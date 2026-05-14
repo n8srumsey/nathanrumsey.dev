@@ -1,0 +1,59 @@
+---
+import MarkdownString from './MarkdownString.astro';
+
+interface Props {
+  src: string
+  alt?: string;
+  width: number;
+  height: number;
+}
+
+const { src, alt = '', width, height } = Astro.props;
+const hasCaption = alt.trim().length > 0;
+---
+
+{hasCaption ? (
+<figure class="not-prose relative group my-0 mx-0 p-0">
+    <a
+      href={src}
+      class="flex overflow-hidden rounded-lg cursor-zoom-in focus:outline-none focus:ring-2 focus:ring-primary leading-none"
+      aria-label={`Zoom: ${alt}`}
+      data-pswp-width={width}
+      data-pswp-height={height}
+      data-pswp-caption={alt}
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      <img
+        src={src}
+        alt=""
+        width={width}
+        height={height}
+        class="block w-full h-auto rounded-lg transition-transform group-hover:scale-[1.02]"
+      />
+    </a>
+    <figcaption class="mt-2 text-sm text-muted-foreground font-mono text-center">
+      <MarkdownString content={alt} />
+    </figcaption>  
+  </figure>
+) : (
+  <div class="not-prose relative group my-0 mx-0 p-0">
+    <a
+      href={src}
+      class="flex overflow-hidden rounded-lg cursor-zoom-in focus:outline-none focus:ring-2 focus:ring-primary leading-none"
+      aria-label="Zoom image"
+      data-pswp-width={width}
+      data-pswp-height={height}
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      <img
+        src={src}
+        alt=""
+        width={width}
+        height={height}
+        class="block w-full h-auto rounded-lg transition-transform group-hover:scale-[1.02]"
+      />
+    </a>
+  </div>
+)}

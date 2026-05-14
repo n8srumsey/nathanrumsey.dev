@@ -74,4 +74,27 @@ const basics = resumeEntries[0]?.data.basics;
     </footer>
 
   </body>
+  <script>
+    import PhotoSwipeLightbox from 'photoswipe/lightbox';
+    import 'photoswipe/dist/photoswipe.css';
+
+    const initLightbox = () => {
+      const lightbox = new PhotoSwipeLightbox({
+        gallery: '.prose',
+        children: 'a[data-pswp-width]',   // Only targets <a> tags with PhotoSwipe data attrs
+        pswpModule: () => import('photoswipe'),
+        bgOpacity: 0.9,
+        showHideOpacity: true,
+        closeOnVerticalDrag: true,
+      });
+
+      lightbox.init();
+    };
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initLightbox);
+    } else {
+      initLightbox();
+    }
+  </script>
 </html>
