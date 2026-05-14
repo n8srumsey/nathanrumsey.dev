@@ -8,9 +8,9 @@ const { experience } = Astro.props;
 ---
 
 <div>
-    <div class="flex justify-between items-baseline gap-4">
+    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-baseline gap-0.5 sm:gap-4">
         <h3 class="font-medium">{experience.role}</h3>
-        <span class="font-mono text-sm text-muted-foreground shrink-0">
+        <span class="font-mono text-sm text-muted-foreground sm:shrink-0">
         {formatDate(experience.start)} —{" "}
         {experience.end ? formatDate(experience.end) : "Present"}
         </span>

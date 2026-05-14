@@ -13,10 +13,10 @@ const slug = idToSlug(project.id);
 ---
 
 <div>
-    <div class="flex justify-between items-baseline gap-4">
-        <h3 class="font-medium">{project.data.name}</h3>      
+    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-baseline gap-0.5 sm:gap-4">
+        <h3 class="font-medium">{project.data.name}</h3>
         {project.data.start && project.data.resumeDisplayDate && (
-            <span class="font-mono text-sm text-muted-foreground shrink-0">
+            <span class="font-mono text-sm text-muted-foreground sm:shrink-0">
                 {formatDate(project.data.start).concat(" — ", project.data.end ? formatDate(project.data.end) : "Present")}
             </span>
         )}
@@ -24,9 +24,9 @@ const slug = idToSlug(project.id);
             <ResumeProjectLinks hasDetailPage={hasDetailPage} liveUrl={project.data.liveUrl} repoUrl={project.data.repoUrl} slug={slug}/>
         )}
     </div>
-    <div class="flex justify-between items-baseline items-center">
+    <div class="flex justify-between items-center">
         {project.data.tags.length > 0 && (
-            <div class="flex-1 flex min-w-9 p-1 gap-2 mask-[linear-gradient(to_right,_black_70%,_transparent_100%)]">
+            <div class="flex-1 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden flex min-w-0 p-1 gap-2 mask-[linear-gradient(to_right,_black_70%,_transparent_100%)]">
                 {project.data.tags.map((tag) => (<TagLink href={`/projects?tag=${encodeURIComponent(tag)}`} tag={tag} /> ))}
             </div>
         )}
