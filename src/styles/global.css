@@ -44,6 +44,52 @@
   --color-scroll-track: transparent;
 }
 
+/* Light mode token overrides */
+[data-theme="light"] {
+  --color-background: hsl(210 25% 96%);
+  --color-surface: hsl(0 0% 100%);
+  --color-surface-raised: hsl(220 15% 97%);
+  --color-nav: hsl(210 20% 93%);
+
+  --color-foreground: hsl(220 15% 12%);
+  --color-muted-foreground: hsl(215 12% 42%);
+
+  --color-border: hsl(215 15% 82%);
+
+  --color-primary: hsl(162 68% 34%);
+  --color-primary-subtle: hsl(162 45% 90%);
+  --color-primary-foreground: hsl(0 0% 100%);
+
+  --color-secondary: hsl(250 45% 52%);
+  --color-secondary-subtle: hsl(250 45% 92%);
+
+  --shadow-sm: 0 1px 2px hsl(210 15% 60% / 0.3);
+  --shadow-md: 0 4px 12px hsl(210 15% 60% / 0.2), 0 1px 3px hsl(210 15% 60% / 0.15);
+  --shadow-lg: 0 0 0 1px hsl(215 15% 85% / 0.9), 0 8px 48px hsl(210 15% 60% / 0.2);
+}
+
+/* Reset prose-invert in light mode so MDX content remains readable */
+[data-theme="light"] .prose-invert {
+  --tw-prose-body: hsl(220 15% 20%);
+  --tw-prose-headings: hsl(220 15% 10%);
+  --tw-prose-lead: hsl(215 12% 40%);
+  --tw-prose-links: hsl(162 68% 34%);
+  --tw-prose-bold: hsl(220 15% 10%);
+  --tw-prose-counters: hsl(215 12% 42%);
+  --tw-prose-bullets: hsl(215 15% 70%);
+  --tw-prose-hr: hsl(215 15% 82%);
+  --tw-prose-quotes: hsl(220 15% 15%);
+  --tw-prose-quote-borders: hsl(215 15% 82%);
+  --tw-prose-captions: hsl(215 12% 42%);
+  --tw-prose-kbd: hsl(220 15% 10%);
+  --tw-prose-kbd-shadows: 17 24 39;
+  --tw-prose-code: hsl(220 15% 10%);
+  --tw-prose-pre-code: hsl(220 15% 85%);
+  --tw-prose-pre-bg: hsl(220 13% 22%);
+  --tw-prose-th-borders: hsl(215 15% 75%);
+  --tw-prose-td-borders: hsl(215 15% 82%);
+}
+
 /* Scrollbar Overriding Configuration */
 @layer base {
   html {
@@ -131,6 +177,10 @@
 body {
   background-image: radial-gradient(circle, hsl(162 68% 70% / 0.05) 1px, transparent 1px);
   background-size: 28px 28px;
+}
+
+[data-theme="light"] body {
+  background-image: radial-gradient(circle, hsl(162 68% 34% / 0.07) 1px, transparent 1px);
 }
 
 
