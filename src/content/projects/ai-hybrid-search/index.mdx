@@ -24,8 +24,8 @@ This project provides a high-performance local file search engine that supports 
 
 Responsiveness is the central design constraint of this project. The software architecture eliminates cold-start penalties with lazy-loading of models, no runtime dependency resolution, and low-latency search index persistence mechanisms. There are five core components of this project's architecture:
 
-<div class="w-150 mx-auto">
-![Architecture diagram showing X and Y](./system_architecture.png)
+<div class="max-w-150 w-full mx-auto">
+![System architecture: user queries enter via the CLI or Python API, route through a Flask REST API to the Indexing & Search Worker, which reads from LMDB, FAISS, and Gensim stores. A separate File System Crawler populates a Redis job queue (consumed by the worker) and a SQLite metadata database.](./system_architecture.png)
 </div>
 
 

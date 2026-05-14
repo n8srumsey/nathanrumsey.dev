@@ -37,7 +37,7 @@ The system evaluates food presence and quantity by analyzing meal tray images. B
 To contextualize the tradeoff, I mapped the problem against the standard computer vision supervision spectrum. While fully supervised learning requires pixel-perfect or bounding-box annotations (high cost, high precision), weakly supervised learning attempts to infer object locations using only image-level tags (low cost, lower precision).
 
 The challenge lies in the "inference gap": the model must learn where an object is located solely from the knowledge that it exists in the image.
-<div class="w-150 mx-auto">
+<div class="max-w-150 w-full mx-auto">
 ![Breakdown of Supervised and Weakly Supervised Computer Vision
 Tasks (2018 Zhang, et. al. http://arxiv.org/abs/2104.07918).](./cv_supervised_unsupervised.png)
 </div>
