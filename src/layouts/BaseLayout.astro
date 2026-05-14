@@ -13,7 +13,7 @@ interface Props {
   type?: string;
 }
 
-const { title, description = 'Nathan Rumsey — Software Engineer', image, type = 'website' } = Astro.props;
+const { title, description = 'Nathan Rumsey \u2014 Software Engineer', image, type = 'website' } = Astro.props;
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 const ogImage = image ? new URL(image, Astro.site).toString() : undefined;
 
@@ -22,7 +22,7 @@ const basics = resumeEntries[0]?.data.basics;
 ---
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scrollbar-thin scrollbar-thumb-scroll-thumb scrollbar-track-scroll-track">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -46,39 +46,66 @@ const basics = resumeEntries[0]?.data.basics;
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,400;0,14..32,500;0,14..32,600;0,14..32,700;1,14..32,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
     <title>{title}</title>
+    <script is:inline>
+      (function () {
+        try {
+          if (localStorage.getItem('theme') === 'light') {
+            document.documentElement.setAttribute('data-theme', 'light');
+          }
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        } catch (_) {}
+      })();
+    </script>
   </head>
   <body class="bg-background text-foreground font-sans min-h-screen flex flex-col">
 
     <NavBar currentPath={Astro.url.pathname} />
 
-    <!-- Floating content column -->
-    <div class="grow flex flex-col max-w-3xl w-full mx-auto my-8 px-4">
-      <div class="bg-surface rounded-xl shadow-lg flex flex-col grow">
-        <main class="px-8 py-10 grow">
-          <slot />
-        </main>
-        <footer class="border-t border-border px-8 py-5 text-sm text-muted-foreground mt-auto flex items-center gap-4">
-          <a href="/rss.xml" class="flex items-center gap-1.5 hover:text-foreground transition-colors">
-            <RssIcon size={14} />RSS
+    <main class="grow flex flex-col">
+      <slot />
+    </main>
+
+    <footer class="shrink-0 border-t border-border text-sm text-muted-foreground">
+      <div class="max-w-6xl mx-auto px-8 py-4 flex flex-col sm:flex-row items-center gap-2 sm:gap-8">
+        <a href="/rss.xml" class="flex items-center gap-1.5 hover:text-primary transition-colors">
+          <RssIcon size={14} />RSS
+        </a>
+        {basics?.email && (
+          <a href={`mailto:${basics.email}`} class="flex items-center gap-1.5 hover:text-primary transition-colors">
+            <MailIcon size={14} />{basics.email}
           </a>
-          <span aria-hidden="true">·</span>
-          {basics?.email && (
-            <a href={`mailto:${basics.email}`} class="flex items-center gap-1.5 hover:text-foreground transition-colors">
-              <MailIcon size={14} />{basics.email}
-            </a>
-          )}
-          {basics?.social?.linkedin && (
-            <>
-              <span aria-hidden="true">·</span>
-              <a href={basics.social.linkedin} target="_blank" rel="noopener noreferrer"
-                class="flex items-center gap-1.5 hover:text-foreground transition-colors">
-                <LinkedInIcon size={14} />LinkedIn
-              </a>
-            </>
-          )}
-        </footer>
+        )}
+        {basics?.social?.linkedin && (
+          <a href={basics.social.linkedin} target="_blank" rel="noopener noreferrer" class="flex items-center gap-1.5 hover:text-primary transition-colors">
+            <LinkedInIcon size={14} />LinkedIn
+          </a>
+        )}
       </div>
-    </div>
+    </footer>
 
   </body>
+  <script>
+    import PhotoSwipeLightbox from 'photoswipe/lightbox';
+    import 'photoswipe/dist/photoswipe.css';
+
+    const initLightbox = () => {
+      const lightbox = new PhotoSwipeLightbox({
+        gallery: '.prose',
+        children: 'a[data-pswp-width]',   // Only targets <a> tags with PhotoSwipe data attrs
+        pswpModule: () => import('photoswipe'),
+        bgOpacity: 0.9,
+        showHideOpacity: true,
+        closeOnVerticalDrag: true,
+        tapAction: 'close',
+      });
+
+      lightbox.init();
+    };
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initLightbox);
+    } else {
+      initLightbox();
+    }
+  </script>
 </html>

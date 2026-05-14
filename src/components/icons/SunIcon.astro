@@ -1,0 +1,10 @@
+---
+import { SunIcon as HeroSunIcon } from '@heroicons/react/24/outline';
+
+interface Props {
+  size?: number;
+}
+const { size = 16 } = Astro.props;
+---
+
+<HeroSunIcon width={size} height={size} aria-hidden={true} className="shrink-0" />

@@ -1,0 +1,29 @@
+---
+import { unified } from 'unified';
+import remarkParse from 'remark-parse';
+import remarkRehype from 'remark-rehype';
+import rehypeStringify from 'rehype-stringify';
+import rehypeRaw from 'rehype-raw'; // Allows raw HTML if needed
+
+interface Props {
+  content: string;
+}
+
+const { content } = Astro.props;
+
+const html = await unified()
+  .use(remarkParse)
+  .use(remarkRehype, { allowDangerousHtml: true })
+  .use(rehypeRaw) // Optional: allows raw HTML tags inside the string
+  .use(rehypeStringify)
+  .process(parseMarkdownLinks(content));
+
+const htmlString = String(html);
+
+function parseMarkdownLinks(text: string): string {
+  if (!text) return '';
+  return text.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" class="underline hover:text-primary">$1</a>');
+}
+---
+
+<div class="markdown-string" set:html={htmlString} />

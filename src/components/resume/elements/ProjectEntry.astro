@@ -1,0 +1,50 @@
+---
+import TagLink from "../../ui/TagLink.astro";
+import { idToSlug } from "../../../utils/slugs";
+import { formatDate } from "../../../utils/dates";
+import ResumeProjectLinks from "../../ui/ResumeProjectLinks.astro";
+import ResumeList from "../../ui/ResumeList.astro";
+interface Props {
+    project: ResumeProjectData
+}
+const { project } = Astro.props
+const hasDetailPage = Boolean(project.body && project.body.trim().length > 0);
+const slug = idToSlug(project.id);
+---
+
+<div>
+    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-baseline gap-0.5 sm:gap-4">
+        <h3 class="font-medium">{project.data.name}</h3>
+        {project.data.start && project.data.resumeDisplayDate && (
+            <span class="font-mono text-sm text-muted-foreground sm:shrink-0">
+                {formatDate(project.data.start).concat(" \u2014 ", project.data.end ? formatDate(project.data.end) : "Present")}
+            </span>
+        )}
+        {!(project.data.start && project.data.resumeDisplayDate) && (
+            <ResumeProjectLinks hasDetailPage={hasDetailPage} liveUrl={project.data.liveUrl} repoUrl={project.data.repoUrl} slug={slug}/>
+        )}
+    </div>
+    <div class="flex justify-between items-center">
+        {project.data.tags.length > 0 && (
+            <div class="flex-1 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden flex min-w-0 p-1 gap-2 mask-[linear-gradient(to_right,_black_70%,_transparent_100%)]">
+                {project.data.tags.map((tag) => (<TagLink href={`/projects?tag=${encodeURIComponent(tag)}`} tag={tag} /> ))}
+            </div>
+        )}
+        {(project.data.start && project.data.resumeDisplayDate) && (
+            <ResumeProjectLinks hasDetailPage={hasDetailPage} liveUrl={project.data.liveUrl} repoUrl={project.data.repoUrl} slug={slug}/>
+        )}
+    </div>
+
+    {project.data.resumeSummary && (
+        <p class="mt-2 text-sm leading-relaxed text-foreground">
+            {project.data.resumeSummary}
+        </p>
+    )}
+    {project.data.resumeHighlights && project.data.resumeHighlights.length > 0 && (
+        <ResumeList>
+            {project.data.resumeHighlights.map((h) => (<li>{h}</li>))}
+        </ResumeList>
+    )}
+</div>
+        
+          

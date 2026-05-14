@@ -6,7 +6,10 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="robots" content="noindex, nofollow" />
-    <title>Under Construction — Nathan Rumsey</title>
+    <title>Under Construction \u2014 Nathan Rumsey</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,400;0,14..32,500;0,14..32,600;0,14..32,700;1,14..32,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
     <style>
       *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -15,9 +18,11 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        background: #0a0a0a;
-        color: #e5e5e5;
-        font-family: system-ui, -apple-system, sans-serif;
+        background-color: hsl(207 35% 8%);
+        background-image: radial-gradient(circle, hsl(162 68% 70% / 0.05) 1px, transparent 1px);
+        background-size: 28px 28px;
+        color: hsl(210 20% 91%);
+        font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
         padding: 2rem;
       }
 
@@ -26,12 +31,12 @@
         text-align: center;
       }
 
-      .name {
-        font-size: 0.875rem;
+      .domain {
+        font-family: 'JetBrains Mono', ui-monospace, monospace;
+        font-size: 0.8125rem;
         font-weight: 500;
-        letter-spacing: 0.1em;
-        text-transform: uppercase;
-        color: #8a8a8a;
+        letter-spacing: 0.05em;
+        color: hsl(215 15% 68%);
         margin-bottom: 2rem;
       }
 
@@ -45,23 +50,25 @@
       p {
         font-size: 1rem;
         line-height: 1.6;
-        color: #a3a3a3;
+        color: hsl(215 15% 68%);
         margin-bottom: 2rem;
       }
 
       a {
-        color: #e5e5e5;
+        color: hsl(210 20% 91%);
         text-underline-offset: 3px;
+        text-decoration-color: hsl(215 15% 26%);
+        transition: color 150ms;
       }
 
       a:hover {
-        color: #ffffff;
+        color: hsl(162 68% 44%);
       }
     </style>
   </head>
   <body>
     <main class="container">
-      <p class="name">nathanrumsey.dev</p>
+      <p class="domain">nathanrumsey.dev</p>
       <h1>Under Construction</h1>
       <p>Something new is on the way. Check back soon.</p>
       <p>

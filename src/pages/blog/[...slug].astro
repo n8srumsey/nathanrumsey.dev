@@ -1,16 +1,18 @@
 ---
-import BaseLayout from '../../layouts/BaseLayout.astro';
+import DocumentLayout from '../../layouts/DocumentLayout.astro';
 import Breadcrumb from '../../components/ui/Breadcrumb.astro';
 import SeriesIcon from '../../components/icons/SeriesIcon.astro';
 import ChevronLeftIcon from '../../components/icons/ChevronLeftIcon.astro';
 import ChevronRightIcon from '../../components/icons/ChevronRightIcon.astro';
 import TagLink from '../../components/ui/TagLink.astro';
 import MdxImage from '../../components/ui/MdxImage.astro';
+import MdxTable from '../../components/ui/MdxTable';
 import IconLink from '../../components/ui/IconLink';
 import ProjectIcon from '../../components/icons/ProjectIcon';
 import { getCollection, render } from 'astro:content';
 import { readingTime } from '../../utils/readingTime';
 import { idToSlug } from '../../utils/slugs';
+import MarkdownString from '../../components/ui/MarkdownString.astro';
 
 export async function getStaticPaths() {
   const posts = await getCollection('blog', ({ data }) => !data.draft);
@@ -60,16 +62,11 @@ const crumbs = [
   ...(seriesEntry && seriesSlug && seriesLabel
     ? [{ label: seriesLabel, href: `/blog/series/${seriesSlug}`, icon: 'series' as const, truncate: true }]
     : []),
-  {
-    label: seriesEntry && seriesPosition
-      ? `Part ${seriesPosition} · ${post.data.title}`
-      : post.data.title,
-    truncate: !!seriesEntry,
-  },
+  { label: post.data.title, truncate: !!seriesEntry },
 ];
 ---
 
-<BaseLayout title={`${post.data.title} — Nathan Rumsey`} description={post.data.description} image={post.data.heroImage} type="article">
+<DocumentLayout title={`${post.data.title} \u2014 Nathan Rumsey`} description={post.data.description} image={post.data.heroImage} type="article">
   <article>
     <Breadcrumb crumbs={crumbs} />
     <header class="pb-8 mb-8 border-b border-border">
@@ -78,7 +75,7 @@ const crumbs = [
         <time datetime={post.data.date.toISOString()}>
           {post.data.date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
         </time>
-        <span>·</span>
+        <span>{'\u00B7'}</span>
         <span>{mins} min read</span>
       </div>
       {post.data.tags.length > 0 && (
@@ -89,15 +86,27 @@ const crumbs = [
         </div>
       )}
       {seriesEntry && seriesSlug && seriesPosition && (
-        <div class="flex items-center gap-1.5 font-mono text-sm text-muted-foreground mt-3">
+        <div class="flex items-center flex-wrap gap-x-1.5 gap-y-1 font-mono text-sm text-muted-foreground mt-3">
           <span>Part {seriesPosition} of</span>
           <a href={`/blog/series/${seriesSlug}`} class="hover:text-primary transition-colors flex items-center gap-1">
             <SeriesIcon />
             {seriesEntry.data.name}
           </a>
+          {relatedProjects.length > 0 && (
+            <>
+              <span>{'\u00B7'}</span>
+              {relatedProjects.map(project => (
+                <IconLink
+                  href={`/projects/${idToSlug(project.id)}`}
+                  Icon={ProjectIcon}
+                  label={project.data.name}
+                />
+              ))}
+            </>
+          )}
         </div>
       )}
-      {relatedProjects.length > 0 && (
+      {!seriesEntry && relatedProjects.length > 0 && (
         <div class="flex flex-wrap gap-x-3 gap-y-1 mt-3 font-mono text-sm text-muted-foreground">
           {relatedProjects.map(project => (
             <IconLink
@@ -119,14 +128,14 @@ const crumbs = [
         />
         {post.data.imageCaption && (
           <figcaption class="mt-2 text-sm text-muted-foreground font-mono text-center">
-            {post.data.imageCaption}
+            <MarkdownString content={post.data.imageCaption} />
           </figcaption>
         )}
       </figure>
     )}
 
     <div class="prose prose-invert max-w-none">
-      <Content components={{ img: MdxImage }} />
+      <Content components={{ img: MdxImage, table: MdxTable }} />
     </div>
 
     {seriesEntry && (
@@ -140,7 +149,7 @@ const crumbs = [
                   Previous
                 </span>
                 <span class="text-xs pl-[22px] leading-snug">
-                  {prevSeriesPosition != null ? `Part ${prevSeriesPosition} · ` : ''}{prevPost.data.title}
+                  {prevSeriesPosition != null ? `Part ${prevSeriesPosition} \u00B7 ` : ''}{prevPost.data.title}
                 </span>
               </a>
             )}
@@ -153,7 +162,7 @@ const crumbs = [
                   <ChevronRightIcon />
                 </span>
                 <span class="text-xs pr-[22px] leading-snug text-right">
-                  {nextSeriesPosition != null ? `Part ${nextSeriesPosition} · ` : ''}{nextPost.data.title}
+                  {nextSeriesPosition != null ? `Part ${nextSeriesPosition} \u00B7 ` : ''}{nextPost.data.title}
                 </span>
               </a>
             )}
@@ -162,4 +171,4 @@ const crumbs = [
       </nav>
     )}
   </article>
-</BaseLayout>
+</DocumentLayout>

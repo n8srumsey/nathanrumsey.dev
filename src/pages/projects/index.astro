@@ -1,7 +1,6 @@
 ---
-import BaseLayout from '../../layouts/BaseLayout.astro';
+import GalleryLayout from '../../layouts/GalleryLayout.astro';
 import ProjectIndexFilter from '../../components/projects/ProjectIndexFilter';
-import type { ProjectData } from '../../components/projects/ProjectIndexFilter';
 import { getCollection } from 'astro:content';
 import { idToSlug } from '../../utils/slugs';
 
@@ -29,6 +28,7 @@ const projectData: ProjectData[] = projects.map(project => {
     description: project.data.description,
     tags: project.data.tags,
     featured: project.data.featured,
+    ongoing: !!project.data.start && !project.data.end,
     repoUrl: project.data.repoUrl,
     liveUrl: project.data.liveUrl,
     hasDetailPage,
@@ -39,11 +39,12 @@ const projectData: ProjectData[] = projects.map(project => {
     image: project.data.image,
     start: project.data.start,
     end: project.data.end,
+    resumeDisplayPriority: project.data.resumeDisplayPriority,
   };
 });
 ---
 
-<BaseLayout title="Projects — Nathan Rumsey" description="A catalog of projects I've built.">
+<GalleryLayout title={"Projects \u2014 Nathan Rumsey"} description="A catalog of projects I've built.">
   <h1 class="text-2xl font-bold mb-4">Projects</h1>
-  <ProjectIndexFilter projects={projectData} client:load />
-</BaseLayout>
+  <ProjectIndexFilter projects={projectData} client:only="react" />
+</GalleryLayout>

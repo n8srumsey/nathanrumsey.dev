@@ -1,0 +1,31 @@
+---
+name: SwimDB
+description: A cross-platform desktop application that archives, manages, and visualizes a lifetime of competitive swimming times in a secure, offline-first environment.
+tags: [C#, Desktop, Avalonia UI, Multi-Platform, SQLite]
+repoUrl: https://github.com/n8srumsey/swimdb
+featured: false
+homepagePin: false
+image: https://images.unsplash.com/photo-1558617320-e695f0d420de?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D
+imageCaption: Photo by [Thomas Park](https://unsplash.com/@thomascpark) on [Unsplash](https://unsplash.com)
+start: "2024-04"
+resumeDisplayDate: true
+resumeDisplayPriority: 1
+resumeSummary: A cross-platform desktop application that archives, manages, and visualizes a lifetime of competitive swimming times in a secure, offline-first environment.
+resumeHighlights:
+  - Placeholder Resume Bulletpoint
+---
+
+After a decade of competitive racing from age 9 to 18, followed by a lifetime of non-competitive swimming, I realized I had no permanent record of my athletic history. Relying on fading memory and scattered online results that could vanish at any moment felt insufficient. I'm building a multi-platform application to archive, manage, and visualize a lifetime of swim data, ensuring this history stays accessible and owned by athletes. The app centers on a document-based model where you open a single file (CSV or SQLite) to instantly load your entire history into a local, secure database for editing and analysis.
+
+## Core Capabilities
+
+- **Universal Import**: Parse standard USA Swimming CSV formats or open existing .swimdb files, with a wizard to map non-standard headers.
+- **Inline Management**: Edit times, meets, and event details directly in a virtualized grid; add new meets or results with instant validation.
+- **Smart Filtering**: Toggle views by pool type (SCY/SCM/LCM) or search across the entire dataset instantly.
+- **Progression Analytics**: Generate personal best lists, interactive line charts tracking improvement over time, and meet summaries.
+- **Portable Export**: Save changes back to the original database or export clean datasets to CSV/PDF for sharing.
+
+## Tech Stack & Architecture
+- **Frontend**: Desktop-native UI (built in .NET Avalonia UI) for a responsive, offline-first experience.
+- **Backend/Storage**: SQLite database fiels as the document file-format for robust, ACID-compliant data management.
+- **Architecture**: Document-centric. The app loads a single file into a temporary local instance for processing, ensuring data persistence and crash recovery without relying on cloud services.

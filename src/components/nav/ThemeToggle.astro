@@ -1,0 +1,72 @@
+---
+import SunIcon from '../icons/SunIcon.astro';
+import MoonIcon from '../icons/MoonIcon.astro';
+---
+
+<button
+  data-theme-toggle
+  aria-label="Switch to light mode"
+  class="relative inline-flex items-center overflow-hidden rounded-full border border-border bg-surface p-1 gap-0.5 cursor-pointer transition-colors hover:border-primary/50"
+>
+  <span class="theme-indicator absolute inset-y-1 left-1 w-7 rounded-full bg-primary/15 border border-primary/30" aria-hidden="true"></span>
+  <span class="icon-sun relative z-10 w-7 h-7 flex items-center justify-center text-muted-foreground transition-colors duration-200">
+    <SunIcon size={14} />
+  </span>
+  <span class="icon-moon relative z-10 w-7 h-7 flex items-center justify-center text-primary transition-colors duration-200">
+    <MoonIcon size={14} />
+  </span>
+</button>
+
+<style>
+  /* Default (dark mode): indicator under moon (right). 1.75rem = icon width, 0.125rem = gap-0.5 */
+  .theme-indicator {
+    transform: translateX(calc(1.75rem + 0.125rem));
+  }
+  /* Light mode: indicator under sun (left) */
+  :global([data-theme="light"]) .theme-indicator {
+    transform: translateX(0);
+  }
+  :global([data-theme="light"]) .icon-sun {
+    color: var(--color-primary);
+  }
+  :global([data-theme="light"]) .icon-moon {
+    color: var(--color-muted-foreground);
+  }
+</style>
+
+<script>
+  const toggles = document.querySelectorAll<HTMLButtonElement>('[data-theme-toggle]');
+
+  function updateToggles(theme: 'light' | 'dark') {
+    toggles.forEach(t => {
+      t.setAttribute('aria-label', theme === 'light' ? 'Switch to dark mode' : 'Switch to light mode');
+    });
+  }
+
+  const initial = document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+  updateToggles(initial);
+
+  // Add transition after first paint so the initial position doesn't animate on page load
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      document.querySelectorAll<HTMLElement>('.theme-indicator').forEach(el => {
+        el.style.transition = 'transform 200ms';
+      });
+    });
+  });
+
+  toggles.forEach(toggle => {
+    toggle.addEventListener('click', () => {
+      const current = document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+      const next = current === 'light' ? 'dark' : 'light';
+      if (next === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+        localStorage.setItem('theme', 'light');
+      } else {
+        document.documentElement.removeAttribute('data-theme');
+        localStorage.removeItem('theme');
+      }
+      updateToggles(next);
+    });
+  });
+</script>

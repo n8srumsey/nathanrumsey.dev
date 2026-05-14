@@ -1,10 +1,8 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import MailIcon from '../components/icons/MailIcon.astro';
-import GitHubIcon from '../components/icons/GitHubIcon.astro';
-import LinkedInIcon from '../components/icons/LinkedInIcon.astro';
 import { getCollection } from 'astro:content';
 import { idToSlug } from '../utils/slugs';
+import LandingFeaturedCard from '../components/landing/LandingFeaturedCard.astro';
 
 const resumeEntries = await getCollection('resume');
 const basics = resumeEntries[0]?.data.basics;
@@ -20,68 +18,41 @@ const featuredProject = pinnedProject ?? allProjects
 ---
 
 <BaseLayout title="Nathan Rumsey">
-  <!-- Hero -->
-  <section class="py-8 pb-10">
-    <h1 class="text-3xl font-bold tracking-tight">{basics?.name ?? 'Nathan Rumsey'}</h1>
-    <p class="text-lg text-muted-foreground mt-1">{basics?.title ?? 'Software Engineer'}</p>
-
-    <p class="mt-5 text-muted-foreground max-w-prose leading-relaxed">
-      I build backend systems where correctness isn't optional — financial engines, data pipelines,
-      and tooling that teams depend on to ship with confidence. I care about getting it right past
-      the PR merge: clean design, real test coverage, and systems that hold up when it matters.
-    </p>
-
-    <div class="mt-5 flex flex-wrap gap-4 text-sm">
-      {basics?.email && (
-        <a href={`mailto:${basics.email}`} class="flex items-center gap-1.5 text-muted-foreground hover:text-primary transition-colors">
-          <MailIcon size={14} />{basics.email}
-        </a>
-      )}
-      {basics?.social?.github && (
-        <a href={basics.social.github} target="_blank" rel="noopener noreferrer" class="flex items-center gap-1.5 text-muted-foreground hover:text-primary transition-colors">
-          <GitHubIcon size={14} />GitHub
-        </a>
-      )}
-      {basics?.social?.linkedin && (
-        <a href={basics.social.linkedin} target="_blank" rel="noopener noreferrer" class="flex items-center gap-1.5 text-muted-foreground hover:text-primary transition-colors">
-          <LinkedInIcon size={14} />LinkedIn
-        </a>
-      )}
-    </div>
+  <!-- Viewport-height hero: name, title, section links centered -->
+  <section class="flex-1 flex flex-col items-center justify-center px-6 py-12 text-center">
+    <h1 class="text-4xl font-bold tracking-tight">{basics?.name ?? 'Nathan Rumsey'}</h1>
+    <p class="text-lg text-muted-foreground mt-2">{basics?.title ?? 'Software Engineer'}</p>
+    <nav class="mt-8 flex flex-wrap gap-6 justify-center text-sm" aria-label="Site sections">
+      <a href="/about" class="text-muted-foreground hover:text-primary transition-colors">About</a>
+      <a href="/resume" class="text-muted-foreground hover:text-primary transition-colors">Resume</a>
+      <a href="/projects" class="text-muted-foreground hover:text-primary transition-colors">Projects</a>
+      <a href="/blog" class="text-muted-foreground hover:text-primary transition-colors">Blog</a>
+    </nav>
   </section>
 
-  <!-- Callouts -->
+  <!-- Below-fold callout cards -->
   {(latestPost || featuredProject) && (
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pb-8">
-      {latestPost && (
-        <div class="border border-border rounded-lg p-5 bg-surface flex flex-col gap-3">
-          <span class="font-mono text-xs text-primary tracking-wider uppercase">Latest Post</span>
-          <div>
-            <a href={`/blog/${idToSlug(latestPost.id)}`} class="font-semibold hover:text-primary transition-colors">
-              {latestPost.data.title}
-            </a>
-            <p class="text-sm text-muted-foreground mt-1 line-clamp-2">{latestPost.data.description}</p>
-          </div>
-          <a href="/blog" class="font-mono text-xs text-muted-foreground hover:text-primary transition-colors mt-auto self-end">
-            All posts →
-          </a>
-        </div>
-      )}
-
-      {featuredProject && (
-        <div class="border border-border rounded-lg p-5 bg-surface flex flex-col gap-3">
-          <span class="font-mono text-xs text-primary tracking-wider uppercase">Featured Project</span>
-          <div>
-            <a href={`/projects/${idToSlug(featuredProject.id)}`} class="font-semibold hover:text-primary transition-colors">
-              {featuredProject.data.name}
-            </a>
-            <p class="text-sm text-muted-foreground mt-1 line-clamp-2">{featuredProject.data.description}</p>
-          </div>
-          <a href="/projects" class="font-mono text-xs text-muted-foreground hover:text-primary transition-colors mt-auto self-end">
-            All projects →
-          </a>
-        </div>
-      )}
-    </div>
+    <section class="pb-16 px-6">
+      <div class="max-w-4xl mx-auto grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {latestPost && (
+          <LandingFeaturedCard 
+              callout='Latest Post' 
+              title={latestPost.data.title} 
+              contentUrl={`/blog/${idToSlug(latestPost.id)}`} 
+              description={latestPost.data.description} 
+              moreText='All posts'
+              moreLink='/blog'/>
+        )}
+        {featuredProject && (
+          <LandingFeaturedCard 
+              callout='Featured Project' 
+              title={featuredProject.data.name} 
+              contentUrl={`/projects/${idToSlug(featuredProject.id)}`} 
+              description={featuredProject.data.description} 
+              moreText='All projects' 
+              moreLink='/projects'/>
+        )}
+      </div>
+    </section>
   )}
 </BaseLayout>

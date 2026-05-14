@@ -1,6 +1,0 @@
-name: "Building nathanrumsey.dev"
-description: "Notes on the design and technical decisions behind this site, rebuilt with Astro in 2026."
-posts:
-  - hello-world
-  - the-design-system
-  - ci-and-testing

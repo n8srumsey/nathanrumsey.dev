@@ -66,6 +66,14 @@ if re.search(
 ):
     deny("gh remote-state mutations are blocked — perform GitHub actions manually")
 
+# Block gh commands that include Claude Code self-promotion
+if re.search(r"\bgh\b", cmd) and re.search(
+    r"(Generated with \[?Claude|claude\.ai/claude-code|claude-code|Co-Authored-By:\s*Claude)",
+    cmd,
+    re.IGNORECASE,
+):
+    deny("Claude Code attribution text is not allowed in gh commands — remove the 'Generated with Claude Code' line from the PR body")
+
 # curl / wget POSTing data to a non-local host
 if re.search(r"\b(curl|wget)\b", cmd) and re.search(r"(-X\s*(POST|PUT|DELETE|PATCH)\b|--data\b|-d\s)", cmd):
     if not re.search(r"(localhost|127\.0\.0\.1|0\.0\.0\.0)", cmd):

@@ -1,11 +1,13 @@
 ---
-import { FAVICON_VIEWBOX, faviconShapes } from '../../utils/favicon.ts';
+import { FAVICON_VIEWBOX, faviconShapes, faviconStyles } from '../../utils/favicon.ts';
 
 interface Props {
   size?: number;
 }
 const { size = 20 } = Astro.props;
+
 const shapes = faviconShapes();
+const styles = faviconStyles();
 ---
 
 <svg
@@ -13,13 +15,9 @@ const shapes = faviconShapes();
   height={size}
   viewBox={FAVICON_VIEWBOX}
   aria-hidden="true"
-  class="inline-block align-middle shrink-0"
+  class="inline-block align-middle shrink-0 translate-y-1"
 >
-  <style>
-    .fav-frame { fill: var(--color-surface); }
-    .fav-screen { fill: var(--color-background); }
-    .fav-monogram { fill: var(--color-primary); }
-    .fav-keyline { fill: var(--color-background); }
-  </style>
+  <style set:html={styles} />
+  
   <Fragment set:html={shapes} />
 </svg>

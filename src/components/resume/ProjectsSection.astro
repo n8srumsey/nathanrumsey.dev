@@ -1,0 +1,16 @@
+---
+import ProjectEntry from './elements/ProjectEntry.astro';
+
+interface Props {
+  projects: ResumeProjectData[]
+}
+const { projects } = Astro.props;
+---
+{projects.length > 0 && (
+<section class="mt-10">
+    <h2 class="text-base font-semibold uppercase tracking-wide text-muted-foreground border-b border-border pb-1 mb-5"> Projects </h2>
+    <div class="space-y-8">
+        {projects.map((project) => (<ProjectEntry project={project}/>))}
+    </div>
+</section>
+)}

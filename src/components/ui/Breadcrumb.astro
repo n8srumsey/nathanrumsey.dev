@@ -8,55 +8,63 @@ const { crumbs } = Astro.props;
 ---
 
 <nav aria-label="Breadcrumb" class="font-mono text-sm text-muted-foreground mb-6">
-  <ol class="flex flex-wrap items-center gap-1.5">
-    {crumbs.map((crumb, i) => (
-      <li class:list={['flex items-center gap-1.5', { 'min-w-0': crumb.truncate }]}>
-        {i > 0 && <span aria-hidden="true">›</span>}
-        {crumb.href ? (
-          crumb.icon === 'series' ? (
-            <a
-              href={crumb.href}
-              class="flex items-center gap-1 min-w-0 hover:text-primary transition-colors"
+  <ol class="flex items-center gap-1.5 overflow-hidden">
+    {crumbs.map((crumb, i) => {
+      const isLast = i === crumbs.length - 1;
+      const liClass = crumb.truncate
+        ? (isLast
+            ? 'flex items-center gap-1.5 min-w-0 grow [flex-shrink:999]'
+            : 'flex items-center gap-1.5 min-w-0')
+        : 'flex items-center gap-1.5 shrink-0';
+      return (
+        <li class={liClass}>
+          {i > 0 && <span aria-hidden="true" class="shrink-0">{'\u203A'}</span>}
+          {crumb.href ? (
+            crumb.icon === 'series' ? (
+              <a
+                href={crumb.href}
+                class="flex items-center gap-1 min-w-0 hover:text-primary transition-colors"
+                title={crumb.truncate ? crumb.label : undefined}
+              >
+                <SeriesIcon />
+                {crumb.truncate
+                  ? <span class="truncate min-w-0">{crumb.label}</span>
+                  : crumb.label}
+              </a>
+            ) : (
+              <a
+                href={crumb.href}
+                class:list={[
+                  'hover:text-primary transition-colors',
+                  { 'truncate min-w-0': crumb.truncate },
+                ]}
+                title={crumb.truncate ? crumb.label : undefined}
+              >
+                {crumb.label}
+              </a>
+            )
+          ) : crumb.icon === 'series' ? (
+            <span
+              aria-current="page"
+              class:list={['flex items-center gap-1', { 'min-w-0': crumb.truncate }]}
               title={crumb.truncate ? crumb.label : undefined}
             >
               <SeriesIcon />
               {crumb.truncate
-                ? <span class="overflow-hidden text-ellipsis whitespace-nowrap max-w-[13ch] sm:max-w-[20ch] md:max-w-none">{crumb.label}</span>
+                ? <span class="truncate min-w-0">{crumb.label}</span>
                 : crumb.label}
-            </a>
+            </span>
           ) : (
-            <a
-              href={crumb.href}
-              class:list={[
-                'hover:text-primary transition-colors',
-                { 'overflow-hidden text-ellipsis whitespace-nowrap max-w-[16ch] sm:max-w-[22ch] md:max-w-none': crumb.truncate },
-              ]}
+            <span
+              aria-current="page"
+              class:list={crumb.truncate ? ['truncate', isLast ? 'min-w-[10ch]' : 'min-w-0'] : []}
               title={crumb.truncate ? crumb.label : undefined}
             >
               {crumb.label}
-            </a>
-          )
-        ) : crumb.icon === 'series' ? (
-          <span
-            aria-current="page"
-            class:list={['flex items-center gap-1', { 'min-w-0': crumb.truncate }]}
-            title={crumb.truncate ? crumb.label : undefined}
-          >
-            <SeriesIcon />
-            {crumb.truncate
-              ? <span class="overflow-hidden text-ellipsis whitespace-nowrap max-w-[13ch] sm:max-w-[20ch] md:max-w-none">{crumb.label}</span>
-              : crumb.label}
-          </span>
-        ) : (
-          <span
-            aria-current="page"
-            class:list={[{ 'overflow-hidden text-ellipsis whitespace-nowrap max-w-[16ch] sm:max-w-[22ch] md:max-w-none': crumb.truncate }]}
-            title={crumb.truncate ? crumb.label : undefined}
-          >
-            {crumb.label}
-          </span>
-        )}
-      </li>
-    ))}
+            </span>
+          )}
+        </li>
+      );
+    })}
   </ol>
 </nav>

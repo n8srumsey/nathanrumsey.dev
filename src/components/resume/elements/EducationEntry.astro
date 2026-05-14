@@ -1,0 +1,38 @@
+---
+import ResumeList from '../../ui/ResumeList.astro'
+import { formatDate } from '../../../utils/dates'
+interface Props {
+    entry: EducationData
+}
+const { entry } = Astro.props
+---
+<div>
+    <div class="flex justify-between items-baseline gap-4">
+        <h3 class="font-medium">{entry.institution}</h3>
+        <span class="font-mono text-sm text-muted-foreground shrink-0">
+            {formatDate(entry.start).concat(" \u2014 ", entry.end ? formatDate(entry.end) : "Present")}
+        </span>
+    </div>
+
+    <div class="flex justify-between items-baseline mb-2">
+        <span class="font-mono text-sm text-muted-foreground">{entry.degree}</span>
+        <span class="font-mono text-sm text-muted-foreground">{entry.location}</span>
+    </div>
+
+    <ResumeList>
+        {entry.gpa && (
+            <li class="gap-2 items-start">
+                <span class="font-medium">GPA:</span>
+                <span>{entry.gpa}</span>
+            </li>
+        )}
+
+        {entry.activities && (
+            <li class="gap-2 items-start">
+                <span class="font-medium">Activities:</span>
+                <span>{entry.activities}</span>
+            </li>
+        )}
+    </ResumeList>
+</div>
+

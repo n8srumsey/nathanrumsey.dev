@@ -3,10 +3,11 @@ import { checkA11y, injectAxe } from 'axe-playwright';
 
 const routes = [
   { path: '/', label: 'landing' },
+  { path: '/about', label: 'about' },
   { path: '/resume', label: 'resume' },
   { path: '/blog', label: 'blog index' },
-  { path: '/blog/hello-world', label: 'blog post' },
-  { path: '/blog/series/building-nathanrumsey-dev', label: 'series page' },
+  { path: '/blog/introducing-nathanrumsey-dev', label: 'blog post' },
+  { path: '/blog/series/nathanrumsey-dev', label: 'series page' },
   { path: '/projects', label: 'projects catalog' },
   { path: '/projects/nathanrumsey-dev', label: 'project detail: nathanrumsey.dev' },
   { path: '/projects/open-response', label: 'project detail: OpenResponse' },

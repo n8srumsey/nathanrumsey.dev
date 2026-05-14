@@ -4,29 +4,35 @@ description: "Personal portfolio, resume, and dev diary. The site you're reading
 tags: [Astro, TypeScript, Tailwind, MDX]
 repoUrl: https://github.com/n8srumsey/nathanrumsey.dev
 liveUrl: https://nathanrumsey.dev
-featured: true
+featured: false
 start: "2026-05"
-resumeSummary: "Personal portfolio and dev diary rebuilt from scratch. Static site with a blog, project catalog, and dynamically-driven resume page — all content-driven via MDX and YAML files."
+image: https://images.unsplash.com/photo-1614741118887-7a4ee193a5fa?q=80&w=774&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D
+imageCaption: Photo by [Safar Safarov](https://unsplash.com/@safarslife) on [Unsplash](https://unsplash.com)
+resumeDisplayDate: true
+resumeDisplayPriority: 1
+resumeSummary: "Personal portfolio website. Static site with a blog, project catalog, and dynamically-driven resume page, all content-driven via MDX and YAML files."
 resumeHighlights:
-  - "Designed and built full-stack portfolio site using Astro 6, React 19, Tailwind CSS v4, and MDX, covering blog, project catalog, and resume page — all data-driven with zero hardcoded content."
+  - "Designed and built full-stack portfolio site using Astro, React, Tailwind CSS, and MDX, covering a blog, project catalog, and resume page, all data-driven with no hardcoded content."
   - "Implemented type-safe Content Layer with Zod schema validation and build-time error detection; deployed via GitHub Actions to Cloudflare Pages."
-relatedSeries: building-nathanrumsey-dev
+relatedPosts: [introducing-nathanrumsey-dev]
+
 ---
 
-## Overview
 
-This site is my portfolio, resume, and writing outlet. It's built to be a static artifact — no server, served from a CDN — while allowing content updates through plaintext files rather than UI changes.
 
-## Stack
 
-- **Astro 6** — content-first static site generator with built-in content collections
-- **React 19** — interactive islands via `@astrojs/react`, only where needed
-- **Tailwind CSS v4** — utility-first styling via the Vite plugin (no `tailwind.config.ts`)
-- **MDX** — markdown with embedded React components for blog posts and project pages
+When I set out creating my own personal website, two requirements were non-negotiable from the start: static output (no server, CDN-served, deployable for free) and file-based content (adding a blog post or updating a resume entry means editing a text file, not touching UI code). Everything else followed from those constraints. 
 
-## Design Goals
+This site (that you are on now) covers four sections: landing, resume, blog, and projects. All of these sections are driven by YAML and MDX files in the codebase, with no content hardcoded in pages or components. The build validates all content against Zod schemas and fails on any violation, so content errors surface before they can reach production. The blog supports series grouping with per-series pages, client-side tag and sort filtering, and an RSS feed. The projects catalog implements progressive disclosure: a project with frontmatter only gets a catalog card linking to its external URL; a project with MDX body content gets its own detail page.
 
-- Resume, blog, and project catalog are all data-driven: edit a file, rebuild, done
-- Blog supports series grouping, tags, reading time, and syntax highlighting out of the box
-- Minimal dependencies — simple utilities are rolled rather than imported
-- Full static output: no server required after deploy
+## Technology Stack
+
+- **Framework: Astro 6**: chosen over Next.js (static export) and Gatsby. Astro treats static output as its primary design goal rather than an opt-in mode. Content Collections give typed, schema-validated file-based content management with no additional tooling. Islands Architecture means zero JavaScript ships to the browser by default; React is added only where interactivity is required.
+- **Content Layer** (`src/content.config.ts`): schema-first with Zod. The data contract is declared before any UI is written, and the UI trusts it. `getCollection` / `getEntry` from `astro:content` are the single access point for all content; pages never read `src/content/` files directly. This follows the Repository Pattern, with one abstraction layer between the data store and the consumers.
+- **Tailwind CSS v4**: CSS-first configuration via `@theme {}` blocks in `global.css`. No `tailwind.config.ts`. Custom color tokens and typography settings live in one place as CSS variables, which means a light theme is a CSS-only addition with no component rewrites.
+- **Deployment**: This website is deployed strictly through CI/CD. The deployment flow looks like: (1) `git push main`, (2) GitHub Actions, (3) Cloudflare Pages. The entire pipeline is configured in code (`wrangler.toml` + the workflow YAML) with no manual dashboard steps after initial project creation.
+
+## Deliberate Tradeoffs
+
+- **No CMS.** At one-author scale, editing text files in an IDE is faster than any CMS workflow. This comes with the cost that ddda non-technical contributor couldn't update content without a pull request. That's not a current constraint, and Decap or Keystatic are well-understood extension points if it ever becomes one.
+- **No site-wide search.** Pagefind (static search index) is feasible and well-supported in Astro. The site is small enough that tag filtering covers all discovery needs. This is an explicit deferral, since adding search would require no architectural changes if I choose to introduce this feature.

@@ -1,19 +1,23 @@
 ---
+import type { ImageMetadata } from 'astro';
+import PhotoswipeImage from './PhotoswipeImage.astro';
+
 interface Props {
-  src: string;
+  src: ImageMetadata;
   alt?: string;
   width?: number | string;
   height?: number | string;
 }
+
 const { src, alt = '', width, height } = Astro.props;
 const hasCaption = alt.trim().length > 0;
----
 
-{hasCaption ? (
-  <figure>
-    <img src={src} alt="" width={width} height={height} class="rounded-lg" />
-    <figcaption>{alt}</figcaption>
-  </figure>
-) : (
-  <img src={src} alt="" width={width} height={height} />
-)}
+// Resolve dimensions: explicit props first, then fall back to ImageMetadata
+const imgWidth = width
+  ? (typeof width === 'string' ? parseInt(width) : width)
+  : src.width;
+const imgHeight = height
+  ? (typeof height === 'string' ? parseInt(height) : height)
+  : src.height;
+---
+<PhotoswipeImage src={src.src} alt={alt} width={imgWidth} height={imgHeight} />

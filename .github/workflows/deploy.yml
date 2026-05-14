@@ -4,31 +4,53 @@ on:
   push:
     branches:
       - main
+      - development
   workflow_dispatch:
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
-  deploy:
-    name: Deploy to Cloudflare Pages
+  deploy-production:
+    name: Deploy to Production
     runs-on: ubuntu-latest
+    environment: production
+    if: github.ref == 'refs/heads/main'
     permissions:
       contents: read
+      deployments: write
     steps:
       - uses: actions/checkout@v4
-
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
           cache: 'npm'
-
       - run: npm ci
-
       - run: npm run build
-
       - uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CF_API_TOKEN }}
           accountId: ${{ secrets.CF_ACCOUNT_ID }}
-          command: pages deploy dist --project-name=nathanrumsey-dev
+          command: pages deploy dist --project-name=nathanrumsey-dev --branch=main
+
+  deploy-staging:
+    name: Deploy to Staging
+    runs-on: ubuntu-latest
+    environment: staging
+    if: github.ref == 'refs/heads/development'
+    permissions:
+      contents: read
+      deployments: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: 'npm'
+      - run: npm ci
+      - run: npm run build
+      - uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CF_API_TOKEN }}
+          accountId: ${{ secrets.CF_ACCOUNT_ID }}
+          command: pages deploy dist --project-name=nathanrumsey-dev --branch=development

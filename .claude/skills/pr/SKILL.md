@@ -130,9 +130,6 @@ Generate:
 
 ## Test Plan
 [What was verified — manual steps, test suite, or "N/A — config-only change"]
-
----
-*AI-assisted.*
 ```
 
 ## Step 8 — Dry-run preview
@@ -205,6 +202,8 @@ If the user says **no** — stop. The reminder was shown; the user will handle i
 ## Safety invariants
 
 - Never create a PR without showing the dry-run preview first
+- **The created PR must be byte-for-byte identical to the approved dry run** — no additions, no omissions, no reformatting. If you would change anything between preview and creation, show a new preview instead
+- Never add AI attribution, "Generated with Claude Code", or any footer not shown in the dry run
 - Never target a base branch outside the defined branching model
 - Never query or link issues/PRs from repos other than the current one
 - Never use `--repo` with an external target

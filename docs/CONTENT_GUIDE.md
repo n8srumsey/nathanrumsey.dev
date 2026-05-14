@@ -32,6 +32,7 @@ date: 2026-05-01
 description: "One sentence that appears in listings and as the SEO meta description."
 tags: [astro, typescript, systems]
 heroImage: ./hero.jpg      # optional; relative path to co-located image
+imageCaption: "Caption text shown below the hero image."  # optional
 series: my-series-slug     # optional; must match a filename in src/content/series/
 draft: false               # default false; true = excluded from all builds
 ---
@@ -44,6 +45,7 @@ draft: false               # default false; true = excluded from all builds
 | `description` | string | Yes | Used in listings, RSS, and meta tags |
 | `tags` | string[] | No | Defaults to `[]` |
 | `heroImage` | string | No | Relative path; co-locate with the mdx file |
+| `imageCaption` | string | No | Caption rendered below the hero image |
 | `series` | string | No | Slug = filename without `.yaml` from `src/content/series/` |
 | `draft` | boolean | No | Default `false` |
 
@@ -86,6 +88,7 @@ Change `draft: false` (or remove the field entirely). Rebuild.
 # src/content/series/my-series.yaml
 name: "Series Display Name"
 description: "What this series covers. Shown on the series page."
+heroImage: ./hero.jpg   # optional
 posts:
   - first-post-slug
   - second-post-slug
@@ -95,12 +98,21 @@ The filename (without `.yaml`) is the series slug used in URLs and post frontmat
 
 2. On each post that belongs to the series, add `series: my-series` to the frontmatter.
 
+### Frontmatter reference
+
+| Field | Type | Required | Notes |
+|---|---|---|---|
+| `name` | string | Yes | Display name for the series page |
+| `description` | string | No | Shown on the series page |
+| `heroImage` | string | No | Relative path to a co-located image |
+| `posts` | string[] | Yes | Ordered list of post slugs (drives display order and prev/next nav) |
+
 ### Adding a post to an existing series
 
 1. Add `series: my-series` to the post's frontmatter (if not already set).
 2. Add the post's slug to the `posts[]` array in the series YAML at the position you want it.
 
-The `posts` array drives display order on the series page and determines prev/next navigation within posts. The array is the source of truth — not post publication date.
+The `posts` array is the source of truth for order — not publication date.
 
 ### Series page URL
 
@@ -137,17 +149,15 @@ tags: [Astro, TypeScript]
 repoUrl: https://github.com/you/project-name
 liveUrl: https://project.example.com
 featured: true
-relatedSeries: my-series-slug       # optional
-relatedPosts: [post-slug-1]         # optional, list of blog post slugs
+start: "2026-01"
+end: "2026-05"             # omit for ongoing
+relatedSeries: my-series-slug
+relatedPosts: [post-slug-1]
 ---
 
 ## Overview
 
 Your README-style content here. Full MDX is supported — headings, code blocks, images, React components.
-
-## Technical details
-
-...
 ```
 
 With images, use the directory structure:
@@ -169,8 +179,15 @@ The project gets a page at `/projects/project-name`. The catalog links to the de
 | `repoUrl` | URL | No | GitHub or other source link |
 | `liveUrl` | URL | No | Live demo or deployed site |
 | `featured` | boolean | No | Default `false`; featured projects sort to top of catalog |
-| `relatedSeries` | string | No | Series slug; shown on detail page |
-| `relatedPosts` | string[] | No | Blog post slugs; shown as links on detail page |
+| `start` | string | No | Start date `YYYY-MM` format; shown on detail page |
+| `end` | string | No | End date `YYYY-MM` format; omit for ongoing |
+| `image` | string | No | Relative path to a co-located image for the catalog card |
+| `imageCaption` | string | No | Caption shown below the image on the detail page |
+| `homepagePin` | boolean | No | Pins the project to the landing page featured section |
+| `resumeSummary` | string | No | One-line summary used if the project is cross-referenced on the resume |
+| `resumeHighlights` | string[] | No | Bullet points used if the project is cross-referenced on the resume |
+| `relatedSeries` | string | No | Series slug; shown as a link on the detail page |
+| `relatedPosts` | string[] | No | Blog post slugs; shown as links on the detail page |
 | `annotations` | array | No | See Annotations section |
 
 ---
@@ -189,6 +206,9 @@ basics:
   website: "https://yoursite.com"
   location: "City, State"
   summary: "Optional brief bio shown at the top of the resume."
+  social:
+    github: "https://github.com/you"
+    linkedin: "https://linkedin.com/in/you"
 
 experience:
   - company: "Company Name"
@@ -196,22 +216,25 @@ experience:
     start: "YYYY-MM"        # e.g. "2024-01"
     end: "YYYY-MM"          # omit entirely for current position (displays "Present")
     location: "City or Remote"
-    description: "What you did. This is plain text in MVP."
+    description: "What you did. Plain text."
     highlights:
       - "Specific achievement or responsibility"
       - "Another bullet point"
-    annotations:            # optional; not rendered in MVP
+    annotations:            # optional; not rendered yet — see Annotations section
       - term: "exact phrase from description"
         detail: "Tooltip or context text"
         style: keyword      # keyword | tech | achievement
 
 education:
   - institution: "University Name"
-    degree: "B.S."
-    field: "Computer Science"   # optional
+    location: "City, State"
+    degree: "B.S. in Computer Science"   # optional
     start: "YYYY-MM"
     end: "YYYY-MM"              # omit for in-progress
-    description: "Optional additional context."
+    gpa: "Optional additional context."
+    activities: "Optional additional context."
+    awards: "Optional additional context
+
 
 skills:
   categories:
@@ -222,6 +245,19 @@ skills:
     - name: "Infrastructure"
       items: [PostgreSQL, Docker, Kubernetes]
 ```
+
+### Basics fields
+
+| Field | Required | Notes |
+|---|---|---|
+| `name` | Yes | |
+| `title` | Yes | Shown as subtitle under your name |
+| `email` | No | |
+| `website` | No | |
+| `location` | No | |
+| `summary` | No | Short bio at the top of the resume |
+| `social.github` | No | Full URL |
+| `social.linkedin` | No | Full URL |
 
 ### Adding a new job
 
@@ -259,7 +295,7 @@ annotations:
     style: tech
 ```
 
-When implemented, the term `"data ingestion pipeline"` in the rendered description will have visual treatment (highlighting, underline, etc.) and show `detail` on hover or click.
+When implemented, the term `"data ingestion pipeline"` in the rendered description will have visual treatment and show `detail` on hover or click.
 
 ### Annotation fields
 
@@ -271,11 +307,11 @@ When implemented, the term `"data ingestion pipeline"` in the rendered descripti
 
 ### Current behavior
 
-Annotations are stored and validated by the schema, but the UI ignores them. Resume descriptions render as plain text.
+Annotations are stored and validated by the schema, but the UI ignores them. Descriptions render as plain text.
 
 ### When to add annotations
 
-You can add annotations now — they'll be ready when the UI is implemented. They're most useful for:
+You can add annotations now — they'll be ready when the UI is implemented. Most useful for:
 - Technical terms that need context (`tech`)
 - Specific tools, languages, or systems mentioned in passing
 - Quantified achievements (`achievement`)
@@ -298,4 +334,4 @@ For development with hot reload:
 npm run dev      # watch mode; schema errors appear in the terminal
 ```
 
-Type and schema errors from `src/content/config.ts` surface on first access of the affected collection during `dev` or at build time.
+Schema errors from `src/content.config.ts` surface on first access of the affected collection during `dev` or at build time.

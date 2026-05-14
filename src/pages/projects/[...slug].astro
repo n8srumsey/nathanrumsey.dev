@@ -1,5 +1,5 @@
 ---
-import BaseLayout from '../../layouts/BaseLayout.astro';
+import DocumentLayout from '../../layouts/DocumentLayout.astro';
 import Breadcrumb from '../../components/ui/Breadcrumb.astro';
 import GitHubIcon from '../../components/icons/GitHubIcon';
 import GlobeIcon from '../../components/icons/GlobeIcon';
@@ -8,8 +8,11 @@ import ArticleIcon from '../../components/icons/ArticleIcon';
 import IconLink from '../../components/ui/IconLink';
 import TagLink from '../../components/ui/TagLink.astro';
 import MdxImage from '../../components/ui/MdxImage.astro';
+import MdxTable from '../../components/ui/MdxTable';
+import MarkdownString from '../../components/ui/MarkdownString.astro';
 import { getCollection, render } from 'astro:content';
 import { idToSlug } from '../../utils/slugs';
+import PhotoswipeImage from '../../components/ui/PhotoswipeImage.astro';
 
 export async function getStaticPaths() {
   const projects = await getCollection('projects');
@@ -22,6 +25,7 @@ export async function getStaticPaths() {
 const { project } = Astro.props;
 const { Content } = await render(project);
 const hasBody = (project.body?.trim().length ?? 0) > 0;
+const ongoing = !!project.data.start && !project.data.end;
 
 const allSeries = await getCollection('series');
 const seriesEntry = project.data.relatedSeries
@@ -36,14 +40,22 @@ const relatedPostEntries = project.data.relatedPosts
   .filter((p): p is NonNullable<typeof p> => p !== undefined);
 ---
 
-<BaseLayout title={`${project.data.name} — Nathan Rumsey`} description={project.data.description} image={project.data.image}>
+<DocumentLayout title={`${project.data.name} \u2014 Nathan Rumsey`} description={project.data.description} image={project.data.image}>
   <article>
     <Breadcrumb crumbs={[
       { label: 'Projects', href: '/projects' },
       { label: project.data.name },
     ]} />
     <header class="mb-8">
-      <h1 class="text-2xl font-bold font-mono">{project.data.name}</h1>
+      <div class="flex items-start gap-4">
+        <h1 class="text-2xl font-bold font-mono flex-1 min-w-0">{project.data.name}</h1>
+        {(project.data.featured || ongoing) && (
+          <div class="flex flex-col items-end shrink-0 gap-0.5">
+            {project.data.featured && <span class="font-mono text-xs text-primary">featured</span>}
+            {ongoing && <span class="font-mono text-xs text-secondary">active</span>}
+          </div>
+        )}
+      </div>
       <p class="text-muted-foreground mt-1">{project.data.description}</p>
 
       {project.data.tags.length > 0 && (
@@ -81,7 +93,7 @@ const relatedPostEntries = project.data.relatedPosts
         />
         {project.data.imageCaption && (
           <figcaption class="mt-2 text-sm text-muted-foreground font-mono text-center">
-            {project.data.imageCaption}
+            <MarkdownString content={project.data.imageCaption} />
           </figcaption>
         )}
       </figure>
@@ -89,8 +101,8 @@ const relatedPostEntries = project.data.relatedPosts
 
     {hasBody && (
       <div class="prose prose-invert max-w-none">
-        <Content components={{ img: MdxImage }} />
+        <Content components={{ img: MdxImage, table: MdxTable }} />
       </div>
     )}
   </article>
-</BaseLayout>
+</DocumentLayout>

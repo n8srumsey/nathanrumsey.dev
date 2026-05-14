@@ -1,0 +1,10 @@
+---
+import { MoonIcon as HeroMoonIcon } from '@heroicons/react/24/outline';
+
+interface Props {
+  size?: number;
+}
+const { size = 16 } = Astro.props;
+---
+
+<HeroMoonIcon width={size} height={size} aria-hidden={true} className="shrink-0" />

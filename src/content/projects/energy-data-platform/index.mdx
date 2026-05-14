@@ -1,0 +1,45 @@
+---
+name: Energy Utility Usage and Reliability Data Platform
+description: A curated energy analytics warehouse built for BI.
+tags: [AWS, Python, Databricks, Spark, Snowflake, S3, EC2]
+repoUrl: https://github.com/n8srumsey/energy-data-platform
+featured: true
+homepagePin: false
+image: https://plus.unsplash.com/premium_photo-1678167657597-665c6589a3a6?q=80&w=1471&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D
+imageCaption: Photo by [Casey Horner](https://unsplash.com/@mischievous_penguins) on [Unsplash](https://unsplash.com)
+start: "2025-10"
+end: "2025-11"
+resumeDisplayDate: false
+resumeDisplayPriority: 1
+resumeSummary: "A curated energy analytics warehouse built for BI."
+resumeHighlights:
+  - Built a multi-source energy analytics platform on Databricks using a full medallion architecture, standardizing energy, weather, and solar data into curated Delta tables with conformed dimensions and hourly/daily fact models.
+  - Exported curated analytical tables to a dedicated S3 publishing bucket and integrated them with Snowflake using a minimal-IAM storage integration, enabling a Streamlit dashboard to query all data through Snowflake.
+---
+
+This project builds a small end-to-end data platform using utility-style datasets as a realistic, domain-rich data source. Energy load, weather, and outage time series are messy enough to require real transformation work (such as misaligned timestamps, inconsistent regional codes, varying file formats), which makes them good material for demonstrating a complete data engineering workflow.
+
+The goal of this project was a working stack that touches each layer of a real data product: raw storage, structured ETL, a warehouse serving layer, and a lightweight dashboard.
+
+## Architecture
+
+**Storage**: S3 holds both raw inputs and published outputs in separate buckets, keeping the landing zone isolated from the serving layer so pipeline reruns don't risk overwriting tables mid-read.
+
+**ETL**: Databricks notebooks run a Bronze/Silver/Gold pipeline using Delta Lake:
+- *Bronze* loads raw files into Delta tables without modification, preserving source fidelity.
+- *Silver* standardizes types, fixes data quality issues, and aligns timestamps and region codes across load, weather, and outage datasets.
+- *Gold* produces the analytical tables: daily usage aggregates, hourly load profiles with conformed dimensions, and outage reliability metrics.
+
+**Warehouse**: Snowflake reads Gold exports from S3 via an external stage with a minimal-IAM storage integration. The two systems operate independently, with Snowflake loading on its own schedule without touching Databricks compute.
+
+**Dashboard**: Streamlit connects to Snowflake and queries the Gold tables to display load trends, daily peaks, load factor, and outage KPIs over user-selected time windows.
+
+## Key Decision: Export-and-Stage vs. Direct Connector
+
+Databricks offers a native Snowflake connector that skips the S3 intermediate step. The export-and-stage approach, write Gold to S3 and letting Snowflake load from there, adds one additional step but keeps the layers fully decoupled. Snowflake can reload from S3 without re-running ETL, and a failed load doesn't require reprocessing upstream. For a project like this, the operational difference is small, but the pattern reflects how production pipelines are typically structured when ETL and warehouse teams operate independently.
+
+## Reflection
+
+Routing dashboard queries through Snowflake rather than directly against Databricks is a compute cost decision: Snowflake's separated storage/compute model means queries hit materialized tables cheaply, without keeping a Databricks cluster warm for reads. The medallion architecture enforces clean replay boundaries, where Bronze is always replayable, Silver changes don't corrupt raw history, and Gold is the only layer Snowflake ever touches.
+
+The project demonstrates ability to wire together a multi-service cloud stack and make deliberate decisions about layer boundaries, handoff points, and cost tradeoffs, while using energy data as a concrete domain to work in.
