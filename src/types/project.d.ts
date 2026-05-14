@@ -4,6 +4,7 @@ type ProjectData = {
   description: string;
   tags: string[];
   featured: boolean;
+  ongoing: boolean;
   repoUrl?: string;
   liveUrl?: string;
   hasDetailPage: boolean;

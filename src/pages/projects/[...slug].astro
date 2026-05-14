@@ -24,6 +24,7 @@ export async function getStaticPaths() {
 const { project } = Astro.props;
 const { Content } = await render(project);
 const hasBody = (project.body?.trim().length ?? 0) > 0;
+const ongoing = !!project.data.start && !project.data.end;
 
 const allSeries = await getCollection('series');
 const seriesEntry = project.data.relatedSeries
@@ -45,7 +46,15 @@ const relatedPostEntries = project.data.relatedPosts
       { label: project.data.name },
     ]} />
     <header class="mb-8">
-      <h1 class="text-2xl font-bold font-mono">{project.data.name}</h1>
+      <div class="flex items-start gap-4">
+        <h1 class="text-2xl font-bold font-mono flex-1 min-w-0">{project.data.name}</h1>
+        {(project.data.featured || ongoing) && (
+          <div class="flex flex-col items-end shrink-0 gap-0.5">
+            {project.data.featured && <span class="font-mono text-xs text-primary">featured</span>}
+            {ongoing && <span class="font-mono text-xs text-secondary">active</span>}
+          </div>
+        )}
+      </div>
       <p class="text-muted-foreground mt-1">{project.data.description}</p>
 
       {project.data.tags.length > 0 && (

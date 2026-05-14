@@ -28,6 +28,7 @@ const projectData: ProjectData[] = projects.map(project => {
     description: project.data.description,
     tags: project.data.tags,
     featured: project.data.featured,
+    ongoing: !!project.data.start && !project.data.end,
     repoUrl: project.data.repoUrl,
     liveUrl: project.data.liveUrl,
     hasDetailPage,
