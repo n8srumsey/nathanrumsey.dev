@@ -107,12 +107,29 @@ const toggleBtnClass = (active: boolean) =>
       : 'bg-surface border-border text-foreground hover:bg-primary-subtle hover:border-primary hover:text-primary'
   }`;
 
+const mobileToggleBtnClass = (active: boolean) =>
+  `font-mono text-xs px-2 py-1.5 rounded border transition-colors cursor-pointer text-left ${
+    active
+      ? 'bg-primary-subtle border-primary text-primary'
+      : 'bg-surface border-border text-foreground hover:bg-primary-subtle hover:border-primary hover:text-primary'
+  }`;
+
 const tagChip = 'flex items-center gap-1 font-mono text-xs px-2 py-0.5 rounded-full border bg-primary-subtle border-primary text-primary';
+
+const sortOptions = [
+  { value: 'featured', label: 'Featured first' },
+  { value: 'newest', label: 'Newest' },
+  { value: 'oldest', label: 'Oldest' },
+  { value: 'az', label: 'A → Z' },
+  { value: 'za', label: 'Z → A' },
+] as const;
 
 export default function ProjectIndexFilter({ projects }: { projects: ProjectData[] }) {
   const [filters, setFilters] = useState<ProjectFilters>(readFromURL);
   const [tagsOpen, setTagsOpen] = useState(false);
+  const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const tagsRef = useRef<HTMLDivElement>(null);
+  const mobileFiltersRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const sync = () => setFilters(readFromURL());
@@ -123,6 +140,7 @@ export default function ProjectIndexFilter({ projects }: { projects: ProjectData
   useEffect(() => {
     const handler = (e: MouseEvent) => {
       if (!tagsRef.current?.contains(e.target as Node)) setTagsOpen(false);
+      if (!mobileFiltersRef.current?.contains(e.target as Node)) setMobileFiltersOpen(false);
     };
     document.addEventListener('mousedown', handler);
     return () => document.removeEventListener('mousedown', handler);
@@ -145,19 +163,60 @@ export default function ProjectIndexFilter({ projects }: { projects: ProjectData
   };
   const removeTag = (tag: string) => set({ tags: filters.tags.filter(t => t !== tag) });
 
+  const activeBinaryCount = [filters.source, filters.live, filters.featured, filters.ongoing, filters.blog].filter(Boolean).length;
+  const totalMobileFilterCount = activeBinaryCount + filters.tags.length;
+
   return (
     <div>
-      {/* Line 1: controls */}
-      <div className="flex items-center gap-2 mb-2">
+      {/* Mobile toolbar (hidden at md+) */}
+      <div className="flex md:hidden items-center gap-2 mb-2">
         <span className="font-mono text-xs text-muted-foreground">Sort</span>
         <DropdownSelect
-          options={[
-            { value: 'featured', label: 'Featured first' },
-            { value: 'newest', label: 'Newest' },
-            { value: 'oldest', label: 'Oldest' },
-            { value: 'az', label: 'A → Z' },
-            { value: 'za', label: 'Z → A' },
-          ]}
+          options={sortOptions as unknown as { value: string; label: string }[]}
+          value={filters.sort}
+          onChange={val => set({ sort: val as ProjectSort })}
+          ariaLabel="Sort order"
+        />
+
+        <div ref={mobileFiltersRef} className="relative">
+          <button
+            onClick={() => setMobileFiltersOpen(o => !o)}
+            aria-expanded={mobileFiltersOpen}
+            className="font-mono text-xs px-2 py-1 rounded border border-border bg-surface text-foreground flex items-center gap-1 hover:border-primary/40 transition-colors cursor-pointer"
+          >
+            {totalMobileFilterCount > 0 ? `Filter (${totalMobileFilterCount})` : 'Filter'}
+            <ChevronDownIcon className={mobileFiltersOpen ? 'rotate-180' : ''} />
+          </button>
+          {mobileFiltersOpen && (
+            <div className="absolute left-0 top-full mt-1 w-64 p-3 bg-surface border border-border rounded-lg shadow-md z-10">
+              <TagAutocomplete allTags={allTags} activeTags={filters.tags} onSelect={addTag} />
+              <div className="my-2 border-t border-border" />
+              <div className="flex flex-col gap-1.5">
+                <button onClick={() => set({ source: !filters.source })} className={mobileToggleBtnClass(filters.source)}>Source Available</button>
+                <button onClick={() => set({ live: !filters.live })} className={mobileToggleBtnClass(filters.live)}>Live</button>
+                <button onClick={() => set({ featured: !filters.featured })} className={mobileToggleBtnClass(filters.featured)}>Featured</button>
+                <button onClick={() => set({ ongoing: !filters.ongoing })} className={mobileToggleBtnClass(filters.ongoing)}>Active</button>
+                <button onClick={() => set({ blog: !filters.blog })} className={mobileToggleBtnClass(filters.blog)}>Blog Content</button>
+              </div>
+            </div>
+          )}
+        </div>
+
+        <div className="flex-1" />
+
+        <button
+          onClick={clearFilters}
+          className="font-mono text-xs text-muted-foreground underline hover:text-primary transition-colors cursor-pointer"
+        >
+          Clear
+        </button>
+      </div>
+
+      {/* Desktop toolbar (hidden below md) */}
+      <div className="hidden md:flex items-center gap-2 mb-2">
+        <span className="font-mono text-xs text-muted-foreground">Sort</span>
+        <DropdownSelect
+          options={sortOptions as unknown as { value: string; label: string }[]}
           value={filters.sort}
           onChange={val => set({ sort: val as ProjectSort })}
           ariaLabel="Sort order"
@@ -195,7 +254,7 @@ export default function ProjectIndexFilter({ projects }: { projects: ProjectData
         </button>
       </div>
 
-      {/* Line 2: active tag chips */}
+      {/* Active tag chips (both layouts) */}
       <div className="flex flex-wrap items-center gap-1.5 mb-4 min-h-6">
         {filters.tags.map(tag => (
           <span key={tag} className={tagChip}>
