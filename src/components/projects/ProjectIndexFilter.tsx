@@ -85,6 +85,11 @@ function applyFilters(projects: ProjectData[], f: ProjectFilters): ProjectData[]
       switch (f.sort) {
         case 'featured': {
           if (a.featured !== b.featured) return a.featured ? -1 : 1;
+          if (a.featured && b.featured) {
+            const pa = a.resumeDisplayPriority ?? -Infinity;
+            const pb = b.resumeDisplayPriority ?? -Infinity;
+            if (pa !== pb) return pb - pa;
+          }
           return byDate(a, b, 1);
         }
         case 'az': return a.name.localeCompare(b.name);

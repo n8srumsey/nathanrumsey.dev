@@ -13,4 +13,5 @@ type ProjectData = {
   image?: string;
   start?: string;
   end?: string;
+  resumeDisplayPriority?: number;
 };
