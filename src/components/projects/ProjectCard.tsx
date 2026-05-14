@@ -42,7 +42,7 @@ export default function ProjectCard({ project, onTagClick, activeTags }: Props) 
             </a>
           ) : project.name}
         </h2>
-        <p className="text-sm text-muted-foreground mt-1 leading-relaxed line-clamp-2">{project.description}</p>
+        <p className="text-sm text-muted-foreground mt-1 leading-relaxed line-clamp-3">{project.description}</p>
         {project.tags.length > 0 && (
           <TagList tags={project.tags} activeTags={activeTags} onTagClick={onTagClick} />
         )}
@@ -113,7 +113,7 @@ export default function ProjectCard({ project, onTagClick, activeTags }: Props) 
               </a>
             ) : project.name}
           </h2>
-          <p className="text-sm text-muted-foreground mt-1 leading-relaxed line-clamp-2">{project.description}</p>
+          <p className="text-sm text-muted-foreground mt-1 leading-relaxed line-clamp-3">{project.description}</p>
           {project.tags.length > 0 && (
             <TagList tags={project.tags} activeTags={activeTags} onTagClick={onTagClick} />
           )}
