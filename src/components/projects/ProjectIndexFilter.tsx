@@ -1,21 +1,18 @@
-import { useState, useEffect, useMemo, useRef } from 'react';
+import { useState, useRef } from 'react';
 import { useClickOutside } from '../../utils/useClickOutside';
-import { navigate } from '../../utils/filterUrl';
+import { useIndexFilter } from '../../utils/useIndexFilter';
 import {
   applyFilters,
   parseFiltersFromSearch,
   filtersToSearch,
-  type ProjectFilters,
   type ProjectSort,
 } from '../../utils/projectFilters';
 import ProjectCard from './ProjectCard';
 import { TagAutocomplete } from '../ui/TagAutocomplete';
 import { DropdownSelect } from '../ui/DropdownSelect';
 import ChevronDownIcon from '../icons/ChevronDownIcon';
-
-function readFromURL(): ProjectFilters {
-  return parseFiltersFromSearch(window.location.search);
-}
+import { FilterEmptyState } from '../ui/FilterEmptyState';
+import { FilterChipRow, type FilterChip } from '../ui/FilterChipRow';
 
 const toggleBtnClass = (active: boolean) =>
   `font-mono text-xs px-2 py-0.5 rounded-full border transition-colors cursor-pointer ${
@@ -31,8 +28,6 @@ const mobileToggleBtnClass = (active: boolean) =>
       : 'bg-surface border-border text-foreground hover:bg-primary-subtle hover:border-primary hover:text-primary'
   }`;
 
-const tagChip = 'flex items-center gap-1 font-mono text-xs px-2 py-0.5 rounded-full border bg-primary-subtle border-primary text-primary';
-
 const sortOptions = [
   { value: 'featured', label: 'Featured first' },
   { value: 'newest', label: 'Newest' },
@@ -42,40 +37,31 @@ const sortOptions = [
 ] as const;
 
 export default function ProjectIndexFilter({ projects }: { projects: ProjectData[] }) {
-  const [filters, setFilters] = useState<ProjectFilters>(readFromURL);
+  const { filters, set, clearFilters, allTags, results, addTag, removeTag } = useIndexFilter({
+    parse: parseFiltersFromSearch,
+    toSearch: filtersToSearch,
+    clearPatch: { tags: [], source: false, live: false, featured: false, ongoing: false, blog: false },
+    items: projects,
+    applyFilters,
+  });
+
   const [tagsOpen, setTagsOpen] = useState(false);
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const tagsRef = useRef<HTMLDivElement>(null);
   const mobileFiltersRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    const sync = () => setFilters(readFromURL());
-    window.addEventListener('popstate', sync);
-    return () => window.removeEventListener('popstate', sync);
-  }, []);
-
   useClickOutside(tagsRef, () => setTagsOpen(false));
   useClickOutside(mobileFiltersRef, () => setMobileFiltersOpen(false));
 
-  const set = (patch: Partial<ProjectFilters>) => {
-    const next = { ...filters, ...patch };
-    setFilters(next);
-    navigate(filtersToSearch(next));
-  };
-
-  const clearFilters = () =>
-    set({ tags: [], source: false, live: false, featured: false, ongoing: false, blog: false });
-
-  const allTags = useMemo(() => [...new Set(projects.flatMap(p => p.tags))].sort(), [projects]);
-  const results = useMemo(() => applyFilters(projects, filters), [projects, filters]);
-
-  const addTag = (tag: string) => {
-    if (!filters.tags.includes(tag)) set({ tags: [...filters.tags, tag] });
-  };
-  const removeTag = (tag: string) => set({ tags: filters.tags.filter(t => t !== tag) });
-
   const activeBinaryCount = [filters.source, filters.live, filters.featured, filters.ongoing, filters.blog].filter(Boolean).length;
   const totalMobileFilterCount = activeBinaryCount + filters.tags.length;
+
+  const chips: FilterChip[] = filters.tags.map(tag => ({
+    key: tag,
+    label: tag,
+    ariaLabel: `Remove tag: ${tag}`,
+    onRemove: () => removeTag(tag),
+  }));
 
   return (
     <div>
@@ -165,30 +151,10 @@ export default function ProjectIndexFilter({ projects }: { projects: ProjectData
         </button>
       </div>
 
-      {/* Active tag chips (both layouts) */}
-      <div className="flex flex-wrap items-center gap-1.5 mb-4 min-h-6">
-        {filters.tags.map(tag => (
-          <span key={tag} className={tagChip}>
-            {tag}
-            <button
-              onClick={() => removeTag(tag)}
-              aria-label={`Remove tag: ${tag}`}
-              className="hover:opacity-70 cursor-pointer leading-none"
-            >{'\u00D7'}</button>
-          </span>
-        ))}
-      </div>
+      <FilterChipRow chips={chips} />
 
       {results.length === 0 ? (
-        <div className="py-16 text-center text-muted-foreground space-y-3">
-          <p>No projects match the current filters.</p>
-          <button
-            onClick={clearFilters}
-            className="font-mono text-xs underline hover:text-primary transition-colors cursor-pointer"
-          >
-            Clear all filters
-          </button>
-        </div>
+        <FilterEmptyState message="No projects match the current filters." onClear={clearFilters} />
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {results.map(project => (
