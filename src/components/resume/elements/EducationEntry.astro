@@ -1,7 +1,7 @@
 ---
 import ResumeList from '../../ui/ResumeList.astro'
 import { formatDate } from '../../../utils/dates'
-import AnnotatedText from '../../ui/AnnotatedText'
+import { AnnotatedSpan } from '../../ui/AnnotatedText'
 interface Props {
     entry: EducationData
 }
@@ -24,14 +24,14 @@ const { entry } = Astro.props
         {entry.gpa && (
             <li class="gap-2 items-start">
                 <span class="font-medium">GPA:</span>
-                <AnnotatedText client:visible description={entry.gpa} annotations={entry.annotations} />
+                <AnnotatedSpan client:visible description={entry.gpa} annotations={entry.annotations} />
             </li>
         )}
 
         {entry.activities && (
             <li class="gap-2 items-start">
                 <span class="font-medium">Activities:</span>
-                <AnnotatedText client:visible description={entry.activities} annotations={entry.annotations} />
+                <AnnotatedSpan client:visible description={entry.activities} annotations={entry.annotations} />
             </li>
         )}
     </ResumeList>

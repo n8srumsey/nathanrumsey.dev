@@ -109,13 +109,13 @@ type Props = {
   className?: string;
 };
 
-export default function AnnotatedText({ description, annotations = [], className }: Props) {
+function AnnotatedSegments({ description, annotations, className, Wrapper }: Props & { Wrapper: 'p' | 'span' }) {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
-  const segments = parseAnnotatedText(description, annotations);
+  const segments = parseAnnotatedText(description, annotations ?? []);
   const hasAnnotations = segments.some((s) => s.type === 'annotated');
 
   return (
-    <p className={className}>
+    <Wrapper className={className}>
       {hasAnnotations ? (
         segments.map((segment, i) =>
           segment.type === 'text' ? (
@@ -134,6 +134,14 @@ export default function AnnotatedText({ description, annotations = [], className
       ) : (
         description
       )}
-    </p>
+    </Wrapper>
   );
+}
+
+export default function AnnotatedText(props: Props) {
+  return <AnnotatedSegments {...props} Wrapper="p" />;
+}
+
+export function AnnotatedSpan(props: Props) {
+  return <AnnotatedSegments {...props} Wrapper="span" />;
 }
