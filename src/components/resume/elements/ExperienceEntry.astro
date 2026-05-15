@@ -1,6 +1,8 @@
 ---
 import { formatDate } from '../../../utils/dates';
 import ResumeList from '../../ui/ResumeList.astro';
+import AnnotatedText from '../../ui/AnnotatedText';
+
 interface Props {
     experience: ExperienceData
 }
@@ -21,9 +23,12 @@ const { experience } = Astro.props;
         {experience.location && <p class="text-sm text-muted-foreground mt-0.5"> {experience.location} </p>}
     </div>
 
-    <p class="mt-2 text-sm leading-relaxed text-foreground">
-        {experience.description}
-    </p>
+    <AnnotatedText
+      client:visible
+      description={experience.description}
+      annotations={experience.annotations}
+      className="mt-2 text-sm leading-relaxed text-foreground"
+    />
 
     {experience.highlights.length > 0 && (
         <ResumeList>

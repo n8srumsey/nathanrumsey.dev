@@ -19,6 +19,10 @@ experience:
     description: >
       Delivered backend improvements and tooling for mission-critical financial and
       insurance systems at Oregon's largest workers' compensation insurer.
+    annotations:
+      - term: "workers' compensation"
+        detail: "State-funded insurance covering employee medical costs and lost wages from workplace injuries. SAIF is Oregon's only not-for-profit, state-chartered workers' compensation insurer, holding ~35% of the Oregon market."
+        style: keyword
     highlights:
       - Engineered corrections to the short-rate cancellations in billing engine, implementing transactional logic using Gosu to prevent erroneous refunds and safeguard $100k+ in annual revenue.
       - Refactored a legacy VB.NET actuarial regulatory reporting tool into C#, introducing parallel bulk processing and unit test coverage to reduce turnaround time from days to hours.
