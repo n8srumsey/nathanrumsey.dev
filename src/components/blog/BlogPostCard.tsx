@@ -83,7 +83,7 @@ export default function BlogPostCard({ post, onTagClick, activeTags }: Props) {
           {mainContent}
           {readMoreLink}
         </div>
-        <div className="w-44 shrink-0 self-stretch">
+        <div className="hidden sm:block w-44 shrink-0 self-stretch">
           <img src={post.image} alt="" className="w-full h-full object-cover" aria-hidden="true" />
         </div>
       </article>

@@ -94,7 +94,7 @@ export default function ProjectCard({ project, onTagClick, activeTags }: Props) 
           <div className="pb-5">{body}</div>
           {readMoreLink}
         </div>
-        <div className="w-44 shrink-0 self-stretch">
+        <div className="hidden sm:block w-44 shrink-0 self-stretch">
           <img src={project.image} alt="" className="w-full h-full object-cover" aria-hidden="true" />
         </div>
       </article>
