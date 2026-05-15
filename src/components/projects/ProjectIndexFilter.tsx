@@ -42,32 +42,76 @@ function toSearch(f: ProjectFilters): string {
   return p.toString();
 }
 
-function effectiveEndDate(p: ProjectData): Date | null {
-  if (p.end) {
-    const d = new Date(p.end);
-    return isNaN(d.getTime()) ? null : d;
-  }
-  if (p.start) {
-    const d = new Date(p.start);
-    return isNaN(d.getTime()) ? null : new Date();
-  }
-  return null;
+type Comparator = (a: ProjectData, b: ProjectData) => number;
+
+function chain(...cmps: Comparator[]): Comparator {
+  return (a, b) => {
+    for (const cmp of cmps) {
+      const result = cmp(a, b);
+      if (result !== 0) return result;
+    }
+    return 0;
+  };
 }
 
-function nullDateTieBreak(a: ProjectData, b: ProjectData): number {
-  if (a.featured && !b.featured) return -1;
-  if (!a.featured && b.featured) return 1;
-  return a.name.localeCompare(b.name);
+function parseDate(val: string | undefined | null): number | null {
+  if (!val) return null;
+  const t = new Date(val).getTime();
+  return isNaN(t) ? null : t;
 }
 
-function byDate(a: ProjectData, b: ProjectData, dir: 1 | -1): number {
-  const da = effectiveEndDate(a);
-  const db = effectiveEndDate(b);
-  if (!da && !db) return nullDateTieBreak(a, b);
-  if (!da) return 1;
-  if (!db) return -1;
-  const diff = dir * (db.getTime() - da.getTime());
-  return diff !== 0 ? diff : nullDateTieBreak(a, b);
+function byFeatured(a: ProjectData, b: ProjectData): number {
+  return (b.featured ? 1 : 0) - (a.featured ? 1 : 0);
+}
+
+function byEndDate(dir: 1 | -1): Comparator {
+  return (a, b) => {
+    const da = parseDate(a.end);
+    const db = parseDate(b.end);
+    if (da === null && db === null) return 0;
+    if (da === null) return -dir; // no end = ongoing: newest→first, oldest→last
+    if (db === null) return dir;
+    return dir * (db - da);
+  };
+}
+
+function byStartDate(dir: 1 | -1): Comparator {
+  return (a, b) => {
+    const da = parseDate(a.start);
+    const db = parseDate(b.start);
+    if (da === null && db === null) return 0;
+    if (da === null) return 1;  // no start date → always last
+    if (db === null) return -1;
+    return dir * (db - da);
+  };
+}
+
+function byPriority(a: ProjectData, b: ProjectData): number {
+  const pa = a.resumeDisplayPriority;
+  const pb = b.resumeDisplayPriority;
+  if (pa == null || pb == null) return 0; // skip to alphabetic if either is absent
+  return pb - pa;
+}
+
+function byName(dir: 1 | -1): Comparator {
+  return (a, b) => {
+    const na = a.name.toLowerCase();
+    const nb = b.name.toLowerCase();
+    if (na < nb) return -dir;
+    if (na > nb) return dir;
+    return 0;
+  };
+}
+
+function buildSorter(sort: ProjectSort): Comparator {
+  const date = (dir: 1 | -1): Comparator[] => [byEndDate(dir), byStartDate(dir)];
+  switch (sort) {
+    case 'featured': return chain(byFeatured, ...date(1), byPriority, byName(1));
+    case 'newest':   return chain(...date(1), byFeatured, byPriority, byName(1));
+    case 'oldest':   return chain(...date(-1), byFeatured, byPriority, byName(1));
+    case 'az':       return chain(byName(1), byFeatured, ...date(1), byPriority);
+    case 'za':       return chain(byName(-1), byFeatured, ...date(1), byPriority);
+  }
 }
 
 function applyFilters(projects: ProjectData[], f: ProjectFilters): ProjectData[] {
@@ -81,23 +125,7 @@ function applyFilters(projects: ProjectData[], f: ProjectFilters): ProjectData[]
       if (f.blog && !project.relatedSeries && project.relatedPosts.length === 0) return false;
       return true;
     })
-    .sort((a, b) => {
-      switch (f.sort) {
-        case 'featured': {
-          if (a.featured !== b.featured) return a.featured ? -1 : 1;
-          if (a.featured && b.featured) {
-            const pa = a.resumeDisplayPriority ?? -Infinity;
-            const pb = b.resumeDisplayPriority ?? -Infinity;
-            if (pa !== pb) return pb - pa;
-          }
-          return byDate(a, b, 1);
-        }
-        case 'az': return a.name.localeCompare(b.name);
-        case 'za': return b.name.localeCompare(a.name);
-        case 'newest': return byDate(a, b, 1);
-        case 'oldest': return byDate(a, b, -1);
-      }
-    });
+    .sort(buildSorter(f.sort));
 }
 
 const toggleBtnClass = (active: boolean) =>
