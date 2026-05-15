@@ -32,7 +32,15 @@ const { experience } = Astro.props;
 
     {experience.highlights.length > 0 && (
         <ResumeList>
-            {experience.highlights.map((h) => (<li>{h}</li>))}
+            {experience.highlights.map((h) => (
+                <li>
+                    <AnnotatedText
+                      client:visible
+                      description={h}
+                      annotations={experience.annotations}
+                    />
+                </li>
+            ))}
         </ResumeList>
     )}
 </div>

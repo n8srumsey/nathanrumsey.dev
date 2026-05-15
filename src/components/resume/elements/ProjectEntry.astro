@@ -4,6 +4,7 @@ import { idToSlug } from "../../../utils/slugs";
 import { formatDate } from "../../../utils/dates";
 import ResumeProjectLinks from "../../ui/ResumeProjectLinks.astro";
 import ResumeList from "../../ui/ResumeList.astro";
+import AnnotatedText from "../../ui/AnnotatedText";
 interface Props {
     project: ResumeProjectData
 }
@@ -36,13 +37,24 @@ const slug = idToSlug(project.id);
     </div>
 
     {project.data.resumeSummary && (
-        <p class="mt-2 text-sm leading-relaxed text-foreground">
-            {project.data.resumeSummary}
-        </p>
+        <AnnotatedText
+          client:visible
+          description={project.data.resumeSummary}
+          annotations={project.data.annotations}
+          className="mt-2 text-sm leading-relaxed text-foreground"
+        />
     )}
     {project.data.resumeHighlights && project.data.resumeHighlights.length > 0 && (
         <ResumeList>
-            {project.data.resumeHighlights.map((h) => (<li>{h}</li>))}
+            {project.data.resumeHighlights.map((h) => (
+                <li>
+                    <AnnotatedText
+                      client:visible
+                      description={h}
+                      annotations={project.data.annotations}
+                    />
+                </li>
+            ))}
         </ResumeList>
     )}
 </div>
