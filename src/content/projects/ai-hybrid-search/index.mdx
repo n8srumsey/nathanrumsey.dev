@@ -14,6 +14,16 @@ resumeSummary: A high-performance local file search engine combining traditional
 resumeHighlights: 
 - Engineered a hybrid search engine combining keyword and vector-based semantic retrieval using custom-trained embeddings and FAISS, achieving 0.06s latency and 10x faster results than Windows Search for 100k+ files.
 - Designed a modular, event-driven AI indexing pipeline with a Redis worker queue, SQLite metadata store, and incremental updates enabling near-real-time synchronization of file changes via semantic embeddings.
+annotations:
+  - term: "FAISS"
+    detail: "Facebook AI Similarity Search — an open-source library for efficient approximate nearest-neighbor search over dense vector embeddings. Used to index file content vectors and execute sub-100ms semantic similarity queries across 100k+ files."
+    style: tech
+  - term: "0.06s latency"
+    detail: "Measured at median across 100k+ indexed files in hybrid mode. BM25 keyword retrieval averaged 0.049s; GloVe semantic search averaged 0.008s; hybrid interleaving adds minimal overhead on top."
+    style: achievement
+  - term: "Redis worker queue"
+    detail: "In-memory job queue decoupling the file system crawler from the indexing worker. The crawler pushes file paths to the queue; the worker consumes them asynchronously, so search queries are never blocked by ongoing indexing."
+    style: tech
 ---
 
 Default OS search tools, such as Windows File Explorer or Nautilus, are slow and limited to filename matching. Windows File Explorer's search can take several seconds even in small directories. Nautilus is extremly slow in large directories. Alternative third-party tools like Everything and FSearch improve performance significantly but can sacrifice content indexing, or in some cases raise security concerns. This gap inspired me to develop a search tool that is performant, with minimal search latency, and capable of search within file contents in addition to filenames.

@@ -15,6 +15,16 @@ resumeSummary: "A curated energy analytics warehouse built for BI."
 resumeHighlights:
   - Built a multi-source energy analytics platform on Databricks using a full medallion architecture, standardizing energy, weather, and solar data into curated Delta tables with conformed dimensions and hourly/daily fact models.
   - Exported curated analytical tables to a dedicated S3 publishing bucket and integrated them with Snowflake using a minimal-IAM storage integration, enabling a Streamlit dashboard to query all data through Snowflake.
+annotations:
+  - term: "medallion architecture"
+    detail: "A layered data pattern with Bronze (raw ingestion), Silver (cleaned and standardized), and Gold (analytical/aggregated) layers. Each layer is independently replayable — Bronze preserves source fidelity, and Gold is the only layer the downstream warehouse ever touches."
+    style: tech
+  - term: "Delta tables"
+    detail: "Open-source storage format from Databricks built on Parquet, providing ACID transactions, schema enforcement, and time travel over object storage. Used here to enforce data quality guarantees across the Silver and Gold layers."
+    style: tech
+  - term: "minimal-IAM storage integration"
+    detail: "An AWS IAM policy granting Snowflake read-only access to exactly one S3 prefix — no write permissions, no cross-account access. Implements least-privilege to keep the ETL and warehouse layers fully decoupled."
+    style: tech
 ---
 
 This project builds a small end-to-end data platform using utility-style datasets as a realistic, domain-rich data source. Energy load, weather, and outage time series are messy enough to require real transformation work (such as misaligned timestamps, inconsistent regional codes, varying file formats), which makes them good material for demonstrating a complete data engineering workflow.
