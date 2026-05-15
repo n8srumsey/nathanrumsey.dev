@@ -33,10 +33,7 @@ See [`docs/CONTENT_GUIDE.md`](docs/CONTENT_GUIDE.md) for field reference and aut
 
 Push to `main` → GitHub Actions → Cloudflare Pages. The site is fully static.
 
-See [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md) for first-time setup (Cloudflare credentials, GitHub secrets, custom domain).
-
 ## Further Reading
 
 - [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) — design patterns and architectural decisions
 - [`docs/CONTENT_GUIDE.md`](docs/CONTENT_GUIDE.md) — content authoring reference
-- [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md) — deployment setup and troubleshooting
