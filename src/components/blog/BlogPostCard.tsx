@@ -72,7 +72,7 @@ export default function BlogPostCard({ post, onTagClick, activeTags }: Props) {
 
   if (post.image) {
     return (
-      <article className="border border-border rounded-lg hover:border-primary/40 bg-surface-raised shadow-md transition-colors relative group flex overflow-hidden">
+      <article className="border border-border rounded-lg hover:border-primary/40 hover:ring-1 hover:ring-primary/40 bg-surface-raised shadow-md transition-colors relative group flex overflow-hidden">
         <a
           href={`/blog/${post.slug}`}
           className="absolute inset-0 rounded-lg"
@@ -83,7 +83,7 @@ export default function BlogPostCard({ post, onTagClick, activeTags }: Props) {
           {mainContent}
           {readMoreLink}
         </div>
-        <div className="w-44 shrink-0 self-stretch">
+        <div className="hidden sm:block w-44 shrink-0 self-stretch">
           <img src={post.image} alt="" className="w-full h-full object-cover" aria-hidden="true" />
         </div>
       </article>
@@ -91,7 +91,7 @@ export default function BlogPostCard({ post, onTagClick, activeTags }: Props) {
   }
 
   return (
-    <article className="border border-border rounded-lg p-5 hover:border-primary/40 bg-surface-raised shadow-md transition-colors relative group">
+    <article className="border border-border rounded-lg p-5 hover:border-primary/40 hover:ring-1 hover:ring-primary/40 bg-surface-raised shadow-md transition-colors relative group">
       <a
         href={`/blog/${post.slug}`}
         className="absolute inset-0 rounded-lg"

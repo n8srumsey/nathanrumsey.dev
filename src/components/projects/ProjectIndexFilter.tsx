@@ -1,104 +1,18 @@
-import { useState, useEffect, useMemo, useRef } from 'react';
-import { navigate } from '../../utils/filterSort';
+import { useState, useRef } from 'react';
+import { useClickOutside } from '../../utils/useClickOutside';
+import { useIndexFilter } from '../../utils/useIndexFilter';
+import {
+  applyFilters,
+  parseFiltersFromSearch,
+  filtersToSearch,
+  type ProjectSort,
+} from '../../utils/projectFilters';
 import ProjectCard from './ProjectCard';
 import { TagAutocomplete } from '../ui/TagAutocomplete';
 import { DropdownSelect } from '../ui/DropdownSelect';
 import ChevronDownIcon from '../icons/ChevronDownIcon';
-
-type ProjectSort = 'featured' | 'az' | 'za' | 'newest' | 'oldest';
-
-interface ProjectFilters {
-  tags: string[];
-  source: boolean;
-  live: boolean;
-  featured: boolean;
-  ongoing: boolean;
-  blog: boolean;
-  sort: ProjectSort;
-}
-
-function readFromURL(): ProjectFilters {
-  const p = new URLSearchParams(window.location.search);
-  return {
-    tags: p.getAll('tag'),
-    source: p.get('source') === 'true',
-    live: p.get('live') === 'true',
-    featured: p.get('featured') === 'true',
-    ongoing: p.get('ongoing') === 'true',
-    blog: p.get('blog') === 'true',
-    sort: (p.get('sort') as ProjectSort) ?? 'featured',
-  };
-}
-
-function toSearch(f: ProjectFilters): string {
-  const p = new URLSearchParams();
-  f.tags.forEach(t => p.append('tag', t));
-  if (f.source) p.set('source', 'true');
-  if (f.live) p.set('live', 'true');
-  if (f.featured) p.set('featured', 'true');
-  if (f.ongoing) p.set('ongoing', 'true');
-  if (f.blog) p.set('blog', 'true');
-  if (f.sort !== 'featured') p.set('sort', f.sort);
-  return p.toString();
-}
-
-function effectiveEndDate(p: ProjectData): Date | null {
-  if (p.end) {
-    const d = new Date(p.end);
-    return isNaN(d.getTime()) ? null : d;
-  }
-  if (p.start) {
-    const d = new Date(p.start);
-    return isNaN(d.getTime()) ? null : new Date();
-  }
-  return null;
-}
-
-function nullDateTieBreak(a: ProjectData, b: ProjectData): number {
-  if (a.featured && !b.featured) return -1;
-  if (!a.featured && b.featured) return 1;
-  return a.name.localeCompare(b.name);
-}
-
-function byDate(a: ProjectData, b: ProjectData, dir: 1 | -1): number {
-  const da = effectiveEndDate(a);
-  const db = effectiveEndDate(b);
-  if (!da && !db) return nullDateTieBreak(a, b);
-  if (!da) return 1;
-  if (!db) return -1;
-  const diff = dir * (db.getTime() - da.getTime());
-  return diff !== 0 ? diff : nullDateTieBreak(a, b);
-}
-
-function applyFilters(projects: ProjectData[], f: ProjectFilters): ProjectData[] {
-  return projects
-    .filter(project => {
-      if (f.tags.length > 0 && !f.tags.some(t => project.tags.includes(t))) return false;
-      if (f.source && !project.repoUrl) return false;
-      if (f.live && !project.liveUrl) return false;
-      if (f.featured && !project.featured) return false;
-      if (f.ongoing && !project.ongoing) return false;
-      if (f.blog && !project.relatedSeries && project.relatedPosts.length === 0) return false;
-      return true;
-    })
-    .sort((a, b) => {
-      switch (f.sort) {
-        case 'featured': {
-          if (a.featured !== b.featured) return a.featured ? -1 : 1;
-          if (a.featured && b.featured) {
-            const pa = a.resumeDisplayPriority ?? -Infinity;
-            const pb = b.resumeDisplayPriority ?? -Infinity;
-            if (pa !== pb) return pb - pa;
-          }
-          return byDate(a, b, 1);
-        }
-        case 'az': return a.name.localeCompare(b.name);
-        case 'za': return b.name.localeCompare(a.name);
-        case 'newest': return byDate(a, b, 1);
-        case 'oldest': return byDate(a, b, -1);
-      }
-    });
-}
+import { FilterEmptyState } from '../ui/FilterEmptyState';
+import { FilterChipRow, type FilterChip } from '../ui/FilterChipRow';
 
 const toggleBtnClass = (active: boolean) =>
   `font-mono text-xs px-2 py-0.5 rounded-full border transition-colors cursor-pointer ${
@@ -114,8 +28,6 @@ const mobileToggleBtnClass = (active: boolean) =>
       : 'bg-surface border-border text-foreground hover:bg-primary-subtle hover:border-primary hover:text-primary'
   }`;
 
-const tagChip = 'flex items-center gap-1 font-mono text-xs px-2 py-0.5 rounded-full border bg-primary-subtle border-primary text-primary';
-
 const sortOptions = [
   { value: 'featured', label: 'Featured first' },
   { value: 'newest', label: 'Newest' },
@@ -125,46 +37,31 @@ const sortOptions = [
 ] as const;
 
 export default function ProjectIndexFilter({ projects }: { projects: ProjectData[] }) {
-  const [filters, setFilters] = useState<ProjectFilters>(readFromURL);
+  const { filters, set, clearFilters, allTags, results, addTag, removeTag } = useIndexFilter({
+    parse: parseFiltersFromSearch,
+    toSearch: filtersToSearch,
+    clearPatch: { tags: [], source: false, live: false, featured: false, ongoing: false, blog: false },
+    items: projects,
+    applyFilters,
+  });
+
   const [tagsOpen, setTagsOpen] = useState(false);
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const tagsRef = useRef<HTMLDivElement>(null);
   const mobileFiltersRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    const sync = () => setFilters(readFromURL());
-    window.addEventListener('popstate', sync);
-    return () => window.removeEventListener('popstate', sync);
-  }, []);
-
-  useEffect(() => {
-    const handler = (e: MouseEvent) => {
-      if (!tagsRef.current?.contains(e.target as Node)) setTagsOpen(false);
-      if (!mobileFiltersRef.current?.contains(e.target as Node)) setMobileFiltersOpen(false);
-    };
-    document.addEventListener('mousedown', handler);
-    return () => document.removeEventListener('mousedown', handler);
-  }, []);
-
-  const set = (patch: Partial<ProjectFilters>) => {
-    const next = { ...filters, ...patch };
-    setFilters(next);
-    navigate(toSearch(next));
-  };
-
-  const clearFilters = () =>
-    set({ tags: [], source: false, live: false, featured: false, ongoing: false, blog: false });
-
-  const allTags = useMemo(() => [...new Set(projects.flatMap(p => p.tags))].sort(), [projects]);
-  const results = useMemo(() => applyFilters(projects, filters), [projects, filters]);
-
-  const addTag = (tag: string) => {
-    if (!filters.tags.includes(tag)) set({ tags: [...filters.tags, tag] });
-  };
-  const removeTag = (tag: string) => set({ tags: filters.tags.filter(t => t !== tag) });
+  useClickOutside(tagsRef, () => setTagsOpen(false));
+  useClickOutside(mobileFiltersRef, () => setMobileFiltersOpen(false));
 
   const activeBinaryCount = [filters.source, filters.live, filters.featured, filters.ongoing, filters.blog].filter(Boolean).length;
   const totalMobileFilterCount = activeBinaryCount + filters.tags.length;
+
+  const chips: FilterChip[] = filters.tags.map(tag => ({
+    key: tag,
+    label: tag,
+    ariaLabel: `Remove tag: ${tag}`,
+    onRemove: () => removeTag(tag),
+  }));
 
   return (
     <div>
@@ -254,30 +151,10 @@ export default function ProjectIndexFilter({ projects }: { projects: ProjectData
         </button>
       </div>
 
-      {/* Active tag chips (both layouts) */}
-      <div className="flex flex-wrap items-center gap-1.5 mb-4 min-h-6">
-        {filters.tags.map(tag => (
-          <span key={tag} className={tagChip}>
-            {tag}
-            <button
-              onClick={() => removeTag(tag)}
-              aria-label={`Remove tag: ${tag}`}
-              className="hover:opacity-70 cursor-pointer leading-none"
-            >{'\u00D7'}</button>
-          </span>
-        ))}
-      </div>
+      <FilterChipRow chips={chips} />
 
       {results.length === 0 ? (
-        <div className="py-16 text-center text-muted-foreground space-y-3">
-          <p>No projects match the current filters.</p>
-          <button
-            onClick={clearFilters}
-            className="font-mono text-xs underline hover:text-primary transition-colors cursor-pointer"
-          >
-            Clear all filters
-          </button>
-        </div>
+        <FilterEmptyState message="No projects match the current filters." onClear={clearFilters} />
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {results.map(project => (

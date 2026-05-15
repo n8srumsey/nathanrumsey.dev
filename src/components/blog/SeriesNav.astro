@@ -1,0 +1,46 @@
+---
+import ChevronLeftIcon from '../icons/ChevronLeftIcon.astro';
+import ChevronRightIcon from '../icons/ChevronRightIcon.astro';
+
+interface Props {
+  prevSlug: string | null;
+  prevTitle: string | null;
+  prevPosition: number | null;
+  nextSlug: string | null;
+  nextTitle: string | null;
+  nextPosition: number | null;
+}
+
+const { prevSlug, prevTitle, prevPosition, nextSlug, nextTitle, nextPosition } = Astro.props;
+---
+
+<nav class="mt-12 pt-6 border-t border-border" aria-label="Series navigation">
+  <div class="flex justify-between gap-4 font-mono text-sm">
+    <div class="flex-1">
+      {prevSlug && prevTitle && (
+        <a href={`/blog/${prevSlug}`} class="group flex flex-col gap-1 text-muted-foreground hover:text-primary transition-colors max-w-[14rem]">
+          <span class="flex items-center gap-1.5">
+            <ChevronLeftIcon />
+            Previous
+          </span>
+          <span class="text-xs pl-[22px] leading-snug">
+            {prevPosition != null ? `Part ${prevPosition} \u00B7 ` : ''}{prevTitle}
+          </span>
+        </a>
+      )}
+    </div>
+    <div class="flex-1 flex justify-end">
+      {nextSlug && nextTitle && (
+        <a href={`/blog/${nextSlug}`} class="group flex flex-col gap-1 text-muted-foreground hover:text-primary transition-colors items-end max-w-[14rem]">
+          <span class="flex items-center gap-1.5">
+            Next
+            <ChevronRightIcon />
+          </span>
+          <span class="text-xs pr-[22px] leading-snug text-right">
+            {nextPosition != null ? `Part ${nextPosition} \u00B7 ` : ''}{nextTitle}
+          </span>
+        </a>
+      )}
+    </div>
+  </div>
+</nav>

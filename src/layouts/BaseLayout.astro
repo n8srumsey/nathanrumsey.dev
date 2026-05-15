@@ -1,9 +1,8 @@
 ---
 import '../styles/global.css';
 import NavBar from '../components/nav/NavBar.astro';
-import MailIcon from '../components/icons/MailIcon.astro';
-import LinkedInIcon from '../components/icons/LinkedInIcon.astro';
 import RssIcon from '../components/icons/RssIcon.astro';
+import SocialLinks from '../components/SocialLinks.astro';
 import { getCollection } from 'astro:content';
 
 interface Props {
@@ -70,16 +69,7 @@ const basics = resumeEntries[0]?.data.basics;
         <a href="/rss.xml" class="flex items-center gap-1.5 hover:text-primary transition-colors">
           <RssIcon size={14} />RSS
         </a>
-        {basics?.email && (
-          <a href={`mailto:${basics.email}`} class="flex items-center gap-1.5 hover:text-primary transition-colors">
-            <MailIcon size={14} />{basics.email}
-          </a>
-        )}
-        {basics?.social?.linkedin && (
-          <a href={basics.social.linkedin} target="_blank" rel="noopener noreferrer" class="flex items-center gap-1.5 hover:text-primary transition-colors">
-            <LinkedInIcon size={14} />LinkedIn
-          </a>
-        )}
+        <SocialLinks email={basics?.email} linkedin={basics?.social?.linkedin} iconSize={14} linkGap="gap-1.5" />
       </div>
     </footer>
 

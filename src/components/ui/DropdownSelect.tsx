@@ -1,4 +1,5 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef } from 'react';
+import { useClickOutside } from '../../utils/useClickOutside';
 import ChevronDownIcon from '../icons/ChevronDownIcon';
 
 export interface SelectOption {
@@ -22,13 +23,7 @@ export function DropdownSelect({ options, value, onChange, ariaLabel, sortSelect
     ? [...options.filter(o => o.value === value), ...options.filter(o => o.value !== value)]
     : options;
 
-  useEffect(() => {
-    const handler = (e: MouseEvent) => {
-      if (!ref.current?.contains(e.target as Node)) setOpen(false);
-    };
-    document.addEventListener('mousedown', handler);
-    return () => document.removeEventListener('mousedown', handler);
-  }, []);
+  useClickOutside(ref, () => setOpen(false));
 
   const select = (val: string) => {
     onChange(val);

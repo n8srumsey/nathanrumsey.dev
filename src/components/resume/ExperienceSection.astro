@@ -1,5 +1,6 @@
 ---
 import ExperienceEntry from "./elements/ExperienceEntry.astro"
+import ResumeSectionHeader from "./ResumeSectionHeader.astro"
 
 interface Props {
     experience: ExperienceData[]
@@ -7,6 +8,6 @@ interface Props {
 const { experience } = Astro.props
 ---
 <section class="mt-10">
-    <h2 class="text-base font-semibold uppercase tracking-wide text-muted-foreground border-b border-border pb-1 mb-5">Experience</h2>
+    <ResumeSectionHeader title="Experience" />
     <div class="space-y-8">{experience.map((exp) => (<ExperienceEntry experience={exp}/>))}</div>
-  </section>
+</section>

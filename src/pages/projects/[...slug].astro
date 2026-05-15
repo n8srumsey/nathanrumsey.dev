@@ -9,10 +9,9 @@ import IconLink from '../../components/ui/IconLink';
 import TagLink from '../../components/ui/TagLink.astro';
 import MdxImage from '../../components/ui/MdxImage.astro';
 import MdxTable from '../../components/ui/MdxTable';
-import MarkdownString from '../../components/ui/MarkdownString.astro';
+import HeroImage from '../../components/ui/HeroImage.astro';
 import { getCollection, render } from 'astro:content';
 import { idToSlug } from '../../utils/slugs';
-import PhotoswipeImage from '../../components/ui/PhotoswipeImage.astro';
 
 export async function getStaticPaths() {
   const projects = await getCollection('projects');
@@ -85,18 +84,7 @@ const relatedPostEntries = project.data.relatedPosts
     </header>
 
     {project.data.image && (
-      <figure class="my-8">
-        <img
-          src={project.data.image}
-          alt={project.data.imageCaption ?? ''}
-          class="w-full rounded-lg aspect-video object-cover"
-        />
-        {project.data.imageCaption && (
-          <figcaption class="mt-2 text-sm text-muted-foreground font-mono text-center">
-            <MarkdownString content={project.data.imageCaption} />
-          </figcaption>
-        )}
-      </figure>
+      <HeroImage src={project.data.image} alt={project.data.imageCaption ?? ''} caption={project.data.imageCaption} />
     )}
 
     {hasBody && (

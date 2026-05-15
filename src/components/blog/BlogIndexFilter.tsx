@@ -1,40 +1,21 @@
-import { useState, useEffect, useMemo, useRef } from 'react';
-import { navigate } from '../../utils/filterSort';
+import { useState, useMemo, useRef } from 'react';
+import {
+  parseFiltersFromSearch,
+  filtersToSearch,
+  type BlogFilters,
+  type BlogSort,
+  type LengthBucket,
+} from '../../utils/blogFilters';
+import { useClickOutside } from '../../utils/useClickOutside';
+import { useIndexFilter } from '../../utils/useIndexFilter';
 import BlogPostCard, { type BlogPostData } from './BlogPostCard';
 import { TagAutocomplete } from '../ui/TagAutocomplete';
 import ChevronDownIcon from '../icons/ChevronDownIcon';
 import { DropdownSelect } from '../ui/DropdownSelect';
+import { FilterEmptyState } from '../ui/FilterEmptyState';
+import { FilterChipRow, type FilterChip } from '../ui/FilterChipRow';
 
 export type { BlogPostData };
-
-type BlogSort = 'newest' | 'oldest' | 'az' | 'za';
-type LengthBucket = '' | 'short' | 'medium' | 'long';
-
-interface BlogFilters {
-  tags: string[];
-  year: string;
-  length: LengthBucket;
-  sort: BlogSort;
-}
-
-function readFromURL(): BlogFilters {
-  const p = new URLSearchParams(window.location.search);
-  return {
-    tags: p.getAll('tag'),
-    year: p.get('year') ?? '',
-    length: (p.get('length') as LengthBucket) ?? '',
-    sort: (p.get('sort') as BlogSort) ?? 'newest',
-  };
-}
-
-function toSearch(f: BlogFilters): string {
-  const p = new URLSearchParams();
-  f.tags.forEach(t => p.append('tag', t));
-  if (f.year) p.set('year', f.year);
-  if (f.length) p.set('length', f.length);
-  if (f.sort !== 'newest') p.set('sort', f.sort);
-  return p.toString();
-}
 
 function applyFilters(posts: BlogPostData[], f: BlogFilters): BlogPostData[] {
   return posts
@@ -59,49 +40,31 @@ function applyFilters(posts: BlogPostData[], f: BlogFilters): BlogPostData[] {
 const lengthLabel = (l: LengthBucket) =>
   l === 'short' ? '\u22642 min' : l === 'medium' ? '3\u20138 min' : '>8 min';
 
-const primaryChip = 'flex items-center gap-1 font-mono text-xs px-2 py-0.5 rounded-full border bg-primary-subtle border-primary text-primary';
-const neutralChip = 'flex items-center gap-1 font-mono text-xs px-2 py-0.5 rounded-full border bg-surface border-border text-foreground';
-
 export default function BlogIndexFilter({ posts }: { posts: BlogPostData[] }) {
-  const [filters, setFilters] = useState<BlogFilters>(readFromURL);
+  const { filters, set, clearFilters, allTags, results, addTag, removeTag } = useIndexFilter({
+    parse: parseFiltersFromSearch,
+    toSearch: filtersToSearch,
+    clearPatch: { tags: [], year: '', length: '' },
+    items: posts,
+    applyFilters,
+  });
+
   const [panelOpen, setPanelOpen] = useState(false);
   const filterRef = useRef<HTMLDivElement>(null);
+  useClickOutside(filterRef, () => setPanelOpen(false));
 
-  useEffect(() => {
-    const sync = () => setFilters(readFromURL());
-    window.addEventListener('popstate', sync);
-    return () => window.removeEventListener('popstate', sync);
-  }, []);
-
-  useEffect(() => {
-    const handler = (e: MouseEvent) => {
-      if (!filterRef.current?.contains(e.target as Node)) setPanelOpen(false);
-    };
-    document.addEventListener('mousedown', handler);
-    return () => document.removeEventListener('mousedown', handler);
-  }, []);
-
-  const set = (patch: Partial<BlogFilters>) => {
-    const next = { ...filters, ...patch };
-    setFilters(next);
-    navigate(toSearch(next));
-  };
-
-  const clearFilters = () => set({ tags: [], year: '', length: '' });
-
-  const allTags = useMemo(() => [...new Set(posts.flatMap(p => p.tags))].sort(), [posts]);
   const allYears = useMemo(
     () => [...new Set(posts.map(p => new Date(p.date).getFullYear()))].sort((a, b) => b - a),
     [posts],
   );
-  const results = useMemo(() => applyFilters(posts, filters), [posts, filters]);
 
   const activeCount = filters.tags.length + (filters.year ? 1 : 0) + (filters.length ? 1 : 0);
 
-  const addTag = (tag: string) => {
-    if (!filters.tags.includes(tag)) set({ tags: [...filters.tags, tag] });
-  };
-  const removeTag = (tag: string) => set({ tags: filters.tags.filter(t => t !== tag) });
+  const chips: FilterChip[] = [
+    ...(filters.year ? [{ key: 'year', label: filters.year, ariaLabel: 'Remove year filter', onRemove: () => set({ year: '' }), variant: 'neutral' as const }] : []),
+    ...(filters.length ? [{ key: 'length', label: lengthLabel(filters.length), ariaLabel: 'Remove length filter', onRemove: () => set({ length: '' }), variant: 'neutral' as const }] : []),
+    ...filters.tags.map(tag => ({ key: tag, label: tag, ariaLabel: `Remove tag: ${tag}`, onRemove: () => removeTag(tag) })),
+  ];
 
   return (
     <div>
@@ -171,50 +134,10 @@ export default function BlogIndexFilter({ posts }: { posts: BlogPostData[] }) {
         </button>
       </div>
 
-      {/* Line 2: active filter chips \u2014 non-tag first, then tags */}
-      <div className="flex flex-wrap items-center gap-1.5 mb-4 min-h-6">
-        {filters.year && (
-          <span className={neutralChip}>
-            {filters.year}
-            <button
-              onClick={() => set({ year: '' })}
-              aria-label="Remove year filter"
-              className="hover:text-primary cursor-pointer leading-none"
-            >{'\u00D7'}</button>
-          </span>
-        )}
-        {filters.length && (
-          <span className={neutralChip}>
-            {lengthLabel(filters.length)}
-            <button
-              onClick={() => set({ length: '' })}
-              aria-label="Remove length filter"
-              className="hover:text-primary cursor-pointer leading-none"
-            >{'\u00D7'}</button>
-          </span>
-        )}
-        {filters.tags.map(tag => (
-          <span key={tag} className={primaryChip}>
-            {tag}
-            <button
-              onClick={() => removeTag(tag)}
-              aria-label={`Remove tag: ${tag}`}
-              className="hover:opacity-70 cursor-pointer leading-none"
-            >{'\u00D7'}</button>
-          </span>
-        ))}
-      </div>
+      <FilterChipRow chips={chips} />
 
       {results.length === 0 ? (
-        <div className="py-16 text-center text-muted-foreground space-y-3">
-          <p>No posts match the current filters.</p>
-          <button
-            onClick={clearFilters}
-            className="font-mono text-xs underline hover:text-primary transition-colors cursor-pointer"
-          >
-            Clear all filters
-          </button>
-        </div>
+        <FilterEmptyState message="No posts match the current filters." onClear={clearFilters} />
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {results.map(post => (
