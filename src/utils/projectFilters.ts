@@ -72,7 +72,7 @@ export function byName(dir: 1 | -1): (a: ProjectData, b: ProjectData) => number 
 export function buildSorter(sort: ProjectSort): (a: ProjectData, b: ProjectData) => number {
   const date = (dir: 1 | -1) => [byEndDate(dir), byStartDate(dir)] as const;
   switch (sort) {
-    case 'featured': return chain(byFeatured, ...date(1), byPriority, byName(1));
+    case 'featured': return chain(byFeatured, byPriority, ...date(1), byName(1));
     case 'newest':   return chain(...date(1), byFeatured, byPriority, byName(1));
     case 'oldest':   return chain(...date(-1), byFeatured, byPriority, byName(1));
     case 'az':       return chain(byName(1), byFeatured, ...date(1), byPriority);
