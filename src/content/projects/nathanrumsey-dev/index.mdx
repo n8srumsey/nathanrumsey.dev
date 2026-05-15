@@ -6,6 +6,7 @@ repoUrl: https://github.com/n8srumsey/nathanrumsey.dev
 liveUrl: https://nathanrumsey.dev
 featured: false
 start: "2026-05"
+end: "2026-05"
 image: https://images.unsplash.com/photo-1614741118887-7a4ee193a5fa?q=80&w=774&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D
 imageCaption: Photo by [Safar Safarov](https://unsplash.com/@safarslife) on [Unsplash](https://unsplash.com)
 resumeDisplayDate: true
@@ -14,6 +15,16 @@ resumeSummary: "Personal portfolio website. Static site with a blog, project cat
 resumeHighlights:
   - "Designed and built full-stack portfolio site using Astro, React, Tailwind CSS, and MDX, covering a blog, project catalog, and resume page, all data-driven with no hardcoded content."
   - "Implemented type-safe Content Layer with Zod schema validation and build-time error detection; deployed via GitHub Actions to Cloudflare Pages."
+annotations:
+  - term: "Content Layer"
+    detail: "Astro's typed file-based content management API. Collections are declared with Zod schemas; getCollection() and getEntry() are the only content access points, enforcing the schema contract across all pages at build time."
+    style: tech
+  - term: "Zod schema validation"
+    detail: "TypeScript-first schema library used to declare the data contract for all YAML and MDX frontmatter. The build fails if any content file violates the schema, catching errors before they reach production."
+    style: tech
+  - term: "Cloudflare Pages"
+    detail: "Edge-deployed static hosting serving pages from a global CDN with no origin server. The full deployment pipeline is code-configured via wrangler.toml and a GitHub Actions workflow; there are no manual steps after initial project creation."
+    style: tech
 relatedPosts: [introducing-nathanrumsey-dev]
 
 ---

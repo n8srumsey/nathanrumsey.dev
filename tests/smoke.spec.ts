@@ -48,6 +48,14 @@ test('resume page loads with sections', async ({ page }) => {
   await expect(page.getByRole('main').getByRole('link', { name: 'LinkedIn' })).toHaveAttribute('href', /linkedin\.com/);
 });
 
+test('annotated term on resume shows tooltip on hover', async ({ page }) => {
+  await page.goto('/resume');
+  const term = page.getByRole('button', { name: /workers' compensation/i });
+  await expect(term).toBeVisible();
+  await term.hover();
+  await expect(page.getByRole('tooltip')).toBeVisible();
+});
+
 test('blog index loads', async ({ page }) => {
   await page.goto('/blog');
   await page.waitForSelector('h1');

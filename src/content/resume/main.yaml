@@ -19,6 +19,22 @@ experience:
     description: >
       Delivered backend improvements and tooling for mission-critical financial and
       insurance systems at Oregon's largest workers' compensation insurer.
+    annotations:
+      - term: "workers' compensation"
+        detail: "State-funded insurance covering employee medical costs and lost wages from workplace injuries. SAIF is Oregon's only not-for-profit, state-chartered workers' compensation insurer, holding ~55% of the Oregon market."
+        style: keyword
+      - term: "short-rate cancellations"
+        detail: "A billing adjustment applied when a policyholder cancels mid-term, where the refund is calculated at a penalty rate rather than pro-rata. Errors in this logic produce incorrect refund amounts that directly reduce written premium."
+        style: keyword
+      - term: "Gosu"
+        detail: "A JVM-based, strongly-typed language developed by Guidewire Software, used exclusively within Guidewire's insurance platform suite (PolicyCenter, BillingCenter, ClaimCenter)."
+        style: tech
+      - term: "BDD scenarios"
+        detail: "Behavior-Driven Development: scenarios written in plain English (Gherkin syntax) before implementation. Enables non-technical stakeholders to review and sign off on test coverage before a release ships."
+        style: tech
+      - term: "$100k+"
+        detail: "Estimated from historical erroneous refund rates applied to the annual volume of mid-term cancellation transactions processed through the billing engine."
+        style: achievement
     highlights:
       - Engineered corrections to the short-rate cancellations in billing engine, implementing transactional logic using Gosu to prevent erroneous refunds and safeguard $100k+ in annual revenue.
       - Refactored a legacy VB.NET actuarial regulatory reporting tool into C#, introducing parallel bulk processing and unit test coverage to reduce turnaround time from days to hours.
@@ -33,6 +49,19 @@ experience:
     description: >
       Built test infrastructure, data pipelines, and tooling to improve reliability
       and quality visibility across precision motion control and laser systems.
+    annotations:
+      - term: "precision motion control"
+        detail: "MKS Instruments' motion control product line manufactures high-precision servo and stepper systems for semiconductor fabrication equipment, where positioning accuracy is measured in microns."
+        style: keyword
+      - term: "RCA"
+        detail: "Root Cause Analysis: a structured investigation process to identify the underlying failure mode behind a field defect, rather than treating the surface symptom. Used to correlate field failure patterns back to manufacturing or design causes."
+        style: keyword
+      - term: "90%"
+        detail: "Calculated by comparing raw frame sizes from the AI computer vision system against compressed archive output. Data was previously stored uncompressed on local manufacturing floor drives before the archival tool was introduced."
+        style: achievement
+      - term: "$3000+"
+        detail: "Projected from the per-GB cost of local SSD storage replaced by compressed cold storage, multiplied by annual data throughput from the manufacturing floor defect detection system."
+        style: achievement
     highlights:
       - Extended C# .NET test infrastructure for a precision motion control system, leveraging dependency injection to validate against both simulated and physical hardware and improving test result reporting.
       - Designed a field failure tracking system and data consolidation pipeline for laser components, processing 10k+ records spanning decades to deliver reliability insights and RCA to leadership, informing warranty projections.
@@ -47,6 +76,16 @@ education:
     end: "2025-06"
     gpa: 3.94; Graduated Summa Cum Laude.
     activities: AI Club President, Triathlon Club Vice President, Treasurer, and Race Director.
+    annotations:
+      - term: "Summa Cum Laude"
+        detail: "Oregon State University's highest graduation honor, awarded to students graduating with a cumulative GPA of 3.90 or above."
+        style: achievement
+      - term: "AI Club President"
+        detail: "Led Oregon State's AI Club through its most active period to date, with weekly technical workshops, guest speaker sessions, and internal ML competitions with 100+ active members."
+        style: keyword
+      - term: "Race Director"
+        detail: "Organized and directed the club's annual triathlon race event, managing course logistics, volunteer coordination, and athlete registration end to end."
+        style: keyword
 
 skills:
   categories:

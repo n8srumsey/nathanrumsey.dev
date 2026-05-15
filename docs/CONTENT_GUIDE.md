@@ -281,41 +281,49 @@ Change the order of items within `experience[]`, `education[]`, or `skills.categ
 
 ---
 
-## Annotations (future feature, MVP state)
+## Annotations
 
-Annotations allow specific terms in resume descriptions or project descriptions to render with special styling or tooltip context. The data model is live; the UI is not yet implemented.
+Annotations mark specific terms in resume experience descriptions so that hovering (or tapping on mobile) reveals a tooltip with additional context. Annotated terms render with a dotted underline as a visual signal.
 
-### What they are
+### What they look like in YAML
 
 ```yaml
 description: "Led development of the data ingestion pipeline."
 annotations:
   - term: "data ingestion pipeline"
-    detail: "Built with Go + Kafka, processing 50M events/day"
+    detail: "Built with Go + Kafka, processing 50M events/day at peak load"
     style: tech
 ```
 
-When implemented, the term `"data ingestion pipeline"` in the rendered description will have visual treatment and show `detail` on hover or click.
+The term `"data ingestion pipeline"` gets a dotted underline in the rendered description. Hovering reveals the `detail` text in a tooltip.
 
 ### Annotation fields
 
 | Field | Required | Values | Notes |
 |---|---|---|---|
-| `term` | Yes | string | Must match a substring in `description` exactly |
-| `detail` | Yes | string | Tooltip/popover content |
-| `style` | No | `keyword`, `tech`, `achievement` | Visual treatment category |
+| `term` | Yes | string | Must match a substring in `description` exactly (case-sensitive) |
+| `detail` | Yes | string | Tooltip content — one to two sentences |
+| `style` | No | `keyword`, `tech`, `achievement` | Semantic label shown in the tooltip header |
 
-### Current behavior
+### When to annotate
 
-Annotations are stored and validated by the schema, but the UI ignores them. Descriptions render as plain text.
+**Should annotate:** a metric or quantified achievement in a bullet that would read as a large claim without context. Use `detail` to explain how the number was derived or what the baseline was.
 
-### When to add annotations
+**May annotate:** a technical term used in passing where a non-specialist reader would benefit from one sentence of context — the specific system, tool, or concept behind the name.
 
-You can add annotations now — they'll be ready when the UI is implemented. Most useful for:
-- Technical terms that need context (`tech`)
-- Specific tools, languages, or systems mentioned in passing
-- Quantified achievements (`achievement`)
-- Any phrase where a reader would benefit from one sentence of context
+**Should not annotate:** every technical term by default. Annotations are for context that adds genuine signal, not decoration. If the term is self-evident to the target audience, skip it.
+
+**Must not annotate:** a term that doesn't appear verbatim in the `description` string. The match is exact substring — a typo or paraphrase silently produces no annotation.
+
+### Style values
+
+`style` is semantic metadata — the dotted underline is visually identical across all three. The value appears as a muted label in the tooltip header to help readers orient.
+
+| Value | Use for |
+|---|---|
+| `keyword` | Domain terms, industry jargon, named programs or policies |
+| `tech` | Programming languages, frameworks, tools, systems |
+| `achievement` | Metrics, outcomes, quantified impact |
 
 ---
 
