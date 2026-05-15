@@ -8,9 +8,7 @@ basics:
     github: https://github.com/n8srumsey
     linkedin: https://linkedin.com/in/nathan-s-rumsey
   summary: >
-    Software Engineer specializing in backend and full-stack development, delivering
-    high-impact solutions for mission-critical financial systems with a focus on
-    rapid delivery, product reliability, and customer trust.
+    Software Engineer focused on backend and full-stack development, with a track record of delivering high-impact solutions for complex, high-stakes systems, driving rapid delivery, product reliability, and customer trust.
 
 experience:
   - company: SAIF Corporation
@@ -59,6 +57,6 @@ skills:
     - name: Data & Cloud
       items: [MySQL, PostgreSQL, MongoDB, LMDB, Redis, AWS (EC2, S3, IAM)]
     - name: Practices
-      items: [Agile/Scrum, CI/CD, TDD/BDD, AI-Augmented Development]
+      items: [Agile/Scrum, CI/CD, TDD/BDD, Infrastructure-as-Code]
     - name: Generative AI
-      items: [Claude Code, Agentic Workflows, AI Code Review]
+      items: [Claude Code, AI-Augmented Development, Agentic Development]

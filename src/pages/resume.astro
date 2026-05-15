@@ -1,6 +1,7 @@
 ---
 import DocumentLayout from "../layouts/DocumentLayout.astro";
 import { getCollection } from "astro:content";
+import { chain, parseDate } from "../utils/projectFilters";
 import SkillsSection from "../components/resume/SkillsSection.astro";
 import ProjectsSection from "../components/resume/ProjectsSection.astro";
 import EducationSection from "../components/resume/EducationSection.astro";
@@ -12,37 +13,18 @@ const resumeEntry = resumeEntries[0];
 if (!resumeEntry) throw new Error("src/content/resume/main.yaml not found");
 const resume = resumeEntry.data;
 
+const toMs = (v: string | undefined): number => parseDate(v) ?? -Infinity;
+
 const featuredProjects = (await getCollection("projects"))
   .filter((p) => p.data.featured)
-  .sort((a, b) => {
-    const priorityA = a.data.resumeDisplayPriority ?? -Infinity;
-    const priorityB = b.data.resumeDisplayPriority ?? -Infinity;
-
-    if (priorityA !== priorityB) {
-      return priorityB - priorityA;
-    }
-
-    const parseDate = (dateStr?: string): number => {
-      if (!dateStr) return -Infinity;
-      const fullDate = `${dateStr}-01`;
-      return new Date(fullDate).getTime();
-    };
-
-    const startA = parseDate(a.data.start);
-    const startB = parseDate(b.data.start);
-    if (startA !== startB) {
-      return startB - startA;
-    }
-
-    const endA = parseDate(a.data.end);
-    const endB = parseDate(b.data.end);
-
-    if (endA !== endB) {
-      return endB - endA;
-    }
-
-    return a.data.name.localeCompare(b.data.name);
-  });
+  .sort(
+    chain(
+      (a, b) => (b.data.resumeDisplayPriority ?? -Infinity) - (a.data.resumeDisplayPriority ?? -Infinity),
+      (a, b) => toMs(b.data.start) - toMs(a.data.start),
+      (a, b) => toMs(b.data.end) - toMs(a.data.end),
+      (a, b) => a.data.name.localeCompare(b.data.name),
+    )
+  );
 ---
 
 <DocumentLayout title={`Resume \u2014 ${resume.basics.name}`} description="Professional resume">
