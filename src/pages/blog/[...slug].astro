@@ -2,17 +2,16 @@
 import DocumentLayout from '../../layouts/DocumentLayout.astro';
 import Breadcrumb from '../../components/ui/Breadcrumb.astro';
 import SeriesIcon from '../../components/icons/SeriesIcon.astro';
-import ChevronLeftIcon from '../../components/icons/ChevronLeftIcon.astro';
-import ChevronRightIcon from '../../components/icons/ChevronRightIcon.astro';
 import TagLink from '../../components/ui/TagLink.astro';
 import MdxImage from '../../components/ui/MdxImage.astro';
 import MdxTable from '../../components/ui/MdxTable';
 import IconLink from '../../components/ui/IconLink';
 import ProjectIcon from '../../components/icons/ProjectIcon';
+import HeroImage from '../../components/ui/HeroImage.astro';
+import SeriesNav from '../../components/blog/SeriesNav.astro';
 import { getCollection, render } from 'astro:content';
 import { readingTime } from '../../utils/readingTime';
 import { idToSlug } from '../../utils/slugs';
-import MarkdownString from '../../components/ui/MarkdownString.astro';
 
 export async function getStaticPaths() {
   const posts = await getCollection('blog', ({ data }) => !data.draft);
@@ -120,18 +119,7 @@ const crumbs = [
     </header>
 
     {post.data.heroImage && (
-      <figure class="my-8">
-        <img
-          src={post.data.heroImage}
-          alt={post.data.imageCaption ?? ''}
-          class="w-full rounded-lg aspect-video object-cover"
-        />
-        {post.data.imageCaption && (
-          <figcaption class="mt-2 text-sm text-muted-foreground font-mono text-center">
-            <MarkdownString content={post.data.imageCaption} />
-          </figcaption>
-        )}
-      </figure>
+      <HeroImage src={post.data.heroImage} alt={post.data.imageCaption ?? ''} caption={post.data.imageCaption} />
     )}
 
     <div class="prose prose-invert max-w-none">
@@ -139,36 +127,14 @@ const crumbs = [
     </div>
 
     {seriesEntry && (
-      <nav class="mt-12 pt-6 border-t border-border" aria-label="Series navigation">
-        <div class="flex justify-between gap-4 font-mono text-sm">
-          <div class="flex-1">
-            {prevPost && (
-              <a href={`/blog/${prevSlug}`} class="group flex flex-col gap-1 text-muted-foreground hover:text-primary transition-colors max-w-[14rem]">
-                <span class="flex items-center gap-1.5">
-                  <ChevronLeftIcon />
-                  Previous
-                </span>
-                <span class="text-xs pl-[22px] leading-snug">
-                  {prevSeriesPosition != null ? `Part ${prevSeriesPosition} \u00B7 ` : ''}{prevPost.data.title}
-                </span>
-              </a>
-            )}
-          </div>
-          <div class="flex-1 flex justify-end">
-            {nextPost && (
-              <a href={`/blog/${nextSlug}`} class="group flex flex-col gap-1 text-muted-foreground hover:text-primary transition-colors items-end max-w-[14rem]">
-                <span class="flex items-center gap-1.5">
-                  Next
-                  <ChevronRightIcon />
-                </span>
-                <span class="text-xs pr-[22px] leading-snug text-right">
-                  {nextSeriesPosition != null ? `Part ${nextSeriesPosition} \u00B7 ` : ''}{nextPost.data.title}
-                </span>
-              </a>
-            )}
-          </div>
-        </div>
-      </nav>
+      <SeriesNav
+        prevSlug={prevSlug}
+        prevTitle={prevPost?.data.title ?? null}
+        prevPosition={prevSeriesPosition}
+        nextSlug={nextSlug}
+        nextTitle={nextPost?.data.title ?? null}
+        nextPosition={nextSeriesPosition}
+      />
     )}
   </article>
 </DocumentLayout>
