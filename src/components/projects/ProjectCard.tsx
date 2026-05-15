@@ -88,7 +88,7 @@ export default function ProjectCard({ project, onTagClick, activeTags }: Props) 
 
   if (project.image) {
     return (
-      <article className="border border-border rounded-lg hover:border-primary/40 bg-surface-raised shadow-md transition-colors relative group flex overflow-hidden">
+      <article className="border border-border rounded-lg hover:border-primary/40 hover:ring-1 hover:ring-primary/40 bg-surface-raised shadow-md transition-colors relative group flex overflow-hidden">
         {overlayLink}
         <div className="flex-1 min-w-0 p-5 relative pointer-events-none">
           <div className="pb-5">{body}</div>
@@ -102,7 +102,7 @@ export default function ProjectCard({ project, onTagClick, activeTags }: Props) 
   }
 
   return (
-    <article className="border border-border rounded-lg p-5 hover:border-primary/40 bg-surface-raised shadow-md transition-colors relative group">
+    <article className="border border-border rounded-lg p-5 hover:border-primary/40 hover:ring-1 hover:ring-primary/40 bg-surface-raised shadow-md transition-colors relative group">
       {overlayLink}
       <div className="relative pointer-events-none">
         {body}

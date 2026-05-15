@@ -10,7 +10,7 @@ interface Props {
 }
 const { callout, title, contentUrl, description, moreText, moreLink } = Astro.props
 ---
-<div class="border border-border rounded-lg p-5 bg-surface flex flex-col gap-3 group hover:border-primary/40 transition-colors">
+<div class="border border-border rounded-lg p-5 bg-surface flex flex-col gap-3 group hover:border-primary/40 hover:ring-1 hover:ring-primary/40 transition-colors">
     <span class="font-mono text-xs text-primary tracking-wider uppercase">{callout}</span>
 
     <div>
