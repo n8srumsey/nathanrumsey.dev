@@ -12,7 +12,6 @@ import MdxTable from '../../components/ui/MdxTable';
 import MarkdownString from '../../components/ui/MarkdownString.astro';
 import { getCollection, render } from 'astro:content';
 import { idToSlug } from '../../utils/slugs';
-import PhotoswipeImage from '../../components/ui/PhotoswipeImage.astro';
 
 export async function getStaticPaths() {
   const projects = await getCollection('projects');
