@@ -26,8 +26,8 @@
 | File | What it covers |
 |---|---|
 | `smoke.spec.ts` | Page loads, visible elements, HTTP status (landing, resume, blog index/post/series, projects catalog/detail, RSS, nav routing) |
-| `breadcrumbs.spec.ts` | Breadcrumb nav on blog post, series page, project detail; series badge on blog index |
-| `filter.spec.ts` | Tag click filtering, URL-driven filter arrival, empty state, clear-all, active filter chips (blog + projects) |
+| `breadcrumbs.spec.ts` | Breadcrumb nav on blog post (including series crumb), series page, project detail |
+| `filter.spec.ts` | URL-driven filter arrival, empty state + clear-all (blog + projects), sort order correctness (projects) |
 | `a11y.spec.ts` | axe-playwright WCAG 2.0/2.1 AA + best-practice sweep across all main routes |
 
 ## Where to add new tests
