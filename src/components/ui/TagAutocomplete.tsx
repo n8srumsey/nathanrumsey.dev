@@ -1,4 +1,5 @@
-import { useState, useRef, useEffect, useId } from 'react';
+import { useState, useRef, useId } from 'react';
+import { useClickOutside } from '../../utils/useClickOutside';
 
 interface Props {
   allTags: string[];
@@ -19,16 +20,7 @@ export function TagAutocomplete({ allTags, activeTags, onSelect, placeholder = '
     t => !activeTags.includes(t) && t.toLowerCase().includes(query.toLowerCase()),
   );
 
-  useEffect(() => {
-    const handler = (e: MouseEvent) => {
-      if (!containerRef.current?.contains(e.target as Node)) {
-        setIsOpen(false);
-        setActiveIndex(-1);
-      }
-    };
-    document.addEventListener('mousedown', handler);
-    return () => document.removeEventListener('mousedown', handler);
-  }, []);
+  useClickOutside(containerRef, () => { setIsOpen(false); setActiveIndex(-1); });
 
   const select = (tag: string) => {
     onSelect(tag);

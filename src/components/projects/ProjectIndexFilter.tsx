@@ -1,131 +1,20 @@
 import { useState, useEffect, useMemo, useRef } from 'react';
-import { navigate } from '../../utils/filterSort';
+import { useClickOutside } from '../../utils/useClickOutside';
+import { navigate } from '../../utils/filterUrl';
+import {
+  applyFilters,
+  parseFiltersFromSearch,
+  filtersToSearch,
+  type ProjectFilters,
+  type ProjectSort,
+} from '../../utils/projectFilters';
 import ProjectCard from './ProjectCard';
 import { TagAutocomplete } from '../ui/TagAutocomplete';
 import { DropdownSelect } from '../ui/DropdownSelect';
 import ChevronDownIcon from '../icons/ChevronDownIcon';
 
-type ProjectSort = 'featured' | 'az' | 'za' | 'newest' | 'oldest';
-
-interface ProjectFilters {
-  tags: string[];
-  source: boolean;
-  live: boolean;
-  featured: boolean;
-  ongoing: boolean;
-  blog: boolean;
-  sort: ProjectSort;
-}
-
 function readFromURL(): ProjectFilters {
-  const p = new URLSearchParams(window.location.search);
-  return {
-    tags: p.getAll('tag'),
-    source: p.get('source') === 'true',
-    live: p.get('live') === 'true',
-    featured: p.get('featured') === 'true',
-    ongoing: p.get('ongoing') === 'true',
-    blog: p.get('blog') === 'true',
-    sort: (p.get('sort') as ProjectSort) ?? 'featured',
-  };
-}
-
-function toSearch(f: ProjectFilters): string {
-  const p = new URLSearchParams();
-  f.tags.forEach(t => p.append('tag', t));
-  if (f.source) p.set('source', 'true');
-  if (f.live) p.set('live', 'true');
-  if (f.featured) p.set('featured', 'true');
-  if (f.ongoing) p.set('ongoing', 'true');
-  if (f.blog) p.set('blog', 'true');
-  if (f.sort !== 'featured') p.set('sort', f.sort);
-  return p.toString();
-}
-
-type Comparator = (a: ProjectData, b: ProjectData) => number;
-
-function chain(...cmps: Comparator[]): Comparator {
-  return (a, b) => {
-    for (const cmp of cmps) {
-      const result = cmp(a, b);
-      if (result !== 0) return result;
-    }
-    return 0;
-  };
-}
-
-function parseDate(val: string | undefined | null): number | null {
-  if (!val) return null;
-  const t = new Date(val).getTime();
-  return isNaN(t) ? null : t;
-}
-
-function byFeatured(a: ProjectData, b: ProjectData): number {
-  return (b.featured ? 1 : 0) - (a.featured ? 1 : 0);
-}
-
-function byEndDate(dir: 1 | -1): Comparator {
-  return (a, b) => {
-    const da = parseDate(a.end);
-    const db = parseDate(b.end);
-    if (da === null && db === null) return 0;
-    if (da === null) return -dir; // no end = ongoing: newest→first, oldest→last
-    if (db === null) return dir;
-    return dir * (db - da);
-  };
-}
-
-function byStartDate(dir: 1 | -1): Comparator {
-  return (a, b) => {
-    const da = parseDate(a.start);
-    const db = parseDate(b.start);
-    if (da === null && db === null) return 0;
-    if (da === null) return 1;  // no start date → always last
-    if (db === null) return -1;
-    return dir * (db - da);
-  };
-}
-
-function byPriority(a: ProjectData, b: ProjectData): number {
-  const pa = a.resumeDisplayPriority;
-  const pb = b.resumeDisplayPriority;
-  if (pa == null || pb == null) return 0; // skip to alphabetic if either is absent
-  return pb - pa;
-}
-
-function byName(dir: 1 | -1): Comparator {
-  return (a, b) => {
-    const na = a.name.toLowerCase();
-    const nb = b.name.toLowerCase();
-    if (na < nb) return -dir;
-    if (na > nb) return dir;
-    return 0;
-  };
-}
-
-function buildSorter(sort: ProjectSort): Comparator {
-  const date = (dir: 1 | -1): Comparator[] => [byEndDate(dir), byStartDate(dir)];
-  switch (sort) {
-    case 'featured': return chain(byFeatured, ...date(1), byPriority, byName(1));
-    case 'newest':   return chain(...date(1), byFeatured, byPriority, byName(1));
-    case 'oldest':   return chain(...date(-1), byFeatured, byPriority, byName(1));
-    case 'az':       return chain(byName(1), byFeatured, ...date(1), byPriority);
-    case 'za':       return chain(byName(-1), byFeatured, ...date(1), byPriority);
-  }
-}
-
-function applyFilters(projects: ProjectData[], f: ProjectFilters): ProjectData[] {
-  return projects
-    .filter(project => {
-      if (f.tags.length > 0 && !f.tags.some(t => project.tags.includes(t))) return false;
-      if (f.source && !project.repoUrl) return false;
-      if (f.live && !project.liveUrl) return false;
-      if (f.featured && !project.featured) return false;
-      if (f.ongoing && !project.ongoing) return false;
-      if (f.blog && !project.relatedSeries && project.relatedPosts.length === 0) return false;
-      return true;
-    })
-    .sort(buildSorter(f.sort));
+  return parseFiltersFromSearch(window.location.search);
 }
 
 const toggleBtnClass = (active: boolean) =>
@@ -165,19 +54,13 @@ export default function ProjectIndexFilter({ projects }: { projects: ProjectData
     return () => window.removeEventListener('popstate', sync);
   }, []);
 
-  useEffect(() => {
-    const handler = (e: MouseEvent) => {
-      if (!tagsRef.current?.contains(e.target as Node)) setTagsOpen(false);
-      if (!mobileFiltersRef.current?.contains(e.target as Node)) setMobileFiltersOpen(false);
-    };
-    document.addEventListener('mousedown', handler);
-    return () => document.removeEventListener('mousedown', handler);
-  }, []);
+  useClickOutside(tagsRef, () => setTagsOpen(false));
+  useClickOutside(mobileFiltersRef, () => setMobileFiltersOpen(false));
 
   const set = (patch: Partial<ProjectFilters>) => {
     const next = { ...filters, ...patch };
     setFilters(next);
-    navigate(toSearch(next));
+    navigate(filtersToSearch(next));
   };
 
   const clearFilters = () =>

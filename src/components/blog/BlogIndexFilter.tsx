@@ -1,40 +1,19 @@
 import { useState, useEffect, useMemo, useRef } from 'react';
-import { navigate } from '../../utils/filterSort';
+import { navigate } from '../../utils/filterUrl';
+import {
+  parseFiltersFromSearch,
+  filtersToSearch,
+  type BlogFilters,
+  type BlogSort,
+  type LengthBucket,
+} from '../../utils/blogFilters';
+import { useClickOutside } from '../../utils/useClickOutside';
 import BlogPostCard, { type BlogPostData } from './BlogPostCard';
 import { TagAutocomplete } from '../ui/TagAutocomplete';
 import ChevronDownIcon from '../icons/ChevronDownIcon';
 import { DropdownSelect } from '../ui/DropdownSelect';
 
 export type { BlogPostData };
-
-type BlogSort = 'newest' | 'oldest' | 'az' | 'za';
-type LengthBucket = '' | 'short' | 'medium' | 'long';
-
-interface BlogFilters {
-  tags: string[];
-  year: string;
-  length: LengthBucket;
-  sort: BlogSort;
-}
-
-function readFromURL(): BlogFilters {
-  const p = new URLSearchParams(window.location.search);
-  return {
-    tags: p.getAll('tag'),
-    year: p.get('year') ?? '',
-    length: (p.get('length') as LengthBucket) ?? '',
-    sort: (p.get('sort') as BlogSort) ?? 'newest',
-  };
-}
-
-function toSearch(f: BlogFilters): string {
-  const p = new URLSearchParams();
-  f.tags.forEach(t => p.append('tag', t));
-  if (f.year) p.set('year', f.year);
-  if (f.length) p.set('length', f.length);
-  if (f.sort !== 'newest') p.set('sort', f.sort);
-  return p.toString();
-}
 
 function applyFilters(posts: BlogPostData[], f: BlogFilters): BlogPostData[] {
   return posts
@@ -63,28 +42,22 @@ const primaryChip = 'flex items-center gap-1 font-mono text-xs px-2 py-0.5 round
 const neutralChip = 'flex items-center gap-1 font-mono text-xs px-2 py-0.5 rounded-full border bg-surface border-border text-foreground';
 
 export default function BlogIndexFilter({ posts }: { posts: BlogPostData[] }) {
-  const [filters, setFilters] = useState<BlogFilters>(readFromURL);
+  const [filters, setFilters] = useState<BlogFilters>(() => parseFiltersFromSearch(window.location.search));
   const [panelOpen, setPanelOpen] = useState(false);
   const filterRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const sync = () => setFilters(readFromURL());
+    const sync = () => setFilters(parseFiltersFromSearch(window.location.search));
     window.addEventListener('popstate', sync);
     return () => window.removeEventListener('popstate', sync);
   }, []);
 
-  useEffect(() => {
-    const handler = (e: MouseEvent) => {
-      if (!filterRef.current?.contains(e.target as Node)) setPanelOpen(false);
-    };
-    document.addEventListener('mousedown', handler);
-    return () => document.removeEventListener('mousedown', handler);
-  }, []);
+  useClickOutside(filterRef, () => setPanelOpen(false));
 
   const set = (patch: Partial<BlogFilters>) => {
     const next = { ...filters, ...patch };
     setFilters(next);
-    navigate(toSearch(next));
+    navigate(filtersToSearch(next));
   };
 
   const clearFilters = () => set({ tags: [], year: '', length: '' });
