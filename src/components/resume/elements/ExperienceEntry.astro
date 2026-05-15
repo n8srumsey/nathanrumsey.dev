@@ -21,8 +21,6 @@ const { experience } = Astro.props;
         {experience.location && <p class="text-sm text-muted-foreground mt-0.5"> {experience.location} </p>}
     </div>
 
-    {/* annotations not rendered in MVP \u2014 see docs/ARCHITECTURE.md */}
-
     <p class="mt-2 text-sm leading-relaxed text-foreground">
         {experience.description}
     </p>
