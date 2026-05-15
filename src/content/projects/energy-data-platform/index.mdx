@@ -17,13 +17,13 @@ resumeHighlights:
   - Exported curated analytical tables to a dedicated S3 publishing bucket and integrated them with Snowflake using a minimal-IAM storage integration, enabling a Streamlit dashboard to query all data through Snowflake.
 annotations:
   - term: "medallion architecture"
-    detail: "A layered data pattern with Bronze (raw ingestion), Silver (cleaned and standardized), and Gold (analytical/aggregated) layers. Each layer is independently replayable — Bronze preserves source fidelity, and Gold is the only layer the downstream warehouse ever touches."
+    detail: "A layered data pattern with Bronze (raw ingestion), Silver (cleaned and standardized), and Gold (analytical/aggregated) layers. Bronze preserves source fidelity, and Gold is the data product accessible to downstream data warehouses."
     style: tech
   - term: "Delta tables"
     detail: "Open-source storage format from Databricks built on Parquet, providing ACID transactions, schema enforcement, and time travel over object storage. Used here to enforce data quality guarantees across the Silver and Gold layers."
     style: tech
   - term: "minimal-IAM storage integration"
-    detail: "An AWS IAM policy granting Snowflake read-only access to exactly one S3 prefix — no write permissions, no cross-account access. Implements least-privilege to keep the ETL and warehouse layers fully decoupled."
+    detail: "An AWS IAM policy granting Snowflake read-only access to exactly one S3 prefix with no write permissions nor cross-account access. Implements least-privilege to keep the ETL and warehouse layers fully decoupled."
     style: tech
 ---
 
