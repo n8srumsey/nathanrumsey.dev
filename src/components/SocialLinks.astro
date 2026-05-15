@@ -1,0 +1,30 @@
+---
+import MailIcon from './icons/MailIcon.astro';
+import GitHubIcon from './icons/GitHubIcon.astro';
+import LinkedInIcon from './icons/LinkedInIcon.astro';
+
+interface Props {
+  email?: string;
+  github?: string;
+  linkedin?: string;
+  iconSize?: number;
+  linkGap?: string;
+}
+
+const { email, github, linkedin, iconSize = 15, linkGap = 'gap-2' } = Astro.props;
+---
+{email && (
+  <a href={`mailto:${email}`} class:list={['flex items-center text-muted-foreground hover:text-primary transition-colors', linkGap]}>
+    <MailIcon size={iconSize} />{email}
+  </a>
+)}
+{github && (
+  <a href={github} target="_blank" rel="noopener noreferrer" class:list={['flex items-center text-muted-foreground hover:text-primary transition-colors', linkGap]}>
+    <GitHubIcon size={iconSize} />GitHub
+  </a>
+)}
+{linkedin && (
+  <a href={linkedin} target="_blank" rel="noopener noreferrer" class:list={['flex items-center text-muted-foreground hover:text-primary transition-colors', linkGap]}>
+    <LinkedInIcon size={iconSize} />LinkedIn
+  </a>
+)}
