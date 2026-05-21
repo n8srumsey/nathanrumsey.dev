@@ -37,7 +37,7 @@ This site (that you are on now) covers four sections: landing, resume, blog, and
 
 - **Framework: Astro 6**: chosen over Next.js (static export) and Gatsby. Astro treats static output as its primary design goal rather than an opt-in mode. Content Collections give typed, schema-validated file-based content management with no additional tooling. Islands Architecture means zero JavaScript ships to the browser by default; React is added only where interactivity is required.
 - **Content Layer** (`src/content.config.ts`): schema-first with Zod. The data contract is declared before any UI is written, and the UI trusts it. `getCollection` / `getEntry` from `astro:content` are the single access point for all content; pages never read `src/content/` files directly. This follows the Repository Pattern, with one abstraction layer between the data store and the consumers.
-- **Tailwind CSS v4**: CSS-first configuration via `@theme {}` blocks in `global.css`. No `tailwind.config.ts`. Custom color tokens and typography settings live in one place as CSS variables, which means a light theme is a CSS-only addition with no component rewrites.
+- **Tailwind CSS**: Custom color tokens and typography settings live in one place as CSS variables, which means a light theme is a CSS-only addition with no component rewrites.
 - **Deployment**: This website is deployed strictly through CI/CD. The deployment flow looks like: (1) `git push main`, (2) GitHub Actions, (3) Cloudflare Pages. The entire pipeline is configured in code (`wrangler.toml` + the workflow YAML) with no manual dashboard steps after initial project creation.
 
 ## Deliberate Tradeoffs
