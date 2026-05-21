@@ -8,7 +8,7 @@ basics:
     github: https://github.com/n8srumsey
     linkedin: https://linkedin.com/in/nathan-s-rumsey
   summary: >
-    Software Engineer focused on backend and full-stack development, with a track record of delivering high-impact solutions for complex, high-stakes systems, driving rapid delivery, product reliability, and customer trust.
+    Software engineer with experience across backend and full-stack development, building data-intensive systems and tooling for high-stakes domains including semiconductor manufacturing and financial services.
 
 experience:
   - company: SAIF Corporation
@@ -17,8 +17,7 @@ experience:
     end: "2025-12"
     location: Salem, OR
     description: >
-      Delivered backend improvements and tooling for mission-critical financial and
-      insurance systems at Oregon's largest workers' compensation insurer.
+      Delivered backend solutions for core financial and insurance systems at Oregon's largest workers' compensation insurer.
     annotations:
       - term: "workers' compensation"
         detail: "State-funded insurance covering employee medical costs and lost wages from workplace injuries. SAIF is Oregon's only not-for-profit, state-chartered workers' compensation insurer, holding ~55% of the Oregon market."
@@ -47,8 +46,7 @@ experience:
     end: "2024-09"
     location: Beaverton, OR
     description: >
-      Built test infrastructure, data pipelines, and tooling to improve reliability
-      and quality visibility across precision motion control and laser systems.
+      Engineered reliability systems for precision motion and laser systems at a leading semiconductor equipment manufacturer.
     annotations:
       - term: "precision motion control"
         detail: "MKS Instruments' motion control product line manufactures high-precision servo and stepper systems for semiconductor fabrication equipment, where positioning accuracy is measured in microns."
@@ -90,12 +88,10 @@ education:
 skills:
   categories:
     - name: Languages
-      items: [Python, C#, JavaScript/TypeScript, Gosu, SQL, HTML/CSS, Bash]
+      items: [C#, JavaScript/TypeScript, Python, Gosu, SQL, HTML/CSS, Bash]
     - name: Web & Backend
       items: [React, Express.js, Django, Node.js, .NET, REST APIs, Docker, Git]
     - name: Data & Cloud
-      items: [MySQL, PostgreSQL, MongoDB, LMDB, Redis, AWS (EC2, S3, IAM)]
+      items: [PostgreSQL, Oracle, MongoDB, LMDB, Redis, AWS (EC2, S3, IAM), Databricks, Snowflake]
     - name: Practices
-      items: [Agile/Scrum, CI/CD, TDD/BDD, Infrastructure-as-Code]
-    - name: Generative AI
-      items: [Claude Code, AI-Augmented Development, Agentic Development]
+      items: [Agile/Scrum, CI/CD (Azure DevOps), TDD/BDD, AI-Augmented Development, System Design]

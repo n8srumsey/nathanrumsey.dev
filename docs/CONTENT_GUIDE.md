@@ -9,12 +9,14 @@ How to add and update content without touching UI code. Everything here works by
 ### Creating a post
 
 **Simple post (no images)**:
-```
+
+```txt
 src/content/blog/my-post-slug.mdx
 ```
 
 **Post with co-located images**:
-```
+
+```txt
 src/content/blog/my-post-slug/
   index.mdx
   hero.jpg
@@ -39,6 +41,7 @@ draft: false               # default false; true = excluded from all builds
 ```
 
 | Field | Type | Required | Notes |
+
 |---|---|---|---|
 | `title` | string | Yes | |
 | `date` | date | Yes | `YYYY-MM-DD` format |
@@ -51,7 +54,7 @@ draft: false               # default false; true = excluded from all builds
 
 ### Writing the post
 
-After the frontmatter, write standard markdown. Code blocks get syntax highlighting automatically (Shiki, built into Astro — no config needed):
+After the frontmatter, write standard markdown. Code blocks get syntax highlighting automatically (Shiki, built into Astro; no config needed):
 
 ````markdown
 ```typescript
@@ -96,11 +99,12 @@ posts:
 
 The filename (without `.yaml`) is the series slug used in URLs and post frontmatter.
 
-2. On each post that belongs to the series, add `series: my-series` to the frontmatter.
+1. On each post that belongs to the series, add `series: my-series` to the frontmatter.
 
-### Frontmatter reference
+### Blog Frontmatter reference
 
 | Field | Type | Required | Notes |
+
 |---|---|---|---|
 | `name` | string | Yes | Display name for the series page |
 | `description` | string | No | Shown on the series page |
@@ -157,11 +161,12 @@ relatedPosts: [post-slug-1]
 
 ## Overview
 
-Your README-style content here. Full MDX is supported — headings, code blocks, images, React components.
+Your README-style content here. Full MDX is supported (headings, code blocks, images, React components).
 ```
 
 With images, use the directory structure:
-```
+
+```txt
 src/content/projects/project-name/
   index.mdx
   hero.jpg
@@ -169,9 +174,10 @@ src/content/projects/project-name/
 
 The project gets a page at `/projects/project-name`. The catalog links to the detail page instead of directly to external links.
 
-### Frontmatter reference
+### Project Frontmatter reference
 
 | Field | Type | Required | Notes |
+
 |---|---|---|---|
 | `name` | string | Yes | Display name; shown in catalog and detail page header |
 | `description` | string | Yes | Short summary for catalog cards and meta tags |
@@ -186,6 +192,8 @@ The project gets a page at `/projects/project-name`. The catalog links to the de
 | `homepagePin` | boolean | No | Pins the project to the landing page featured section |
 | `resumeSummary` | string | No | One-line summary used if the project is cross-referenced on the resume |
 | `resumeHighlights` | string[] | No | Bullet points used if the project is cross-referenced on the resume |
+| `resumeDisplayDate` | boolean | No | Whether to show the project's date range on the resume when cross-referenced |
+| `resumeDisplayPriority` | number | No | Sort order on the resume; higher numbers appear first; projects without this field are excluded from resume ordering |
 | `relatedSeries` | string | No | Series slug; shown as a link on the detail page |
 | `relatedPosts` | string[] | No | Blog post slugs; shown as links on the detail page |
 | `annotations` | array | No | See Annotations section |
@@ -220,7 +228,7 @@ experience:
     highlights:
       - "Specific achievement or responsibility"
       - "Another bullet point"
-    annotations:            # optional; not rendered yet — see Annotations section
+    annotations:            # optional; see Annotations section
       - term: "exact phrase from description"
         detail: "Tooltip or context text"
         style: keyword      # keyword | tech | achievement
@@ -228,7 +236,7 @@ experience:
 education:
   - institution: "University Name"
     location: "City, State"
-    degree: "B.S. in Computer Science"   # optional
+    degree: "B.S. in Computer Science"
     start: "YYYY-MM"
     end: "YYYY-MM"              # omit for in-progress
     gpa: "Optional additional context."
@@ -249,6 +257,7 @@ skills:
 ### Basics fields
 
 | Field | Required | Notes |
+
 |---|---|---|
 | `name` | Yes | |
 | `title` | Yes | Shown as subtitle under your name |
@@ -283,7 +292,9 @@ Change the order of items within `experience[]`, `education[]`, or `skills.categ
 
 ## Annotations
 
-Annotations mark specific terms in resume experience descriptions so that hovering (or tapping on mobile) reveals a tooltip with additional context. Annotated terms render with a dotted underline as a visual signal.
+Annotations mark specific terms in resume and project descriptions so that hovering (or tapping on mobile) reveals a tooltip with additional context. Annotated terms render with a dotted underline as a visual signal.
+
+**Supported locations**: `experience[].description`, `experience[].highlights[]`, `education[].gpa`, `education[].activities`, and project `description`. Education entries apply the same `annotations[]` array to both `gpa` and `activities` fields.
 
 ### What they look like in YAML
 
@@ -300,26 +311,28 @@ The term `"data ingestion pipeline"` gets a dotted underline in the rendered des
 ### Annotation fields
 
 | Field | Required | Values | Notes |
+
 |---|---|---|---|
 | `term` | Yes | string | Must match a substring in `description` exactly (case-sensitive) |
-| `detail` | Yes | string | Tooltip content — one to two sentences |
+| `detail` | Yes | string | Tooltip content; one to two sentences |
 | `style` | No | `keyword`, `tech`, `achievement` | Semantic label shown in the tooltip header |
 
 ### When to annotate
 
 **Should annotate:** a metric or quantified achievement in a bullet that would read as a large claim without context. Use `detail` to explain how the number was derived or what the baseline was.
 
-**May annotate:** a technical term used in passing where a non-specialist reader would benefit from one sentence of context — the specific system, tool, or concept behind the name.
+**May annotate:** a technical term used in passing where a non-specialist reader would benefit from one sentence of context (the specific system, tool, or concept behind the name).
 
 **Should not annotate:** every technical term by default. Annotations are for context that adds genuine signal, not decoration. If the term is self-evident to the target audience, skip it.
 
-**Must not annotate:** a term that doesn't appear verbatim in the `description` string. The match is exact substring — a typo or paraphrase silently produces no annotation.
+**Must not annotate:** a term that doesn't appear verbatim in the `description` string. The match is exact substring (a typo or paraphrase silently produces no annotation).
 
 ### Style values
 
-`style` is semantic metadata — the dotted underline is visually identical across all three. The value appears as a muted label in the tooltip header to help readers orient.
+`style` is semantic metadata; the dotted underline is visually identical across all three. The value appears as a muted label in the tooltip header to help readers orient.
 
 | Value | Use for |
+
 |---|---|
 | `keyword` | Domain terms, industry jargon, named programs or policies |
 | `tech` | Programming languages, frameworks, tools, systems |
