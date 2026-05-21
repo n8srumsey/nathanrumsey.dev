@@ -36,7 +36,7 @@
     "photoswipe": "^5.4.4",
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
-    "simple-icons": "^16.19.0",
+    "simple-icons": "^16.20.0",
     "tailwind-scrollbar": "^4.0.2",
     "tailwindcss": "^4.2.4"
   },
